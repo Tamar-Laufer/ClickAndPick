@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth }  from '../context/AuthContext';
-import { apiFetch } from '../hooks/useApi';
+import { apiFetch } from '../services/api';
 import TgNavbar      from '../components/TgNavbar';
 import BookingCard   from '../components/BookingCard';
 import OwnerItemCard from '../components/OwnerItemCard';

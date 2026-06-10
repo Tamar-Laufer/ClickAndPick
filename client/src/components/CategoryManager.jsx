@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCategories } from '../context/CategoriesContext';
-import { apiFetch } from '../hooks/useApi';
+import { apiFetch } from '../services/api';
 
 /* ── Category Manager ──────────────────────────────────────────────────────
    Admin panel: list existing categories and add new ones dynamically. New

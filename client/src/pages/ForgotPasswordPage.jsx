@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { apiFetch } from '../hooks/useApi';
+import { apiFetch } from '../services/api';
 import './AuthPages.css';
 
 /* ── "ביחד" forgot-password ──

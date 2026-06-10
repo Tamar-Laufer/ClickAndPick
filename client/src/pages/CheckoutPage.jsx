@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAuth }  from '../context/AuthContext';
-import { apiFetch } from '../hooks/useApi';
+import { apiFetch } from '../services/api';
 import { useCategories } from '../context/CategoriesContext';
 import TgNavbar from '../components/TgNavbar';
 import './CheckoutPage.css';

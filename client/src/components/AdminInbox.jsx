@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { apiFetch } from '../hooks/useApi';
+import { apiFetch } from '../services/api';
 import Avatar from './Avatar';
 
 /* ── Admin Inbox ───────────────────────────────────────────────────────────

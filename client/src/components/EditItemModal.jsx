@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { apiFetch } from '../hooks/useApi';
+import { apiFetch } from '../services/api';
 import { useCategories } from '../context/CategoriesContext';
 import './LoanRequestModal.css'; // reuse the shared modal shell + form field styles
 import './EditItemModal.css';

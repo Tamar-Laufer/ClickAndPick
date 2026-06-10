@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { apiFetch } from '../hooks/useApi';
+import { apiFetch } from '../services/api';
 import { useCategories } from '../context/CategoriesContext';
 import TgNavbar from '../components/TgNavbar';
 import FeedbackForm from '../components/FeedbackForm';

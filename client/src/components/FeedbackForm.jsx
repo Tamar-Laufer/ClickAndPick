@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { apiFetch } from '../hooks/useApi';
+import { apiFetch } from '../services/api';
 
 /* ── Public contact / feedback form ────────────────────────────────────────
    Lives in the site footer (where real sites put "contact us"). Anyone — no

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { apiFetch } from '../hooks/useApi';
+import { apiFetch } from '../services/api';
 import TgNavbar from '../components/TgNavbar';
 import CategoryManager from '../components/CategoryManager';
 import AdminInbox from '../components/AdminInbox';

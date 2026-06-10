@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { apiFetch } from '../hooks/useApi';
+import { apiFetch } from '../services/api';
 import './ReviewModal.css';
 
 /* ReviewModal — one side of the double-blind two-way review.

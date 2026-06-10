@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { apiFetch } from '../hooks/useApi';
+import { apiFetch } from '../services/api';
 import { CATEGORIES as FALLBACK } from '../config/categories';
 
 /* Categories are admin-managed (GET /api/categories). This provider fetches

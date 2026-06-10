@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiFetch } from '../hooks/useApi';
+import { apiFetch } from '../services/api';
 import AvailabilityCalendar from './AvailabilityCalendar';
 import './LoanRequestModal.css';
 
