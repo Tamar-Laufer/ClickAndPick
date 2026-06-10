@@ -67,6 +67,8 @@
   font-size: 0.82rem;
   color: var(--fg-3);
 }
+.modal-date-line { margin-top: 8px; }
+.modal-total-line { justify-content: space-between; }
 
 /* ── Info links (LoT style) ── */
 .modal-info-links {

@@ -52,7 +52,7 @@ export default function CategoryManager() {
     <div className="panel">
       <div className="panel-head">
         <h2>ניהול קטגוריות</h2>
-        <span className="sub" style={{ fontSize: 13.5, color: 'var(--muted)' }}>{categories.length} קטגוריות</span>
+        <span className="cat-count">{categories.length} קטגוריות</span>
       </div>
 
       <form className="cat-form" onSubmit={handleAdd}>
@@ -71,7 +71,7 @@ export default function CategoryManager() {
               key={c.value}
               type="button"
               className={`cat-swatch${color === c.value ? ' on' : ''}`}
-              style={{ background: c.hex }}
+              style={{ '--cat-c': c.hex }}
               onClick={() => setColor(c.value)}
               aria-label={c.value}
               aria-pressed={color === c.value}

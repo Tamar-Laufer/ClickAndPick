@@ -133,7 +133,7 @@ export default function HomePage() {
           <div className="hero-foot">
             <div>
               <p className="hero-lead">{'אנחנו חולמים על עולם ללא פסולת\nמיליארד פעולות קטנות הכניסו אותנו לבלגן הזה. מיליארד פעולות קטנות יכולות להוציא אותנו ממנו.'}</p>
-              <div className="hero-actions" style={{ marginTop: 26 }}>
+              <div className="hero-actions">
                 <Link className="btn btn-accent" to="/register">הצטרפו בחינם</Link>
                 <a className="btn btn-line on-dark" href="#process">איך זה עובד</a>
               </div>
@@ -235,7 +235,7 @@ export default function HomePage() {
           <div className="process-head">
             <div>
               <span className="kicker"><span className="idx">05</span> איך זה עובד</span>
-              <h2 style={{ marginTop: 20 }}>ארבעה צעדים פשוטים<br />מהבקשה ועד ההחזרה</h2>
+              <h2>ארבעה צעדים פשוטים<br />מהבקשה ועד ההחזרה</h2>
             </div>
             <Link className="btn btn-accent" to="/register">הצטרפו עכשיו</Link>
           </div>

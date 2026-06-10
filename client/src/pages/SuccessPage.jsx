@@ -40,9 +40,9 @@ export default function SuccessPage() {
         <TgNavbar variant="page" active="items" />
         <main className="success">
           <div className="success-card">
-            <div className="success-body" style={{ padding: '48px 40px' }}>
-              <h1 style={{ fontFamily: 'var(--display)', fontWeight: 300, fontSize: 30, marginBottom: 10 }}>אין הזמנה להצגה</h1>
-              <p style={{ color: 'var(--muted)', marginBottom: 24 }}>ההזמנה כבר אושרה או שהדף נפתח ישירות.</p>
+            <div className="success-body success-empty">
+              <h1>אין הזמנה להצגה</h1>
+              <p>ההזמנה כבר אושרה או שהדף נפתח ישירות.</p>
               <Link className="btn btn-accent" to="/profile">להזמנות שלי</Link>
             </div>
           </div>

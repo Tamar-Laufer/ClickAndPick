@@ -1,3 +1,4 @@
+import Modal from './Modal';
 import './LoanRequestModal.css'; // reuse the shared .modal-overlay / .modal-box shell
 import './ConfirmDialog.css';
 
@@ -18,14 +19,12 @@ export default function ConfirmDialog({
   onCancel,
 }) {
   return (
-    <div className="modal-overlay" onClick={busy ? undefined : onCancel}>
-      <div
-        className="modal-box confirm-box"
-        onClick={(e) => e.stopPropagation()}
-        dir="rtl"
-        role="alertdialog"
-        aria-modal="true"
-      >
+    <Modal
+      onClose={busy ? undefined : onCancel}
+      closeOnBackdrop={!busy}
+      className="modal-box confirm-box"
+      role="alertdialog"
+    >
         <div className="confirm-body">
           {danger && (
             <span className="confirm-ic" aria-hidden="true">
@@ -55,7 +54,6 @@ export default function ConfirmDialog({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

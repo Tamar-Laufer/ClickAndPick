@@ -588,7 +588,7 @@ export default function ProfilePage() {
                         <span className="tb-label">{p.label}</span>
                         <span className="tb-val">{p.value}<small>/{p.max}</small></span>
                       </div>
-                      <span className="tb-bar"><i style={{ width: `${Math.round((p.value / p.max) * 100)}%` }} /></span>
+                      <span className="tb-bar"><i style={{ '--tb-w': `${Math.round((p.value / p.max) * 100)}%` }} /></span>
                       <span className="tb-hint">{p.hint}</span>
                     </li>
                   ))}

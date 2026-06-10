@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../services/api';
 import AvailabilityCalendar from './AvailabilityCalendar';
+import Modal from './Modal';
 import './LoanRequestModal.css';
 
 /* Date picker step of the booking flow. Collects the loan dates via a visual
@@ -54,17 +55,7 @@ export default function LoanRequestModal({ item, onClose }) {
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-box" onClick={e => e.stopPropagation()} dir="rtl">
-
-        <button className="modal-close" onClick={onClose} aria-label="סגור">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
-
+    <Modal onClose={onClose} showClose>
         <>
             {/* Header */}
             <div className="modal-header">
@@ -110,7 +101,7 @@ export default function LoanRequestModal({ item, onClose }) {
                   value={form}
                   onChange={({ startDate, endDate }) => { setError(''); setForm({ startDate, endDate }); }}
                 />
-                <p className="modal-location" style={{ marginTop: 8 }}>
+                <p className="modal-location modal-date-line">
                   {form.startDate
                     ? <span>{form.startDate}{form.endDate ? ` ← ${form.endDate}` : ' · בחרו תאריך החזרה'}</span>
                     : <span>בחרו את תאריך ההשאלה בלוח</span>}
@@ -118,7 +109,7 @@ export default function LoanRequestModal({ item, onClose }) {
               </div>
 
               {days > 0 && (
-                <p className="modal-location" style={{ justifyContent: 'space-between' }}>
+                <p className="modal-location modal-total-line">
                   <span>{days} ימים × ₪{dailyRate}</span>
                   <strong>סה״כ ₪{estTotal}</strong>
                 </p>
@@ -129,7 +120,6 @@ export default function LoanRequestModal({ item, onClose }) {
               </button>
             </form>
           </>
-      </div>
-    </div>
+    </Modal>
   );
 }

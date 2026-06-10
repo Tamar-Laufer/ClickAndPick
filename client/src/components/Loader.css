@@ -1,0 +1,23 @@
+/* Loader — shared loading indicator. Inherits currentColor so it adopts the
+   text colour of whatever container it is dropped into. */
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--muted, #8A8174);
+}
+
+.loader-spin {
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: loader-spin 0.7s linear infinite;
+}
+
+@keyframes loader-spin {
+  to { transform: rotate(360deg); }
+}

@@ -1,40 +1,28 @@
-import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
+import { useAuthForm } from '../hooks/useAuthForm';
+import { useAuthLayout } from '../hooks/useAuthLayout';
+import FormInput from '../components/FormInput';
+import Button from '../components/Button';
+import AuthPanel from '../components/AuthPanel';
 import './AuthPages.css';
 
 /* ── "ביחד" signup (ported from הצטרפות.html) ── */
 
 export default function RegisterPage() {
-  const { login }  = useAuth();
-  const navigate   = useNavigate();
-  const [form,    setForm]    = useState({ firstName: '', lastName: '', email: '', password: '', phone: '' });
-  const [error,   setError]   = useState('');
-  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate  = useNavigate();
+  useAuthLayout();
 
-  // full-screen split layout — drop the global fixed-navbar spacing
-  useEffect(() => {
-    const prev = document.body.style.paddingTop;
-    document.body.style.paddingTop = '0';
-    return () => { document.body.style.paddingTop = prev; };
-  }, []);
+  const { form, handleChange, error, loading, submit } =
+    useAuthForm({ firstName: '', lastName: '', email: '', password: '', phone: '' });
 
-  function handleChange(e) { setForm(f => ({ ...f, [e.target.name]: e.target.value })); }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError(''); setLoading(true);
-    try {
-      const data = await apiFetch('/auth/register', { method: 'POST', body: JSON.stringify(form) });
-      login(data.user, data.token);
-      navigate('/');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const handleSubmit = submit(async (values) => {
+    const data = await apiFetch('/auth/register', { method: 'POST', body: JSON.stringify(values) });
+    login(data.user, data.token);
+    navigate('/');
+  });
 
   return (
     <div className="tg tg-white" dir="rtl">
@@ -51,53 +39,31 @@ export default function RegisterPage() {
             {error && <p className="auth-error">{error}</p>}
 
             <div className="field-row">
-              <div className="field">
-                <label>שם פרטי</label>
-                <input name="firstName" type="text" value={form.firstName} onChange={handleChange} required placeholder="ישראל" />
-              </div>
-              <div className="field">
-                <label>שם משפחה</label>
-                <input name="lastName" type="text" value={form.lastName} onChange={handleChange} required placeholder="ישראלי" />
-              </div>
+              <FormInput label="שם פרטי" name="firstName" value={form.firstName} onChange={handleChange} required placeholder="ישראל" />
+              <FormInput label="שם משפחה" name="lastName" value={form.lastName} onChange={handleChange} required placeholder="ישראלי" />
             </div>
-            <div className="field">
-              <label>אימייל</label>
-              <input name="email" type="email" value={form.email} onChange={handleChange} required placeholder="israel@example.com" />
-            </div>
-            <div className="field">
-              <label>טלפון נייד</label>
-              <input name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="050-0000000" />
-            </div>
-            <div className="field">
-              <label>סיסמה</label>
-              <input name="password" type="password" value={form.password} onChange={handleChange} required minLength={6} placeholder="לפחות 6 תווים" />
-            </div>
+            <FormInput label="אימייל" name="email" type="email" value={form.email} onChange={handleChange} required placeholder="israel@example.com" />
+            <FormInput label="טלפון נייד" name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="050-0000000" />
+            <FormInput label="סיסמה" name="password" type="password" value={form.password} onChange={handleChange} required minLength={6} placeholder="לפחות 6 תווים" />
 
             <div className="auth-row">
               <label><input type="checkbox" required /> אני מסכים/ה ל<a href="#">תנאי השימוש</a></label>
             </div>
 
-            <button type="submit" className="btn btn-accent" disabled={loading}>
-              {loading ? 'יוצר חשבון…' : 'יצירת חשבון'}
-            </button>
+            <Button type="submit" loading={loading} busyLabel="יוצר חשבון…">יצירת חשבון</Button>
 
             <p className="auth-alt">כבר רשומים? <Link to="/login">התחברו</Link></p>
           </form>
         </div>
 
-        {/* brand panel */}
-        <aside className="auth-panel">
-          <img className="auth-photo" src="/images/community.png" alt="קהילה מחוברת" />
-          <div className="pov" />
-          <div className="pc p-mid">
-            <h2>שכונה אחת.<br />אינסוף שיתופים.</h2>
-            <p>כל פריט שאתם משתפים חוסך כסף לשכן, מקום בבית ופסולת מהכדור. מצטרפים?</p>
-          </div>
-          <div className="pc p-stats">
-            <div><div className="ps-n">₪240K</div><div className="ps-l">נחסכו לקהילה</div></div>
-            <div><div className="ps-n">12 טון</div><div className="ps-l">פסולת שנמנעה</div></div>
-          </div>
-        </aside>
+        <AuthPanel
+          heading={<>שכונה אחת.<br />אינסוף שיתופים.</>}
+          text="כל פריט שאתם משתפים חוסך כסף לשכן, מקום בבית ופסולת מהכדור. מצטרפים?"
+          stats={[
+            { n: '₪240K', label: 'נחסכו לקהילה' },
+            { n: '12 טון', label: 'פסולת שנמנעה' },
+          ]}
+        />
 
       </div>
     </div>

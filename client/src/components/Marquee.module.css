@@ -35,6 +35,7 @@
   direction: ltr;
   will-change: transform;
   animation: marquee-scroll var(--marquee-duration, 30s) linear infinite;
+  animation-direction: var(--marquee-dir, normal);
 }
 
 .half {

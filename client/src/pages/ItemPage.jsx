@@ -6,6 +6,7 @@ import { apiFetch } from '../services/api';
 import { useCategories } from '../context/CategoriesContext';
 import TgNavbar from '../components/TgNavbar';
 import Avatar from '../components/Avatar';
+import Loader from '../components/Loader';
 import './ItemPage.css';
 
 /* ── "ביחד" item detail page (ported from פריט.html) ── */
@@ -92,12 +93,12 @@ export default function ItemPage() {
     return () => { document.body.style.paddingTop = prev; };
   }, []);
 
-  if (loading) return <div className="tg tg-white" dir="rtl"><div className="ip-state">טוען פריט…</div></div>;
+  if (loading) return <div className="tg tg-white" dir="rtl"><Loader className="ip-state" label="טוען פריט…" /></div>;
   if (error || !item) return (
     <div className="tg tg-white" dir="rtl">
       <div className="ip-state">
         <p>{error || 'הפריט לא נמצא'}</p>
-        <Link to="/search" className="btn btn-accent" style={{ marginTop: 18 }}>חזרה לכל הפריטים</Link>
+        <Link to="/search" className="btn btn-accent">חזרה לכל הפריטים</Link>
       </div>
     </div>
   );

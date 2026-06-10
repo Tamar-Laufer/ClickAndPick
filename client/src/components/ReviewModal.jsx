@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
+import Modal from './Modal';
 import './ReviewModal.css';
 
 /* ReviewModal — one side of the double-blind two-way review.
@@ -41,8 +42,7 @@ export default function ReviewModal({ booking, role, onClose, onSubmitted }) {
   }
 
   return (
-    <div className="rv-overlay" onClick={onClose}>
-      <div className="rv-box" dir="rtl" onClick={e => e.stopPropagation()}>
+    <Modal onClose={onClose} overlayClassName="rv-overlay" className="rv-box">
         <button className="rv-close" onClick={onClose} aria-label="סגירה">✕</button>
 
         {result ? (
@@ -93,7 +93,6 @@ export default function ReviewModal({ booking, role, onClose, onSubmitted }) {
             <p className="rv-note">הביקורות עיוורות — הן נחשפות רק כששני הצדדים דירגו, כדי למנוע ביקורות נקמה.</p>
           </form>
         )}
-      </div>
-    </div>
+    </Modal>
   );
 }

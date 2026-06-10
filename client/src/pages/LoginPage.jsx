@@ -1,7 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
+import { useAuthForm } from '../hooks/useAuthForm';
+import { useAuthLayout } from '../hooks/useAuthLayout';
+import FormInput from '../components/FormInput';
+import Button from '../components/Button';
+import AuthPanel from '../components/AuthPanel';
 import './AuthPages.css';
 
 /* ── "ביחד" login (ported from כניסה.html) ── */
@@ -29,34 +34,20 @@ export default function LoginPage() {
   const fromEmail = Boolean(nextParam);
   // one-time flash set by the reset-password redirect ("הסיסמה אופסה בהצלחה…")
   const notice = location.state?.notice;
-  const [form,    setForm]    = useState({ email: '', password: '' });
-  const [error,   setError]   = useState('');
-  const [loading, setLoading] = useState(false);
+
+  const { form, handleChange, error, loading, submit } = useAuthForm({ email: '', password: '' });
   // set once the user has authenticated here (or confirmed "continue as me" on the
   // email identity gate); only then do we allow the redirect to the destination.
   const [confirmed, setConfirmed] = useState(false);
 
   // full-screen split layout — drop the global fixed-navbar spacing
-  useEffect(() => {
-    const prev = document.body.style.paddingTop;
-    document.body.style.paddingTop = '0';
-    return () => { document.body.style.paddingTop = prev; };
-  }, []);
+  useAuthLayout();
 
-  function handleChange(e) { setForm(f => ({ ...f, [e.target.name]: e.target.value })); }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError(''); setLoading(true);
-    try {
-      const data = await apiFetch('/auth/login', { method: 'POST', body: JSON.stringify(form) });
-      setConfirmed(true);            // a fresh login here is, by definition, the right person
-      login(data.user, data.token);  // sets `user` → the redirect below fires on re-render
-    } catch (err) {
-      setError(err.message);
-      setLoading(false);
-    }
-  }
+  const handleSubmit = submit(async (values) => {
+    const data = await apiFetch('/auth/login', { method: 'POST', body: JSON.stringify(values) });
+    setConfirmed(true);            // a fresh login here is, by definition, the right person
+    login(data.user, data.token);  // sets `user` → the redirect below fires on re-render
+  });
 
   // Logged in AND cleared to proceed (normal navigation, or confirmed on the gate)
   // → go to the intended page / role default.
@@ -76,12 +67,12 @@ export default function LoginPage() {
               <h1>אישור זהות</h1>
               <p className="lead">הקישור נשלח לחשבון אישי. כרגע מחובר/ת בדפדפן הזה:</p>
               <p className="auth-asuser"><strong>{user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim()}</strong><br />{user.email}</p>
-              <button type="button" className="btn btn-accent" onClick={() => setConfirmed(true)}>
+              <Button variant="accent" onClick={() => setConfirmed(true)}>
                 המשך כ{user.name || user.firstName || user.email}
-              </button>
-              <button type="button" className="btn btn-line on-light" onClick={logout}>
+              </Button>
+              <Button variant="line" className="on-light" onClick={logout}>
                 זה לא אני — התחברות לחשבון אחר
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -104,41 +95,28 @@ export default function LoginPage() {
             {notice && <p className="auth-success">{notice}</p>}
             {error && <p className="auth-error">{error}</p>}
 
-            <div className="field">
-              <label>אימייל</label>
-              <input name="email" type="email" value={form.email} onChange={handleChange} required placeholder="israel@example.com" />
-            </div>
-            <div className="field">
-              <label>סיסמה</label>
-              <input name="password" type="password" value={form.password} onChange={handleChange} required placeholder="••••••••" />
-            </div>
+            <FormInput label="אימייל" name="email" type="email" value={form.email} onChange={handleChange} required placeholder="israel@example.com" />
+            <FormInput label="סיסמה" name="password" type="password" value={form.password} onChange={handleChange} required placeholder="••••••••" />
 
             <div className="auth-row">
               <label><input type="checkbox" /> זכרו אותי</label>
               <Link to="/forgot-password">שכחתם סיסמה?</Link>
             </div>
 
-            <button type="submit" className="btn btn-accent" disabled={loading}>
-              {loading ? 'מתחבר…' : 'התחברות'}
-            </button>
+            <Button type="submit" loading={loading} busyLabel="מתחבר…">התחברות</Button>
 
             <p className="auth-alt">עוד אין לכם חשבון? <Link to="/register">הצטרפו בחינם</Link></p>
           </form>
         </div>
 
-        {/* brand panel */}
-        <aside className="auth-panel">
-          <img className="auth-photo" src="/images/community.png" alt="קהילה מחוברת" />
-          <div className="pov" />
-          <div className="pc p-mid">
-            <h2>פחות לקנות.<br />יותר לשתף.</h2>
-            <p>הצטרפו לקהילה שכבר חולקת אלפי פריטים — וחוסכת כסף, מקום ופסולת, ביחד.</p>
-          </div>
-          <div className="pc p-stats">
-            <div><div className="ps-n">5,200+</div><div className="ps-l">פריטים שותפו</div></div>
-            <div><div className="ps-n">1,800</div><div className="ps-l">שכנים פעילים</div></div>
-          </div>
-        </aside>
+        <AuthPanel
+          heading={<>פחות לקנות.<br />יותר לשתף.</>}
+          text="הצטרפו לקהילה שכבר חולקת אלפי פריטים — וחוסכת כסף, מקום ופסולת, ביחד."
+          stats={[
+            { n: '5,200+', label: 'פריטים שותפו' },
+            { n: '1,800', label: 'שכנים פעילים' },
+          ]}
+        />
 
       </div>
     </div>

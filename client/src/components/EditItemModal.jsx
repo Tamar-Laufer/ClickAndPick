@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { apiFetch } from '../services/api';
 import { useCategories } from '../context/CategoriesContext';
+import Modal from './Modal';
 import './LoanRequestModal.css'; // reuse the shared modal shell + form field styles
 import './EditItemModal.css';
 
@@ -88,17 +89,7 @@ export default function EditItemModal({ item, token, onClose, onSaved }) {
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-box" onClick={e => e.stopPropagation()} dir="rtl">
-
-        <button className="modal-close" onClick={onClose} aria-label="סגור">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
-
+    <Modal onClose={onClose} showClose>
         <div className="modal-header">
           <h2 className="modal-title">עריכת פריט</h2>
           <p className="modal-item-name">עדכנו את פרטי הפריט — השינויים יופיעו מיד לשכנים.</p>
@@ -162,7 +153,6 @@ export default function EditItemModal({ item, token, onClose, onSaved }) {
             {saving ? 'שומר…' : 'שמירת שינויים'}
           </button>
         </form>
-      </div>
-    </div>
+    </Modal>
   );
 }

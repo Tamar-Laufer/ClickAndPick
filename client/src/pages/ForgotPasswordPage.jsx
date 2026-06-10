@@ -1,6 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiFetch } from '../services/api';
+import { useAuthForm } from '../hooks/useAuthForm';
+import { useAuthLayout } from '../hooks/useAuthLayout';
+import FormInput from '../components/FormInput';
+import Button from '../components/Button';
+import AuthPanel from '../components/AuthPanel';
 import './AuthPages.css';
 
 /* ── "ביחד" forgot-password ──
@@ -9,34 +14,18 @@ import './AuthPages.css';
    address is registered). */
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail]     = useState('');
+  useAuthLayout();
+  const { form, handleChange, error, loading, submit } = useAuthForm({ email: '' });
   const [message, setMessage] = useState('');   // generic success text from the server
-  const [error, setError]     = useState('');
-  const [loading, setLoading] = useState(false);
 
-  // full-screen split layout — drop the global fixed-navbar spacing
-  useEffect(() => {
-    const prev = document.body.style.paddingTop;
-    document.body.style.paddingTop = '0';
-    return () => { document.body.style.paddingTop = prev; };
-  }, []);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError(''); setMessage(''); setLoading(true);
-    try {
-      const data = await apiFetch('/auth/forgot-password', {
-        method: 'POST',
-        body: JSON.stringify({ email }),
-      });
-      // Server replies with a generic message whether or not the email exists.
-      setMessage(data.message || 'אם קיים חשבון עם האימייל הזה, נשלח אליו קישור לאיפוס.');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const handleSubmit = submit(async ({ email }) => {
+    const data = await apiFetch('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+    // Server replies with a generic message whether or not the email exists.
+    setMessage(data.message || 'אם קיים חשבון עם האימייל הזה, נשלח אליו קישור לאיפוס.');
+  });
 
   return (
     <div className="tg tg-white" dir="rtl">
@@ -56,21 +45,16 @@ export default function ForgotPasswordPage() {
             {/* once the request is sent, hide the form and just leave the confirmation */}
             {!message && (
               <>
-                <div className="field">
-                  <label>אימייל</label>
-                  <input
-                    name="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    placeholder="israel@example.com"
-                  />
-                </div>
-
-                <button type="submit" className="btn btn-accent" disabled={loading}>
-                  {loading ? 'שולח…' : 'שליחת קישור לאיפוס'}
-                </button>
+                <FormInput
+                  label="אימייל"
+                  name="email"
+                  type="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="israel@example.com"
+                />
+                <Button type="submit" loading={loading} busyLabel="שולח…">שליחת קישור לאיפוס</Button>
               </>
             )}
 
@@ -78,15 +62,10 @@ export default function ForgotPasswordPage() {
           </form>
         </div>
 
-        {/* brand panel */}
-        <aside className="auth-panel">
-          <img className="auth-photo" src="/images/community.png" alt="קהילה מחוברת" />
-          <div className="pov" />
-          <div className="pc p-mid">
-            <h2>פחות לקנות.<br />יותר לשתף.</h2>
-            <p>הצטרפו לקהילה שכבר חולקת אלפי פריטים — וחוסכת כסף, מקום ופסולת, ביחד.</p>
-          </div>
-        </aside>
+        <AuthPanel
+          heading={<>פחות לקנות.<br />יותר לשתף.</>}
+          text="הצטרפו לקהילה שכבר חולקת אלפי פריטים — וחוסכת כסף, מקום ופסולת, ביחד."
+        />
 
       </div>
     </div>

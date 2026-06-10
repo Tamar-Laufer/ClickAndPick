@@ -10,7 +10,7 @@ import './Avatar.css';
      name  — explicit display name (overrides the user-derived one)
      size  — diameter in px (default 36)
      className — extra classes for layout tweaks
-     style — extra inline styles (e.g. a fallback background colour) */
+     style — extra style hooks, e.g. `{ '--av-bg': '#…' }` for a fallback colour */
 export default function Avatar({ user, name, size = 36, className = '', style }) {
   const display = (name
     || (user ? [user.firstName, user.lastName].filter(Boolean).join(' ') || user.name : '')
@@ -18,10 +18,14 @@ export default function Avatar({ user, name, size = 36, className = '', style })
   const initial = (display || '?')[0].toUpperCase();
   const url = user?.avatarUrl;
 
+  // Diameter is data-driven, so it rides in as CSS custom properties the
+  // stylesheet reads (--av-size / --av-font); callers can still pass --av-bg.
+  const sizeVars = { '--av-size': `${size}px`, '--av-font': `${Math.round(size * 0.42)}px` };
+
   return (
     <span
       className={`avatar ${className}`.trim()}
-      style={{ width: size, height: size, fontSize: Math.round(size * 0.42), ...style }}
+      style={{ ...sizeVars, ...style }}
       title={display || undefined}
     >
       {url

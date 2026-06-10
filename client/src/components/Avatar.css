@@ -3,9 +3,12 @@
   align-items:center;
   justify-content:center;
   flex:0 0 auto;
+  width:var(--av-size, 36px);
+  height:var(--av-size, 36px);
+  font-size:var(--av-font, 15px);
   border-radius:50%;
   overflow:hidden;
-  background:var(--block, #2b3a55);
+  background:var(--av-bg, var(--block, #2b3a55));
   color:#fff;
   font-family:var(--display, inherit);
   font-weight:600;

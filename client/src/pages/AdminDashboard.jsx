@@ -5,6 +5,7 @@ import TgNavbar from '../components/TgNavbar';
 import CategoryManager from '../components/CategoryManager';
 import AdminInbox from '../components/AdminInbox';
 import Avatar from '../components/Avatar';
+import Loader from '../components/Loader';
 import './AdminDashboard.css';
 
 /* ── "ביחד" admin dashboard (לוח ניהול) ──────────────────────────────────────
@@ -110,7 +111,7 @@ export default function AdminDashboard() {
   }
 
   if (err) return <Shell><div className="admin-state">שגיאה: {err}</div></Shell>;
-  if (!stats) return <Shell><div className="admin-state">טוען…</div></Shell>;
+  if (!stats) return <Shell><Loader className="admin-state" /></Shell>;
 
   const completed = (stats.bookingsByStatus || []).find((r) => r.status === 'COMPLETED')?.count || 0;
   const ratePct = Math.round((stats.managerRate || 0.05) * 100);
@@ -167,7 +168,7 @@ export default function AdminDashboard() {
                   {chart.map((c, i) => (
                     <div className="bar-col" key={i}>
                       <div className="bar-track">
-                        <div className="bar" style={{ height: `${(c.value / maxBar) * 180}px` }}>
+                        <div className="bar" style={{ '--bar-h': `${(c.value / maxBar) * 180}px` }}>
                           <span className="val">{shekelK(c.value)}</span>
                         </div>
                       </div>
@@ -184,12 +185,12 @@ export default function AdminDashboard() {
                 <p className="chart-empty">אין עדיין הזמנות</p>
               ) : (
                 <div className="orders-by">
-                  <div className="donut" style={{ background: `conic-gradient(${donut.gradient})` }}>
+                  <div className="donut" style={{ '--donut-grad': `conic-gradient(${donut.gradient})` }}>
                     <div className="donut-center"><span className="n">{donut.total.toLocaleString('he-IL')}</span><span className="l">הזמנות</span></div>
                   </div>
                   <div className="legend">
                     {donut.rows.map((d) => (
-                      <div className="leg" key={d.label}><span className="sw" style={{ background: d.color }} />{d.label}<span className="lv">{d.value}</span></div>
+                      <div className="leg" key={d.label}><span className="sw" style={{ '--sw-c': d.color }} />{d.label}<span className="lv">{d.value}</span></div>
                     ))}
                   </div>
                 </div>
@@ -229,13 +230,13 @@ export default function AdminDashboard() {
                           <div className="u-cell">
                             {u.avatarUrl
                               ? <Avatar user={u} name={name} size={36} className="u-av" />
-                              : <span className="u-av" style={{ background: AV_COLORS[i % AV_COLORS.length] }}>{(name || '?')[0]}</span>}
+                              : <span className="u-av" style={{ '--av-c': AV_COLORS[i % AV_COLORS.length] }}>{(name || '?')[0]}</span>}
                             <div><div className="u-name">{name}</div><div className="u-mail">{u.email}</div></div>
                           </div>
                         </td>
                         <td>
                           <div className="trust-mini">
-                            <span className="trust-bar"><span className={`trust-fill ${tCls}`} style={{ width: `${trust}%` }} /></span>
+                            <span className="trust-bar"><span className={`trust-fill ${tCls}`} style={{ '--trust-w': `${trust}%` }} /></span>
                             <span className="trust-val">{trust}</span>
                           </div>
                         </td>

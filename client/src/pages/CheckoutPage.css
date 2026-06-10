@@ -23,6 +23,8 @@
 .tg a{ color:inherit; text-decoration:none; }
 .tg button{ font-family:inherit; cursor:pointer; }
 .tg .wrap{ max-width:var(--tg-wrap); margin:0 auto; padding:0 48px; }
+.tg .checkout-empty{ padding:60px 0; }
+.tg .checkout-empty .btn{ margin-top:22px; }
 
 /* primitives */
 .tg .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; height:50px; padding:0 28px;

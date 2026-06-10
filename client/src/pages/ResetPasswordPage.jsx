@@ -1,7 +1,11 @@
-import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
+import { useAuthForm } from '../hooks/useAuthForm';
+import { useAuthLayout } from '../hooks/useAuthLayout';
+import FormInput from '../components/FormInput';
+import Button from '../components/Button';
+import AuthPanel from '../components/AuthPanel';
 import './AuthPages.css';
 
 /* ── "ביחד" reset-password ──
@@ -14,41 +18,16 @@ export default function ResetPasswordPage() {
   const { token } = useParams();
   const navigate  = useNavigate();
   const { logout } = useAuth();
+  useAuthLayout();
 
-  const [form, setForm]       = useState({ newPassword: '', confirmPassword: '' });
-  const [error, setError]     = useState('');
-  const [loading, setLoading] = useState(false);
+  const { form, handleChange, error, loading, submit } =
+    useAuthForm({ newPassword: '', confirmPassword: '' });
 
-  // full-screen split layout — drop the global fixed-navbar spacing
-  useEffect(() => {
-    const prev = document.body.style.paddingTop;
-    document.body.style.paddingTop = '0';
-    return () => { document.body.style.paddingTop = prev; };
-  }, []);
-
-  function handleChange(e) {
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError('');
-
-    // client-side validation (the server enforces these too)
-    if (form.newPassword.length < 6) {
-      setError('הסיסמה חייבת להכיל לפחות 6 תווים.');
-      return;
-    }
-    if (form.newPassword !== form.confirmPassword) {
-      setError('הסיסמאות אינן תואמות.');
-      return;
-    }
-
-    setLoading(true);
-    try {
+  const handleSubmit = submit(
+    async ({ newPassword }) => {
       await apiFetch(`/auth/reset-password/${token}`, {
         method: 'POST',
-        body: JSON.stringify({ newPassword: form.newPassword }),
+        body: JSON.stringify({ newPassword }),
       });
       // Clear any existing session so the login page shows its form (instead of
       // auto-redirecting a still-logged-in user straight into the app), forcing
@@ -56,12 +35,16 @@ export default function ResetPasswordPage() {
       logout();
       // success → send them to login with a one-time flash message
       navigate('/login', { replace: true, state: { notice: 'הסיסמה אופסה בהצלחה — התחברו עם הסיסמה החדשה.' } });
-    } catch (err) {
-      // covers "Invalid or expired token" (400) and any other server error
-      setError(err.message);
-      setLoading(false);
-    }
-  }
+    },
+    {
+      // client-side validation (the server enforces these too)
+      validate: (f) => {
+        if (f.newPassword.length < 6) return 'הסיסמה חייבת להכיל לפחות 6 תווים.';
+        if (f.newPassword !== f.confirmPassword) return 'הסיסמאות אינן תואמות.';
+        return '';
+      },
+    },
+  );
 
   return (
     <div className="tg tg-white" dir="rtl">
@@ -77,50 +60,39 @@ export default function ResetPasswordPage() {
 
             {error && <p className="auth-error">{error}</p>}
 
-            <div className="field">
-              <label>סיסמה חדשה</label>
-              <input
-                name="newPassword"
-                type="password"
-                value={form.newPassword}
-                onChange={handleChange}
-                required
-                minLength={6}
-                placeholder="••••••••"
-                autoComplete="new-password"
-              />
-            </div>
-            <div className="field">
-              <label>אימות סיסמה</label>
-              <input
-                name="confirmPassword"
-                type="password"
-                value={form.confirmPassword}
-                onChange={handleChange}
-                required
-                minLength={6}
-                placeholder="••••••••"
-                autoComplete="new-password"
-              />
-            </div>
+            <FormInput
+              label="סיסמה חדשה"
+              name="newPassword"
+              type="password"
+              value={form.newPassword}
+              onChange={handleChange}
+              required
+              minLength={6}
+              placeholder="••••••••"
+              autoComplete="new-password"
+            />
+            <FormInput
+              label="אימות סיסמה"
+              name="confirmPassword"
+              type="password"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              required
+              minLength={6}
+              placeholder="••••••••"
+              autoComplete="new-password"
+            />
 
-            <button type="submit" className="btn btn-accent" disabled={loading}>
-              {loading ? 'מאפס…' : 'איפוס הסיסמה'}
-            </button>
+            <Button type="submit" loading={loading} busyLabel="מאפס…">איפוס הסיסמה</Button>
 
             <p className="auth-alt">נזכרתם בסיסמה? <Link to="/login">חזרה להתחברות</Link></p>
           </form>
         </div>
 
-        {/* brand panel */}
-        <aside className="auth-panel">
-          <img className="auth-photo" src="/images/community.png" alt="קהילה מחוברת" />
-          <div className="pov" />
-          <div className="pc p-mid">
-            <h2>פחות לקנות.<br />יותר לשתף.</h2>
-            <p>הצטרפו לקהילה שכבר חולקת אלפי פריטים — וחוסכת כסף, מקום ופסולת, ביחד.</p>
-          </div>
-        </aside>
+        <AuthPanel
+          heading={<>פחות לקנות.<br />יותר לשתף.</>}
+          text="הצטרפו לקהילה שכבר חולקת אלפי פריטים — וחוסכת כסף, מקום ופסולת, ביחד."
+        />
 
       </div>
     </div>

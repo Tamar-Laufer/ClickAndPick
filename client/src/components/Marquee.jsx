@@ -101,7 +101,7 @@ export default function Marquee({
         className={styles.track}
         style={{
           '--marquee-duration': `${duration}s`,
-          animationDirection: reverse ? 'reverse' : 'normal',
+          '--marquee-dir': reverse ? 'reverse' : 'normal',
         }}
       >
         <div className={styles.half} ref={halfRef} style={halfStyle}>

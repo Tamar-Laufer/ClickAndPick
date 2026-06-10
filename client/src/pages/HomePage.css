@@ -123,7 +123,7 @@
 .tg .hero-foot{ display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:34px;
   border-top:1px solid rgba(14,110,99,.25); padding-top:30px; }
 .tg .hero-lead{ color:var(--ink-2); font-size:clamp(15px,1.45vw,18px); font-weight:300; max-width:46ch; margin:0; white-space:pre-line; }
-.tg .hero-actions{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+.tg .hero-actions{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:26px; }
 .tg .scroll-cue{ position:absolute; z-index:2; bottom:24px; inset-inline-end:48px; display:flex; flex-direction:column; align-items:center; gap:8px;
   color:var(--block-dk); font-size:11px; letter-spacing:.2em; writing-mode:vertical-rl; }
 /* the hero "איך זה עובד" outline button sits on the light turquoise now → dark outline */
@@ -208,6 +208,7 @@
 /* ════════════════ PROCESS (dark) ════════════════ */
 .tg .process{ background:var(--ink); color:#fff; padding:104px 0 108px; }
 .tg .process-head{ display:flex; flex-wrap:wrap; gap:24px; align-items:end; justify-content:space-between; margin-bottom:60px; }
+.tg .process-head h2{ margin-top:20px; }
 .tg .process .kicker{ color:rgba(255,255,255,.7); margin-bottom:20px; }
 .tg .process .kicker .idx{ color:var(--accent-lt); }
 .tg .process h2{ color:#fff; font-size:clamp(28px,4vw,52px); max-width:16ch; }

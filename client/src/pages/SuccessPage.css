@@ -41,6 +41,9 @@
 .tg .success-top h1{ font-family:var(--display); font-weight:300; font-size:38px; margin:0 0 8px; }
 .tg .success-top p{ color:rgba(255,255,255,.85); font-size:15px; margin:0; }
 .tg .success-body{ padding:36px 40px 40px; }
+.tg .success-empty{ padding:48px 40px; }
+.tg .success-empty h1{ font-family:var(--display); font-weight:300; font-size:30px; margin-bottom:10px; }
+.tg .success-empty p{ color:var(--muted); margin-bottom:24px; }
 
 .tg .receipt{ text-align:start; border:1px solid var(--line); }
 .tg .receipt-row{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:15px 20px; font-size:14.5px; }

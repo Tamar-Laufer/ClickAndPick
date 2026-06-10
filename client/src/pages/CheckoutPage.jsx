@@ -55,10 +55,10 @@ export default function CheckoutPage() {
     return (
       <div className="tg tg-white" dir="rtl">
         <TgNavbar variant="page" active="items" />
-        <main className="checkout"><div className="wrap" style={{ padding: '60px 0' }}>
+        <main className="checkout"><div className="wrap checkout-empty">
           <div className="detail-title"><h1>אין הזמנה פעילה</h1>
             <div className="sub">חזרו לפריט ובחרו תאריכים כדי להמשיך לתשלום.</div></div>
-          <Link className="btn btn-accent" to="/search" style={{ marginTop: 22 }}>לכל הפריטים</Link>
+          <Link className="btn btn-accent" to="/search">לכל הפריטים</Link>
         </div></main>
       </div>
     );

@@ -85,7 +85,7 @@ export default function App() {
 
 function NotFound() {
   return (
-    <div style={{ textAlign: 'center', padding: '4rem', direction: 'rtl' }}>
+    <div className="page-fallback" dir="rtl">
       <h2>404 – הדף לא נמצא</h2>
       <a href="/">חזרה לדף הבית</a>
     </div>

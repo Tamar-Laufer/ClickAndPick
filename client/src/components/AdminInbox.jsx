@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
 import Avatar from './Avatar';
+import Loader from './Loader';
 
 /* ── Admin Inbox ───────────────────────────────────────────────────────────
    Every public submission from POST /api/feedback.
@@ -75,7 +76,7 @@ export default function AdminInbox() {
       {err && <p className="cat-err">{err}</p>}
 
       {loading ? (
-        <p className="panel-empty">טוען…</p>
+        <Loader className="panel-empty" />
       ) : visible.length === 0 ? (
         <p className="panel-empty">אין פניות להצגה.</p>
       ) : (
@@ -91,7 +92,7 @@ export default function AdminInbox() {
                     name={f.name}
                     size={40}
                     className="rev-av"
-                    style={{ background: AV_COLORS[i % AV_COLORS.length] }}
+                    style={{ '--av-bg': AV_COLORS[i % AV_COLORS.length] }}
                   />
                   <div className="rev-main">
                     <div className="rev-by">

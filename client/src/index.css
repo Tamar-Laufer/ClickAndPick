@@ -140,3 +140,7 @@ button, input, select, textarea { font-family: inherit; }
   border-right: 3px solid var(--red);
   border-radius: var(--radius-s); margin-bottom: 12px;
 }
+
+/* Global fallbacks rendered outside the `.tg` page scope. */
+.page-fallback { text-align: center; padding: 4rem; }
+.error-fallback { padding: 24px; text-align: center; color: var(--muted, #8A8174); }

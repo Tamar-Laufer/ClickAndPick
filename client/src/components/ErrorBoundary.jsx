@@ -14,7 +14,7 @@ export default class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return this.props.fallback ?? (
-        <div style={{ padding: '24px', textAlign: 'center', color: '#8A8174' }}>
+        <div className="error-fallback">
           אירעה שגיאה בהצגת התצוגה.
         </div>
       );
