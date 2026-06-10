@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiFetch } from '../services/api';
-import { fullName } from '../utils/format';
+import { apiFetch } from '../../services/api';
+import { fullName } from '../../utils/format';
 import AvailabilityCalendar from './AvailabilityCalendar';
-import Modal from './Modal';
+import Modal from '../ui/Modal';
 import './LoanRequestModal.css';
 
 /* Date picker step of the booking flow. Collects the loan dates via a visual

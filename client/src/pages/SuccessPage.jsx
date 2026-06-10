@@ -1,7 +1,8 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { useCategories } from '../context/CategoriesContext';
-import TgNavbar from '../components/TgNavbar';
+import { useFullBleed } from '../hooks/useFullBleed';
+import TgNavbar from '../components/layout/TgNavbar';
 import './SuccessPage.css';
 
 /* ── Payment success (ported from אישור.html) ──────────────────────────────
@@ -22,11 +23,7 @@ export default function SuccessPage() {
   const endDate = state?.endDate || booking?.endDate;
   const branch = state?.branch;
 
-  useEffect(() => {
-    const prev = document.body.style.paddingTop;
-    document.body.style.paddingTop = '0';
-    return () => { document.body.style.paddingTop = prev; };
-  }, []);
+  useFullBleed();
 
   // short, stable order number derived from the real booking id
   const orderNo = useMemo(() => {

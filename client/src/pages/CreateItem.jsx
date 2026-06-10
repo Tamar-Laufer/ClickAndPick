@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch, uploadImage } from '../services/api';
 import { useCategories } from '../context/CategoriesContext';
 import { useAsyncAction } from '../hooks/useAsyncAction';
-import TgNavbar from '../components/TgNavbar';
+import { useFullBleed } from '../hooks/useFullBleed';
+import TgNavbar from '../components/layout/TgNavbar';
 import './CreateItem.css';
 
 /* ── "ביחד" create-item page — form + image upload ── */
@@ -22,12 +23,7 @@ export default function CreateItem() {
   const [imageUrl, setImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
 
-  // full-bleed page — drop the global fixed-navbar spacing
-  useEffect(() => {
-    const prev = document.body.style.paddingTop;
-    document.body.style.paddingTop = '0';
-    return () => { document.body.style.paddingTop = prev; };
-  }, []);
+  useFullBleed(); // full-bleed page — drop the global fixed-navbar spacing
 
   function handleChange(e) { setForm(f => ({ ...f, [e.target.name]: e.target.value })); }
 

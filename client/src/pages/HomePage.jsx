@@ -1,11 +1,14 @@
+
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { apiFetch } from '../services/api';
 import { useCategories } from '../context/CategoriesContext';
-import TgNavbar from '../components/TgNavbar';
-import FeedbackForm from '../components/FeedbackForm';
-import Marquee from '../components/Marquee';
-import Avatar from '../components/Avatar';
+import { useFullBleed } from '../hooks/useFullBleed';
+import { priceParts } from '../utils/format';
+import TgNavbar from '../components/layout/TgNavbar';
+import FeedbackForm from '../components/feedback/FeedbackForm';
+import Marquee from '../components/ui/Marquee';
+import Avatar from '../components/ui/Avatar';
 import './HomePage.css';
 
 /* ── "ביחד" — community-sharing landing page ──
@@ -18,13 +21,6 @@ import './HomePage.css';
 
 /* gracefully hide an image whose file was removed (no broken-icon) */
 const hideBrokenImg = (e) => { e.currentTarget.style.display = 'none'; };
-
-function priceLabel(item) {
-  const d = Number(item.dailyRate);
-  if (d > 0) return { m: `₪${d.toFixed(0)}`, u: '/ ליום' };
-  if (d === 0) return { m: 'חינם', u: '' };
-  return { m: 'לפי תיאום', u: '' };
-}
 
 const CITIES = ['תל אביב', 'ירושלים', 'חיפה', 'באר שבע', 'מודיעין', 'רעננה', 'הרצליה', 'גבעתיים'];
 
@@ -98,13 +94,7 @@ export default function HomePage() {
       .catch(() => {});
   }, []);
 
-  /* remove the global navbar spacing so the hero bleeds to the very top
-     (this page has its own overlay nav, not the shared fixed Navbar) */
-  useEffect(() => {
-    const prev = document.body.style.paddingTop;
-    document.body.style.paddingTop = '0';
-    return () => { document.body.style.paddingTop = prev; };
-  }, []);
+  useFullBleed(); // hero bleeds to the very top (this page has its own overlay nav)
 
   /* scroll-reveal */
   useEffect(() => {
@@ -185,7 +175,7 @@ export default function HomePage() {
             gap={22}
             ariaLabel="פריטים זמינים בקהילה"
             renderItem={(it) => {
-              const price = priceLabel(it);
+              const price = priceParts(it);
               const img = it.imageUrl || null;
               return (
                 <Link className="pcard" to={`/item/${it.id}`}>
@@ -197,7 +187,7 @@ export default function HomePage() {
                   </div>
                   <div className="pcard-body">
                     <span className="pcard-name">{it.title}</span>
-                    <span className="pcard-price">{price.m}{price.u && <span> {price.u}</span>}</span>
+                    <span className="pcard-price">{price.main}{price.unit && <span> {price.unit}</span>}</span>
                   </div>
                 </Link>
               );

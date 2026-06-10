@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { useCategories } from '../context/CategoriesContext';
-import './BookingCard.css';
+import { useCategories } from '../../context/CategoriesContext';
+import '../booking/BookingCard.css';
 
 /* A row for one of the user's own uploaded items, with its loan status.
    `onEdit`   (optional) shows an "עריכה" button that opens the edit modal.

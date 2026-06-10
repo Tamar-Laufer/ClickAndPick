@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiFetch } from '../services/api';
 import { useAuthForm } from '../hooks/useAuthForm';
-import { useAuthLayout } from '../hooks/useAuthLayout';
-import FormInput from '../components/FormInput';
-import Button from '../components/Button';
-import AuthPanel from '../components/AuthPanel';
+import { useFullBleed } from '../hooks/useFullBleed';
+import FormInput from '../components/ui/FormInput';
+import Button from '../components/ui/Button';
+import AuthPanel from '../components/auth/AuthPanel';
 import './AuthPages.css';
 
 /* ── "ביחד" forgot-password ──
@@ -14,7 +14,7 @@ import './AuthPages.css';
    address is registered). */
 
 export default function ForgotPasswordPage() {
-  useAuthLayout();
+  useFullBleed();
   const { form, handleChange, error, loading, submit } = useAuthForm({ email: '' });
   const [message, setMessage] = useState('');   // generic success text from the server
 

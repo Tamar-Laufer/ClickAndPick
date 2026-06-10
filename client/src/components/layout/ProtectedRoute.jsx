@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import Loader from './Loader';
+import { useAuth } from '../../context/AuthContext';
+import Loader from '../ui/Loader';
 
 // מגן על נתיבים – מפנה ל-/login אם לא מחובר, או אם התפקיד לא מתאים.
 // שומר את היעד המקורי ב-state.from כדי שאחרי ההתחברות נחזור אליו

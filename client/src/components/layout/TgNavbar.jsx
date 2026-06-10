@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import Avatar from './Avatar';
+import { useAuth } from '../../context/AuthContext';
+import Avatar from '../ui/Avatar';
 import './TgNavbar.css';
 
 /* One shared navbar for every page.

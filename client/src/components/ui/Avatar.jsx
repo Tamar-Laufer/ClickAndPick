@@ -1,4 +1,4 @@
-import { fullName } from '../utils/format';
+import { fullName } from '../../utils/format';
 import './Avatar.css';
 
 /* Shared profile avatar — shows the user's uploaded photo when present,

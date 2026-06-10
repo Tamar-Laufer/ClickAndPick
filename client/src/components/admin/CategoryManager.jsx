@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useCategories } from '../context/CategoriesContext';
-import { apiFetch } from '../services/api';
+import { useAuth } from '../../context/AuthContext';
+import { useCategories } from '../../context/CategoriesContext';
+import { apiFetch } from '../../services/api';
+import { useAsyncAction } from '../../hooks/useAsyncAction';
 
 /* ── Category Manager ──────────────────────────────────────────────────────
    Admin panel: list existing categories and add new ones dynamically. New
@@ -23,29 +24,24 @@ export default function CategoryManager() {
   const { categories, addCategory } = useCategories();
   const [label, setLabel] = useState('');
   const [color, setColor] = useState('coral');
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState('');
 
-  async function handleAdd(e) {
+  // loading/error boilerplate via the shared hook; the action throws on failure
+  const { run, loading: busy, error: err } = useAsyncAction(async (trimmed) => {
+    const { category } = await apiFetch(
+      '/categories',
+      { method: 'POST', body: JSON.stringify({ label: trimmed, color }) },
+      token,
+    );
+    addCategory(category);
+    setLabel('');
+    setColor('coral');
+  });
+
+  function handleAdd(e) {
     e.preventDefault();
     const trimmed = label.trim();
     if (!trimmed || busy) return;
-    setBusy(true);
-    setErr('');
-    try {
-      const { category } = await apiFetch(
-        '/categories',
-        { method: 'POST', body: JSON.stringify({ label: trimmed, color }) },
-        token,
-      );
-      addCategory(category);
-      setLabel('');
-      setColor('coral');
-    } catch (e2) {
-      setErr(e2.message);
-    } finally {
-      setBusy(false);
-    }
+    run(trimmed);
   }
 
   return (

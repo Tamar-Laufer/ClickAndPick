@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { apiFetch } from '../services/api';
-import Avatar from './Avatar';
-import Loader from './Loader';
+import { useAuth } from '../../context/AuthContext';
+import { apiFetch } from '../../services/api';
+import Avatar from '../ui/Avatar';
+import Loader from '../ui/Loader';
 
 /* ── Admin Inbox ───────────────────────────────────────────────────────────
    Every public submission from POST /api/feedback.

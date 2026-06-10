@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import Avatar from './Avatar';
-import { fullName } from '../utils/format';
+import Avatar from '../ui/Avatar';
+import { fullName } from '../../utils/format';
 import './BookingCard.css';
 
 /* Reusable booking card — used in both dashboard tabs.

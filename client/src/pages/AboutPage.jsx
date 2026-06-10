@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import TgNavbar from '../components/TgNavbar';
+import { useFullBleed } from '../hooks/useFullBleed';
+import TgNavbar from '../components/layout/TgNavbar';
 import './HomePage.css';
 
 /* ── "עלינו" — the manifesto ("הרעיון") lives here now, reached only from the
@@ -13,12 +13,7 @@ const ArrowIcon = () => (
 );
 
 export default function AboutPage() {
-  /* drop the global fixed-navbar spacing — this page has its own sticky nav */
-  useEffect(() => {
-    const prev = document.body.style.paddingTop;
-    document.body.style.paddingTop = '0';
-    return () => { document.body.style.paddingTop = prev; };
-  }, []);
+  useFullBleed(); // full-bleed page — this page has its own sticky nav
 
   return (
     <div className="tg tg-white" dir="rtl">

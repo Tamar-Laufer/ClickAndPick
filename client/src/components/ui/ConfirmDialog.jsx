@@ -1,5 +1,5 @@
 import Modal from './Modal';
-import './LoanRequestModal.css'; // reuse the shared .modal-overlay / .modal-box shell
+import '../item/LoanRequestModal.css'; // reuse the shared .modal-overlay / .modal-box shell
 import './ConfirmDialog.css';
 
 /* ── ConfirmDialog ─────────────────────────────────────────────────────────

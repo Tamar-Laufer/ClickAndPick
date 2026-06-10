@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { apiFetch } from '../services/api';
-import { useAsyncAction } from '../hooks/useAsyncAction';
-import { fullName } from '../utils/format';
-import Modal from './Modal';
+import { useAuth } from '../../context/AuthContext';
+import { apiFetch } from '../../services/api';
+import { useAsyncAction } from '../../hooks/useAsyncAction';
+import { fullName } from '../../utils/format';
+import Modal from '../ui/Modal';
 import './ReviewModal.css';
 
 /* ReviewModal — one side of the double-blind two-way review.

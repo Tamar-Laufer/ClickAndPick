@@ -3,11 +3,11 @@ import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
 import { useAuthForm } from '../hooks/useAuthForm';
-import { useAuthLayout } from '../hooks/useAuthLayout';
+import { useFullBleed } from '../hooks/useFullBleed';
 import { fullName } from '../utils/format';
-import FormInput from '../components/FormInput';
-import Button from '../components/Button';
-import AuthPanel from '../components/AuthPanel';
+import FormInput from '../components/ui/FormInput';
+import Button from '../components/ui/Button';
+import AuthPanel from '../components/auth/AuthPanel';
 import './AuthPages.css';
 
 /* ── "ביחד" login (ported from כניסה.html) ── */
@@ -42,7 +42,7 @@ export default function LoginPage() {
   const [confirmed, setConfirmed] = useState(false);
 
   // full-screen split layout — drop the global fixed-navbar spacing
-  useAuthLayout();
+  useFullBleed();
 
   const handleSubmit = submit(async (values) => {
     const data = await apiFetch('/auth/login', { method: 'POST', body: JSON.stringify(values) });

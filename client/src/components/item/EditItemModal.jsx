@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
-import { apiFetch, uploadImage } from '../services/api';
-import { useCategories } from '../context/CategoriesContext';
-import { useAsyncAction } from '../hooks/useAsyncAction';
-import Modal from './Modal';
+import { apiFetch, uploadImage } from '../../services/api';
+import { useCategories } from '../../context/CategoriesContext';
+import { useAsyncAction } from '../../hooks/useAsyncAction';
+import Modal from '../ui/Modal';
 import './LoanRequestModal.css'; // reuse the shared modal shell + form field styles
 import './EditItemModal.css';
 
