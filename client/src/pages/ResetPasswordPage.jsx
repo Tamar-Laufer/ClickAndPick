@@ -2,10 +2,10 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
 import { useAuthForm } from '../hooks/useAuthForm';
-import { useAuthLayout } from '../hooks/useAuthLayout';
-import FormInput from '../components/FormInput';
-import Button from '../components/Button';
-import AuthPanel from '../components/AuthPanel';
+import { useFullBleed } from '../hooks/useFullBleed';
+import FormInput from '../components/ui/FormInput';
+import Button from '../components/ui/Button';
+import AuthPanel from '../components/auth/AuthPanel';
 import './AuthPages.css';
 
 /* ── "ביחד" reset-password ──
@@ -18,7 +18,7 @@ export default function ResetPasswordPage() {
   const { token } = useParams();
   const navigate  = useNavigate();
   const { logout } = useAuth();
-  useAuthLayout();
+  useFullBleed();
 
   const { form, handleChange, error, loading, submit } =
     useAuthForm({ newPassword: '', confirmPassword: '' });

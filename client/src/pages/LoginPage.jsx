@@ -3,10 +3,11 @@ import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
 import { useAuthForm } from '../hooks/useAuthForm';
-import { useAuthLayout } from '../hooks/useAuthLayout';
-import FormInput from '../components/FormInput';
-import Button from '../components/Button';
-import AuthPanel from '../components/AuthPanel';
+import { useFullBleed } from '../hooks/useFullBleed';
+import { fullName } from '../utils/format';
+import FormInput from '../components/ui/FormInput';
+import Button from '../components/ui/Button';
+import AuthPanel from '../components/auth/AuthPanel';
 import './AuthPages.css';
 
 /* ── "ביחד" login (ported from כניסה.html) ── */
@@ -41,7 +42,7 @@ export default function LoginPage() {
   const [confirmed, setConfirmed] = useState(false);
 
   // full-screen split layout — drop the global fixed-navbar spacing
-  useAuthLayout();
+  useFullBleed();
 
   const handleSubmit = submit(async (values) => {
     const data = await apiFetch('/auth/login', { method: 'POST', body: JSON.stringify(values) });
@@ -66,7 +67,7 @@ export default function LoginPage() {
               <Link className="brand" to="/"><img className="brand-logo" src="/images/logo-trim.png" alt="Click & Pick" /></Link>
               <h1>אישור זהות</h1>
               <p className="lead">הקישור נשלח לחשבון אישי. כרגע מחובר/ת בדפדפן הזה:</p>
-              <p className="auth-asuser"><strong>{user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim()}</strong><br />{user.email}</p>
+              <p className="auth-asuser"><strong>{user.name || fullName(user)}</strong><br />{user.email}</p>
               <Button variant="accent" onClick={() => setConfirmed(true)}>
                 המשך כ{user.name || user.firstName || user.email}
               </Button>

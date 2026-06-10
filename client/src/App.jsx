@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthProvider';
 import { CategoriesProvider } from './context/CategoriesProvider';
-import ProtectedRoute   from './components/ProtectedRoute';
+import ProtectedRoute   from './components/layout/ProtectedRoute';
 
 import HomePage       from './pages/HomePage';
 import AboutPage      from './pages/AboutPage';

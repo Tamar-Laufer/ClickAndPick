@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAuth }  from '../context/AuthContext';
 import { apiFetch } from '../services/api';
 import { useCategories } from '../context/CategoriesContext';
-import TgNavbar from '../components/TgNavbar';
+import { useFullBleed } from '../hooks/useFullBleed';
+import TgNavbar from '../components/layout/TgNavbar';
+import MiniFooter from '../components/layout/MiniFooter';
 import './CheckoutPage.css';
 
 /* ── Checkout (ported from תשלום.html) ──────────────────────────────────────
@@ -43,12 +45,7 @@ export default function CheckoutPage() {
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState('');
 
-  /* full-bleed page — drop the global fixed-navbar spacing */
-  useEffect(() => {
-    const prev = document.body.style.paddingTop;
-    document.body.style.paddingTop = '0';
-    return () => { document.body.style.paddingTop = prev; };
-  }, []);
+  useFullBleed(); // full-bleed page — drop the global fixed-navbar spacing
 
   /* no booking context (refresh / direct hit) → back to the catalog */
   if (!item || !startDate || !endDate) {
@@ -186,12 +183,7 @@ export default function CheckoutPage() {
         </div>
       </main>
 
-      <footer className="mini-footer">
-        <div className="wrap">
-          <img className="mf-logo" src="/images/logo-light.png" alt="Click & Pick" />
-          <span>© {new Date().getFullYear()} ביחד · שיתוף שכונתי</span>
-        </div>
-      </footer>
+      <MiniFooter />
     </div>
   );
 }
