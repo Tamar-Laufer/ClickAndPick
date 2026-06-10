@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth }  from '../context/AuthContext';
-import { apiFetch } from '../services/api';
+import { apiFetch, uploadImage } from '../services/api';
 import TgNavbar      from '../components/TgNavbar';
 import BookingCard   from '../components/BookingCard';
 import OwnerItemCard from '../components/OwnerItemCard';
@@ -22,7 +22,6 @@ import './ProfilePage.css';
    backend doesn't model them yet. */
 
 const RING_C = 2 * Math.PI * 36; // circumference of the trust ring (r=36)
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export default function ProfilePage() {
   const { user, token, updateUser } = useAuth();
@@ -295,23 +294,13 @@ export default function ProfilePage() {
     if (!pendingFile) return;
     setAvatarBusy(true); setAvatarErr('');
     try {
-      const fd = new FormData();
-      fd.append('image', pendingFile);
-      // raw fetch (not apiFetch) so the browser sets the multipart boundary itself
-      const res = await fetch(`${API_BASE}/uploads/image`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: fd,
-      });
-      const up = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(up.message || 'שגיאה בהעלאת התמונה');
-
+      const url = await uploadImage(pendingFile, token);
       const data = await apiFetch('/auth/profile', {
         method: 'PUT',
-        body: JSON.stringify({ avatarUrl: up.url }),
+        body: JSON.stringify({ avatarUrl: url }),
       }, token);
       updateUser(data.user);
-      setAvatar(up.url);
+      setAvatar(url);
       cancelAvatar(); // clear the staged preview now that it's saved
     } catch (err) {
       setAvatarErr(err.message || 'שמירת התמונה נכשלה');

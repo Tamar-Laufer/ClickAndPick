@@ -1,14 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { apiFetch } from '../services/api';
+import { apiFetch, uploadImage } from '../services/api';
 import { useCategories } from '../context/CategoriesContext';
 import TgNavbar from '../components/TgNavbar';
 import './CreateItem.css';
 
 /* ── "ביחד" create-item page — form + image upload ── */
-
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export default function CreateItem() {
   const { token } = useAuth();
@@ -39,17 +37,7 @@ export default function CreateItem() {
     if (!file) return;
     setError(''); setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append('image', file);
-      // raw fetch (not apiFetch) so the browser sets the multipart boundary itself
-      const res = await fetch(`${API_BASE}/uploads/image`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: fd,
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.message || 'שגיאה בהעלאת התמונה');
-      setImageUrl(data.url);
+      setImageUrl(await uploadImage(file, token));
     } catch (err) {
       setError(err.message);
     } finally {

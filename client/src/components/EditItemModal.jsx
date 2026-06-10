@@ -1,11 +1,9 @@
 import { useState, useRef } from 'react';
-import { apiFetch } from '../services/api';
+import { apiFetch, uploadImage } from '../services/api';
 import { useCategories } from '../context/CategoriesContext';
 import Modal from './Modal';
 import './LoanRequestModal.css'; // reuse the shared modal shell + form field styles
 import './EditItemModal.css';
-
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 /* ── EditItemModal ─────────────────────────────────────────────────────────
    Opened from "הפריטים שלי" in the personal area. Pre-fills the form with the
@@ -37,23 +35,12 @@ export default function EditItemModal({ item, token, onClose, onSaved }) {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
   }
 
-  // Same upload path CreateItem uses — raw fetch so the browser sets the
-  // multipart boundary itself (apiFetch forces application/json).
   async function handleFile(e) {
     const file = e.target.files?.[0];
     if (!file) return;
     setError(''); setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append('image', file);
-      const res = await fetch(`${API_BASE}/uploads/image`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: fd,
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.message || 'שגיאה בהעלאת התמונה');
-      setImageUrl(data.url);
+      setImageUrl(await uploadImage(file, token));
     } catch (err) {
       setError(err.message);
     } finally {
