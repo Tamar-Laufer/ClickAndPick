@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import { CategoriesProvider } from './context/CategoriesContext';
+import { AuthProvider } from './context/AuthProvider';
+import { CategoriesProvider } from './context/CategoriesProvider';
 import ProtectedRoute   from './components/ProtectedRoute';
 
 import HomePage       from './pages/HomePage';
