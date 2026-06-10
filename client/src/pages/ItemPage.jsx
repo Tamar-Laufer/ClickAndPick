@@ -67,6 +67,9 @@ export default function ItemPage() {
 
   useEffect(() => {
     let alive = true;
+    // Reset to the loading state on each new :id, then fetch. This is the
+    // intended loading toggle of a data fetch (no synchronous render loop).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true); setError('');
     apiFetch(`/items/${id}`)
       .then(d => { if (alive) setItem(d.item); })
@@ -78,6 +81,7 @@ export default function ItemPage() {
   /* public reviews for this item (revealed double-blind reviews) */
   useEffect(() => {
     let alive = true;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setReviewsLoading(true);
     apiFetch(`/items/${id}/reviews`)
       .then(d => { if (alive) setReviews(d.reviews || []); })

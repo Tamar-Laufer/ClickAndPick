@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext(null);
 
@@ -9,21 +9,22 @@ function withDisplayName(u) {
   return { ...u, name };
 }
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
+// Read any persisted session synchronously, before the first render. Doing this
+// here (instead of in a mount effect that called setState) avoids both the
+// logged-out → logged-in flash and the extra post-mount render.
+function readStoredSession() {
+  try {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    if (token && user) return { token, user: JSON.parse(user) };
+  } catch { /* malformed storage → treat as logged out */ }
+  return { token: null, user: null };
+}
 
-  // טעינה מ-localStorage בעת אתחול
-  useEffect(() => {
-    const savedToken = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-    if (savedToken && savedUser) {
-      setToken(savedToken);
-      setUser(JSON.parse(savedUser));
-    }
-    setLoading(false);
-  }, []);
+export function AuthProvider({ children }) {
+  const [stored] = useState(readStoredSession);
+  const [user, setUser] = useState(stored.user);
+  const [token, setToken] = useState(stored.token);
 
   function login(userData, jwtToken) {
     const u = withDisplayName(userData);
@@ -51,7 +52,9 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout, updateUser, isRole }}>
+    // `loading` is retained for API compatibility (ProtectedRoute reads it), but
+    // the session is now resolved synchronously, so it is always false.
+    <AuthContext.Provider value={{ user, token, loading: false, login, logout, updateUser, isRole }}>
       {children}
     </AuthContext.Provider>
   );

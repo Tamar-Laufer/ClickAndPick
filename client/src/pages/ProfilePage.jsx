@@ -27,10 +27,20 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 export default function ProfilePage() {
   const { user, token, updateUser } = useAuth();
 
-  /* profile details form */
-  const [form, setForm] = useState({
-    firstName: user?.firstName || '', lastName: user?.lastName || '',
-    phone: user?.phone || '', area: '', address: '', bio: '',
+  /* profile details form. The four real fields come from the user; the extra
+     local-only design fields (area/address/bio) are hydrated once, synchronously,
+     from localStorage in the initializer (was a post-mount effect that caused an
+     extra render). */
+  const [form, setForm] = useState(() => {
+    const base = {
+      firstName: user?.firstName || '', lastName: user?.lastName || '',
+      phone: user?.phone || '', area: '', address: '', bio: '',
+    };
+    try {
+      const extra = JSON.parse(localStorage.getItem('yachad_profile_extra'));
+      if (extra) return { ...base, ...extra };
+    } catch { /* ignore malformed storage */ }
+    return base;
   });
   const [editing, setEditing] = useState(false);
   const [msg, setMsg] = useState('');
@@ -57,7 +67,13 @@ export default function ProfilePage() {
   const [incoming, setIncoming] = useState([]);
 
   /* booking manager */
-  const [tab, setTab] = useState('rentals'); // 'rentals' | 'items' | 'incoming'
+  // Deep links (/profile?tab=incoming|rentals|items) open the matching manager
+  // tab directly. Read once from the URL in the initializer instead of syncing
+  // via an effect.
+  const [tab, setTab] = useState(() => {
+    const t = new URLSearchParams(window.location.search).get('tab');
+    return t === 'rentals' || t === 'items' || t === 'incoming' ? t : 'rentals';
+  });
   const [loading, setLoading] = useState(true);
   const [listErr, setListErr] = useState('');
   const [busyId, setBusyId] = useState(null);
@@ -74,20 +90,6 @@ export default function ProfilePage() {
     const prev = document.body.style.paddingTop;
     document.body.style.paddingTop = '0';
     return () => { document.body.style.paddingTop = prev; };
-  }, []);
-
-  /* keep the avatar in sync with the saved value (e.g. after the user object
-     hydrates), but don't clobber an in-flight upload preview */
-  useEffect(() => {
-    if (!avatarBusy && !pendingPreview) setAvatar(user?.avatarUrl || null);
-  }, [user?.avatarUrl, avatarBusy, pendingPreview]);
-
-  /* hydrate the local-only design fields */
-  useEffect(() => {
-    try {
-      const extra = JSON.parse(localStorage.getItem('yachad_profile_extra'));
-      if (extra) setForm(f => ({ ...f, ...extra }));
-    } catch { /* ignore */ }
   }, []);
 
   /* load the real items + bookings (server scopes each to the JWT user) */
@@ -110,6 +112,10 @@ export default function ProfilePage() {
     }
   }, [token]);
 
+  // Fetch on mount and whenever `load` (i.e. the token) changes. The setState
+  // inside `load` is the necessary loading/data toggle of a data fetch, not a
+  // synchronous render-loop, so the set-state-in-effect rule does not apply.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { load(); }, [load]);
 
   /* Deep link from the "rate this loan" email
@@ -122,13 +128,9 @@ export default function ProfilePage() {
   const reviewId = searchParams.get('review');
   const reviewAs = searchParams.get('as');
 
-  /* Deep link from an email button (/profile?tab=incoming|rentals|items) opens
-     the matching manager tab directly — e.g. the owner's "approve a request"
-     email lands straight on the incoming-requests tab. */
-  const tabParam = searchParams.get('tab');
-  useEffect(() => {
-    if (tabParam === 'rentals' || tabParam === 'items' || tabParam === 'incoming') setTab(tabParam);
-  }, [tabParam]);
+  // Reacts to the deep-link param once the booking lists have loaded: open the
+  // correct review modal, then strip the param. This legitimately sets state in
+  // response to fetched data arriving, so the rule is intentionally disabled.
   useEffect(() => {
     if (!reviewId || loading) return;
     // pick the role from the explicit `as`; fall back to detecting the side for
@@ -138,6 +140,7 @@ export default function ProfilePage() {
       : (rentals.some(b => String(b.id) === String(reviewId)) ? 'renter' : 'owner');
     const list = role === 'renter' ? rentals : incoming;
     const match = list.find(b => String(b.id) === String(reviewId));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (match) setReviewing({ booking: match, role });
     setSearchParams({}, { replace: true });
   }, [reviewId, reviewAs, loading, rentals, incoming, setSearchParams]);
