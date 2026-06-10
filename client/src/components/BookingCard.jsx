@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Avatar from './Avatar';
+import { fullName } from '../utils/format';
 import './BookingCard.css';
 
 /* Reusable booking card — used in both dashboard tabs.
@@ -14,7 +15,6 @@ const STATUS = {
 };
 
 const fmtDate = (d) => new Date(d).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' });
-const fullName = (u) => (u ? [u.firstName, u.lastName].filter(Boolean).join(' ') : '');
 
 /* ACTIVE is a *derived* display state (APPROVED + today within the range);
    the stored enum is only PENDING/APPROVED/COMPLETED/CANCELLED. */

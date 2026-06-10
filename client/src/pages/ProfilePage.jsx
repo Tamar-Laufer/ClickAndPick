@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth }  from '../context/AuthContext';
 import { apiFetch, uploadImage } from '../services/api';
+import { fullName }  from '../utils/format';
 import TgNavbar      from '../components/TgNavbar';
 import BookingCard   from '../components/BookingCard';
 import OwnerItemCard from '../components/OwnerItemCard';
@@ -190,7 +191,7 @@ export default function ProfilePage() {
 
   if (!user) return null;
 
-  const name = `${form.firstName} ${form.lastName}`.trim() || user.name || 'הפרופיל שלי';
+  const name = fullName(form) || user.name || 'הפרופיל שלי';
   const initial = (form.firstName || user.name || '?').trim()[0];
   const memberSince = user.createdAt
     ? new Date(user.createdAt).toLocaleDateString('he-IL', { month: 'long', year: 'numeric' })

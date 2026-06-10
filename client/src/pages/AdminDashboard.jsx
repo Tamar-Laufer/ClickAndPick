@@ -6,6 +6,7 @@ import CategoryManager from '../components/CategoryManager';
 import AdminInbox from '../components/AdminInbox';
 import Avatar from '../components/Avatar';
 import Loader from '../components/Loader';
+import { fullName } from '../utils/format';
 import './AdminDashboard.css';
 
 /* ── "ביחד" admin dashboard (לוח ניהול) ──────────────────────────────────────
@@ -99,7 +100,7 @@ export default function AdminDashboard() {
     const q = query.trim().toLowerCase();
     if (!q) return users;
     return users.filter((u) =>
-      `${u.firstName} ${u.lastName}`.toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q));
+      fullName(u).toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q));
   }, [users, query]);
 
   async function toggleUserActive(u) {
@@ -220,7 +221,7 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody>
                   {filteredUsers.map((u, i) => {
-                    const name = `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'משתמש';
+                    const name = fullName(u, 'משתמש');
                     const trust = Number.isFinite(Number(u.trustScore)) ? Number(u.trustScore) : 50;
                     const tCls = trust >= 80 ? 'hi' : trust >= 60 ? 'mid' : 'lo';
                     const isSelf = u.id === user?.id;

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../services/api';
+import { fullName } from '../utils/format';
 import AvailabilityCalendar from './AvailabilityCalendar';
 import Modal from './Modal';
 import './LoanRequestModal.css';
@@ -67,7 +68,7 @@ export default function LoanRequestModal({ item, onClose }) {
                     stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                     <circle cx="12" cy="8" r="4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/>
                   </svg>
-                  מאת {[item.owner.firstName, item.owner.lastName].filter(Boolean).join(' ')}
+                  מאת {fullName(item.owner)}
                 </p>
               )}
             </div>

@@ -7,14 +7,13 @@ import { useCategories } from '../context/CategoriesContext';
 import TgNavbar from '../components/TgNavbar';
 import Avatar from '../components/Avatar';
 import Loader from '../components/Loader';
+import { fullName } from '../utils/format';
 import './ItemPage.css';
 
 /* ── "ביחד" item detail page (ported from פריט.html) ── */
 
 function getOwner(item) {
-  const o = item.owner;
-  if (o && (o.firstName || o.lastName)) return [o.firstName, o.lastName].filter(Boolean).join(' ');
-  return 'משאיל פרטי';
+  return fullName(item.owner, 'משאיל פרטי');
 }
 function getPrice(item) {
   const d = Number(item.dailyRate);
@@ -257,9 +256,7 @@ export default function ItemPage() {
           ) : (
             <div className="reviews-list">
               {reviews.map(r => {
-                const who = r.reviewerId
-                  ? [r.reviewerId.firstName, r.reviewerId.lastName].filter(Boolean).join(' ')
-                  : 'משתמש';
+                const who = fullName(r.reviewerId, 'משתמש');
                 const when = r.createdAt
                   ? new Date(r.createdAt).toLocaleDateString('he-IL', { month: 'long', year: 'numeric' })
                   : '';

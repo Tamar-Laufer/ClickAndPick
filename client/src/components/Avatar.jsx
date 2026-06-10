@@ -1,3 +1,4 @@
+import { fullName } from '../utils/format';
 import './Avatar.css';
 
 /* Shared profile avatar — shows the user's uploaded photo when present,
@@ -12,9 +13,7 @@ import './Avatar.css';
      className — extra classes for layout tweaks
      style — extra style hooks, e.g. `{ '--av-bg': '#…' }` for a fallback colour */
 export default function Avatar({ user, name, size = 36, className = '', style }) {
-  const display = (name
-    || (user ? [user.firstName, user.lastName].filter(Boolean).join(' ') || user.name : '')
-    || '').trim();
+  const display = (name || fullName(user) || user?.name || '').trim();
   const initial = (display || '?')[0].toUpperCase();
   const url = user?.avatarUrl;
 

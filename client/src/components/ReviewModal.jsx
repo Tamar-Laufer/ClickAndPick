@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
 import { useAsyncAction } from '../hooks/useAsyncAction';
+import { fullName } from '../utils/format';
 import Modal from './Modal';
 import './ReviewModal.css';
 
@@ -20,7 +21,7 @@ export default function ReviewModal({ booking, role, onClose, onSubmitted }) {
   const title = isRenter ? 'דרגו את הפריט' : 'דרגו את השוכר';
   const subject = isRenter
     ? (item.title || 'הפריט')
-    : (booking.renter ? [booking.renter.firstName, booking.renter.lastName].filter(Boolean).join(' ') : 'השוכר');
+    : (booking.renter ? fullName(booking.renter) : 'השוכר');
 
   const { run: handleSubmit, loading, error } = useAsyncAction(async (e) => {
     e.preventDefault();
