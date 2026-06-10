@@ -1,0 +1,39 @@
+/* animations.css — shared, native-like motion primitives.
+   Imported once in main.jsx; every rule is scoped to a `.tg` root so it can't
+   leak into non-branded markup. Only `transform`/`opacity` are animated (the
+   two GPU-cheap, non-reflowing properties), and the whole file is disabled
+   under prefers-reduced-motion at the bottom. */
+
+/* ── 1. Card entrance: gentle fade + slide-up, staggered per batch ──
+   Applied to the SearchResults grid. Each card sets `--card-i` (its index
+   within the page batch) so a freshly-loaded batch — initial search OR a
+   "Load More" append — cascades in instead of popping all at once. `both`
+   holds the from-state during the delay so there's no pre-animation flash. */
+@keyframes tg-card-in{
+  from{ opacity:0; transform:translateY(16px); }
+  to{   opacity:1; transform:none; }
+}
+.tg .grid .card{
+  animation:tg-card-in .55s var(--tg-ease, cubic-bezier(.22,.61,.36,1)) both;
+  animation-delay:calc(var(--card-i, 0) * 45ms);
+}
+
+/* ── 2. Button micro-interaction: lift + deepen shadow on hover ──
+   Adds motion on top of each variant's existing colour change. `:active`
+   presses it back down so taps feel physical. */
+.tg .btn{ transition:background .2s var(--tg-ease, ease), transform .2s var(--tg-ease, ease), box-shadow .2s var(--tg-ease, ease); }
+.tg .btn:hover{ transform:translateY(-2px); box-shadow:0 12px 24px -12px rgba(20,14,8,.5); }
+.tg .btn:active{ transform:translateY(0); box-shadow:none; }
+
+/* ── 3. Item-card hover lift (SearchResults grid) ──
+   The image already scales + deepens its shadow on hover; this lifts the whole
+   card a touch so it matches the homepage `.pcard` feel. */
+.tg .card{ transition:transform .25s var(--tg-ease, ease); }
+.tg .card:hover{ transform:translateY(-4px); }
+
+/* ── Accessibility: honour reduced-motion everywhere in this file ── */
+@media (prefers-reduced-motion:reduce){
+  .tg .grid .card{ animation:none; }
+  .tg .btn, .tg .card{ transition:none; }
+  .tg .btn:hover, .tg .card:hover{ transform:none; box-shadow:none; }
+}

@@ -1,0 +1,98 @@
+/* CheckoutPage.css — "ביחד" checkout / payment page.
+   Ported from the Claude Design prototype (תשלום.html + items.css).
+   Self-contained under the `.tg` namespace. */
+
+.tg{
+  --ink:#1C1610; --ink-dk:#110C08;
+  --cream:#F7F0E2; --cream-2:#F1E7D3; --white:#FFFFFF;
+  --accent:#EE5A2A; --accent-dk:#D5481B; --accent-lt:#FF8455;
+  --block:#0E6E63; --block-dk:#0A554C;
+  --butter:#F3C24A; --blush:#F3DEC9;
+  --ink-2:#4F463C; --muted:#8A8174;
+  --line:#E2D9C6; --line-2:#EBE2D0;
+  --tg-wrap:1240px;
+  --tg-ease:cubic-bezier(.22,.61,.36,1);
+  --display:'Albert Sans','Assistant', system-ui, sans-serif;
+  --body:'Albert Sans','Heebo', system-ui, sans-serif;
+  font-family:var(--body); color:var(--ink); background:var(--cream);
+  line-height:1.6; -webkit-font-smoothing:antialiased; min-height:100vh;
+}
+.tg *,.tg *::before,.tg *::after{ box-sizing:border-box; }
+.tg.tg-white{ background:#fff; }
+.tg img{ max-width:100%; display:block; }
+.tg a{ color:inherit; text-decoration:none; }
+.tg button{ font-family:inherit; cursor:pointer; }
+.tg .wrap{ max-width:var(--tg-wrap); margin:0 auto; padding:0 48px; }
+
+/* primitives */
+.tg .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; height:50px; padding:0 28px;
+  border:none; border-radius:0; font-family:var(--body); font-size:14px; font-weight:500; letter-spacing:.02em;
+  transition:.2s var(--tg-ease); white-space:nowrap; }
+.tg .btn-accent{ background:var(--accent); color:#fff; }
+.tg .btn-accent:hover{ background:var(--accent-dk); }
+.tg .btn-accent:disabled{ background:var(--muted); cursor:default; }
+.tg .brand-name{ font-family:var(--display); font-weight:500; font-size:21px; letter-spacing:.01em; }
+
+.tg .back{ display:inline-flex; align-items:center; gap:9px; font-size:14.5px; font-weight:500; color:var(--accent);
+  margin-bottom:22px; background:none; border:none; cursor:pointer; font-family:var(--body); }
+.tg .back svg{ width:18px; height:18px; transition:transform .2s var(--tg-ease); }
+.tg .back:hover svg{ transform:translateX(6px); }
+.tg .detail-title h1{ font-family:var(--display); font-weight:300; font-size:clamp(32px,4.6vw,54px); letter-spacing:-.01em; color:var(--ink); margin:0; line-height:1.05; }
+.tg .detail-title .sub{ color:var(--muted); font-size:16px; margin-top:6px; }
+
+/* ════════ CHECKOUT ════════ */
+.tg .checkout{ padding:30px 0 90px; }
+.tg .checkout-grid{ display:grid; grid-template-columns:1.4fr 1fr; gap:48px; align-items:start; margin-top:24px; }
+
+.tg .fieldset{ background:var(--white); border:1px solid var(--line); padding:28px; margin-bottom:20px; }
+.tg .fieldset h3{ display:flex; align-items:center; gap:11px; font-family:var(--display); font-weight:500; font-size:22px; color:var(--ink); margin:0 0 22px; }
+.tg .fieldset h3 .num{ width:30px; height:30px; flex:0 0 auto; background:var(--accent); color:#fff; font-family:var(--body); font-size:14px; font-weight:600; display:flex; align-items:center; justify-content:center; }
+
+.tg .field{ margin-bottom:16px; }
+.tg .field:last-child{ margin-bottom:0; }
+.tg .field label{ display:block; font-size:13.5px; color:var(--ink-2); font-weight:500; margin-bottom:8px; }
+.tg .field input, .tg .field select{ width:100%; height:50px; border:1px solid var(--line); background:var(--white); padding:0 15px; font-family:var(--body); font-size:14.5px; color:var(--ink); transition:.15s; border-radius:0; }
+.tg .field input::placeholder{ color:var(--muted); }
+.tg .field input:focus, .tg .field select:focus{ outline:none; border-color:var(--accent); }
+.tg .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.tg .field-row.thirds{ grid-template-columns:2fr 1fr 1fr; }
+
+.tg .pay-badges{ display:flex; align-items:center; gap:10px; margin-top:4px; flex-wrap:wrap; }
+.tg .pay-badges span{ font-size:11px; font-weight:700; letter-spacing:.04em; color:var(--ink-2); border:1px solid var(--line); padding:5px 9px; }
+.tg .secure-note{ display:flex; align-items:center; gap:9px; font-size:13px; color:var(--muted); margin-top:18px; }
+.tg .secure-note svg{ width:16px; height:16px; color:#1F8A5B; flex:0 0 auto; }
+
+/* summary */
+.tg .summary{ position:sticky; top:96px; background:var(--white); border:1px solid var(--line); }
+.tg .summary-head{ display:flex; gap:15px; padding:22px; border-bottom:1px solid var(--line); }
+.tg .summary-thumb{ width:78px; height:78px; flex:0 0 auto; background:var(--cream-2); overflow:hidden; }
+.tg .summary-thumb img{ width:100%; height:100%; object-fit:cover; }
+.tg .summary-ph{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-family:var(--display); font-weight:600; font-size:30px; color:var(--accent); opacity:.55; }
+.tg .summary-info{ display:flex; flex-direction:column; gap:4px; min-width:0; }
+.tg .summary-info .nm{ font-family:var(--display); font-weight:500; font-size:18px; color:var(--ink); }
+.tg .summary-info .mt{ font-size:13px; color:var(--muted); }
+.tg .summary-info .dt{ font-size:13.5px; color:var(--ink-2); margin-top:4px; display:flex; align-items:center; gap:7px; }
+.tg .summary-info .dt svg{ width:15px; height:15px; color:var(--accent); flex:0 0 auto; }
+.tg .summary-body{ padding:22px; }
+.tg .price-row{ display:flex; align-items:baseline; justify-content:space-between; gap:14px; padding:7px 0; font-size:14.5px; color:var(--ink); }
+.tg .price-row .lbl{ font-weight:500; }
+.tg .summary-total{ display:flex; align-items:center; justify-content:space-between; border-top:1px solid var(--line); margin-top:14px; padding-top:18px; margin-bottom:20px; }
+.tg .summary-total .t{ font-size:16px; font-weight:500; }
+.tg .summary-total .v{ font-family:var(--display); font-weight:600; font-size:26px; color:var(--ink); }
+.tg .summary-body .btn{ width:100%; }
+.tg .checkout-err{ font-size:13.5px; color:var(--accent-dk); margin:0 0 14px; }
+
+/* footer */
+.tg .mini-footer{ background:var(--ink-dk); color:rgba(255,255,255,.6); padding:30px 0; font-size:13px; }
+.tg .mini-footer .wrap{ display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between; align-items:center; }
+.tg .mini-footer .brand-name{ color:#fff; font-size:18px; }
+.tg .mini-footer .mf-logo{ height:30px; width:auto; display:block; }
+
+@media (max-width:900px){
+  .tg .checkout-grid{ grid-template-columns:1fr; gap:30px; }
+  .tg .summary{ position:static; }
+}
+@media (max-width:760px){
+  .tg .wrap{ padding:0 22px; }
+  .tg .field-row, .tg .field-row.thirds{ grid-template-columns:1fr; }
+}

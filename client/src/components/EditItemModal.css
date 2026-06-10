@@ -1,0 +1,62 @@
+/* ══ EditItemModal — extras on top of the shared .modal-* shell ══ */
+
+.edit-error {
+  margin: 0 24px;
+  padding: 10px 14px;
+  background: #fdecec;
+  color: #c0392b;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* image upload control (compact version of CreateItem's .ci-drop) */
+.edit-drop {
+  position: relative;
+  width: 100%;
+  min-height: 120px;
+  border: 1.5px dashed var(--border-2);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--fg-3);
+  transition: border-color var(--t), color var(--t);
+}
+.edit-drop:hover { border-color: var(--accent); color: var(--accent); }
+
+.edit-drop.has-img { border-style: solid; padding: 0; }
+.edit-drop.has-img img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+/* overlay label on top of the preview image */
+.edit-drop.has-img span {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  text-align: center;
+}
+
+/* allow the textarea to grow a little without breaking the modal-input look */
+.modal-form textarea.modal-input { resize: vertical; min-height: 84px; }
+
+/* privacy/usage hint under the address field */
+.edit-hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--fg-3, #8A8174);
+}

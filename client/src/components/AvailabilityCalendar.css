@@ -1,0 +1,91 @@
+/* ══ AvailabilityCalendar — month grid range picker ══ */
+
+.cal {
+  border: 1.5px solid var(--border-2);
+  border-radius: var(--radius);
+  padding: 14px;
+  background: #fff;
+  user-select: none;
+}
+
+.cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.cal-month { font-weight: 700; font-size: 0.95rem; color: var(--fg); }
+.cal-nav {
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--fg-2);
+  cursor: pointer;
+  transition: all var(--t);
+}
+.cal-nav svg { width: 16px; height: 16px; }
+.cal-nav:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.cal-nav:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+.cal-dow { margin-bottom: 4px; }
+.cal-dow-c {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--fg-3);
+  padding: 4px 0;
+}
+
+.cal-cell {
+  aspect-ratio: 1;
+  border: none;
+  background: none;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--fg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--t), color var(--t);
+}
+.cal-cell.empty { cursor: default; }
+.cal-cell:hover:not(:disabled):not(.sel) { background: var(--surface-2); }
+
+/* unavailable: past days and confirmed bookings */
+.cal-cell.disabled {
+  color: var(--fg-3);
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.cal-cell.booked {
+  background: var(--surface-2);
+  text-decoration: line-through;
+  position: relative;
+}
+
+/* selected range */
+.cal-cell.sel { background: var(--accent); color: #fff; font-weight: 700; }
+.cal-cell.between { background: color-mix(in srgb, var(--accent) 16%, #fff); color: var(--fg); }
+
+.cal-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 0.76rem;
+  color: var(--fg-3);
+}
+.cal-legend span { display: flex; align-items: center; gap: 6px; }
+.cal-legend .lg { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.cal-legend .lg.sel { background: var(--accent); }
+.cal-legend .lg.booked { background: var(--surface-2); border: 1px solid var(--border-2); }

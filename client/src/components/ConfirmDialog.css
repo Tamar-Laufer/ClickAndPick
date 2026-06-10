@@ -1,0 +1,76 @@
+/* ConfirmDialog — small confirmation modal. Reuses .modal-overlay / .modal-box
+   from LoanRequestModal.css; only the inner layout + buttons live here. */
+
+.confirm-box { max-width: 420px; }
+
+.confirm-body { padding: 30px 28px 26px; text-align: right; }
+
+.confirm-ic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #FCE8E1;
+  color: #D33A2C;
+  margin-bottom: 14px;
+}
+
+.confirm-title {
+  margin: 0 0 10px;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink, #1C1610);
+}
+
+.confirm-text {
+  margin: 0 0 18px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-2, #4F463C);
+}
+
+.confirm-error {
+  margin: 0 0 16px;
+  background: #FCE8E1;
+  border: 1px solid #D33A2C;
+  color: #A32A1F;
+  font-size: 13.5px;
+  font-weight: 500;
+  padding: 10px 12px;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.confirm-actions button {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 11px 22px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+}
+.confirm-actions button:disabled { opacity: 0.6; cursor: default; }
+
+.confirm-cancel {
+  background: #fff;
+  border-color: var(--line, #E2D9C6);
+  color: var(--ink, #1C1610);
+}
+.confirm-cancel:hover:not(:disabled) { background: #F6F1E7; }
+
+.confirm-go {
+  background: var(--accent, #EE5A2A);
+  color: #fff;
+}
+.confirm-go:hover:not(:disabled) { filter: brightness(0.95); }
+
+.confirm-go.danger { background: #D33A2C; }
+.confirm-go.danger:hover:not(:disabled) { background: #BB3024; }

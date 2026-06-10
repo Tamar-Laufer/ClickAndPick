@@ -1,0 +1,97 @@
+/* Shared ביחד navbar — renders inside a `.tg` root (inherits its tokens). */
+
+.tg .tgnav{ z-index:40; }
+.tg .tgnav .wrap{ display:flex; align-items:center; gap:32px; height:74px; max-width:var(--tg-wrap,1240px); margin:0 auto; padding:0 48px; }
+
+.tg .tgnav-brand{ display:flex; align-items:center; gap:11px; }
+.tg .tgnav-logo{ height:38px; width:auto; display:block; }
+
+.tg .tgnav-links{ display:flex; align-items:center; gap:28px; margin-inline:auto; }
+.tg .tgnav-links a{ position:relative; white-space:nowrap; font-size:14.5px; font-weight:400; transition:.15s; padding:4px 0; }
+
+.tg .tgnav-right{ display:flex; align-items:center; gap:16px; flex:0 0 auto; }
+.tg .tgnav-login{ font-size:14px; font-weight:400; }
+.tg .tgnav-user{ display:inline-flex; align-items:center; gap:7px; font-size:14px; font-weight:500; white-space:nowrap; }
+.tg .tgnav-user svg{ width:18px; height:18px; }
+.tg .tgnav-logout{ background:none; border:none; cursor:pointer; font-family:var(--body); font-size:14px; font-weight:400; padding:0; white-space:nowrap; }
+.tg .tgnav-cta{ display:inline-flex; align-items:center; height:42px; padding:0 18px; background:var(--accent); color:#fff;
+  font-family:var(--body); font-size:13.5px; font-weight:500; white-space:nowrap; transition:.18s; }
+.tg .tgnav-cta:hover{ background:var(--accent-dk); }
+
+/* ── page variant: solid white sticky bar, dark text ── */
+.tg .tgnav--page{ position:sticky; top:0; background:#fff; border-bottom:1px solid var(--line); }
+.tg .tgnav--page .tgnav-brand, .tg .tgnav--page .tgnav-name{ color:var(--ink); }
+.tg .tgnav--page .tgnav-links a{ color:var(--ink-2); }
+.tg .tgnav--page .tgnav-links a:hover, .tg .tgnav--page .tgnav-links a.on{ color:var(--accent); }
+.tg .tgnav--page .tgnav-login, .tg .tgnav--page .tgnav-logout{ color:var(--ink-2); }
+.tg .tgnav--page .tgnav-login:hover, .tg .tgnav--page .tgnav-logout:hover{ color:var(--accent); }
+.tg .tgnav--page .tgnav-user{ color:var(--ink); }
+
+/* ── home variant: solid turquoise sticky bar (matches the hero), dark text ── */
+.tg .tgnav--home{ position:sticky; top:0; left:0; right:0; background:#30655d; border-bottom:1px solid rgba(255,255,255,.12); }
+.tg .tgnav--home .tgnav-brand, .tg .tgnav--home .tgnav-name{ color:#000; }
+.tg .tgnav--home .tgnav-links a{ color:#000; }
+.tg .tgnav--home .tgnav-links a:hover, .tg .tgnav--home .tgnav-links a.on{ color:var(--accent); }
+.tg .tgnav--home .tgnav-login, .tg .tgnav--home .tgnav-logout{ color:#000; }
+.tg .tgnav--home .tgnav-login:hover, .tg .tgnav--home .tgnav-logout:hover{ color:var(--accent); }
+.tg .tgnav--home .tgnav-user{ color:var(--ink); }
+
+/* ── hamburger button: hidden on desktop, shown ≤760px ── */
+.tg .tgnav-burger{ display:none; position:relative; z-index:60; width:44px; height:44px; flex:0 0 auto;
+  margin-inline-start:auto; border:none; background:none; cursor:pointer; padding:10px; }
+.tg .tgnav-burger span{ display:block; height:2px; width:100%; background:currentColor; border-radius:2px;
+  transition:transform .25s var(--tg-ease), opacity .2s var(--tg-ease); }
+.tg .tgnav-burger span + span{ margin-top:5px; }
+/* bars morph into an ✕ while open */
+.tg .tgnav-burger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.tg .tgnav-burger.open span:nth-child(2){ opacity:0; }
+.tg .tgnav-burger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+/* burger inherits each variant's text colour */
+.tg .tgnav--page .tgnav-burger{ color:var(--ink); }
+.tg .tgnav--home .tgnav-burger{ color:#000; }
+
+/* ── mobile drawer + backdrop (start hidden; shown via .open ≤760px) ── */
+.tg .tgnav-backdrop{ position:fixed; inset:0; z-index:45; background:rgba(17,12,8,.45);
+  opacity:0; visibility:hidden; transition:opacity .25s var(--tg-ease), visibility .25s; }
+.tg .tgnav-drawer{ position:fixed; inset-block:74px 0; inset-inline:0; z-index:50;
+  display:flex; flex-direction:column; gap:8px; padding:26px 24px 32px;
+  background:#fff; overflow-y:auto; visibility:hidden; opacity:0;
+  transform:translateY(-14px);
+  transition:opacity .28s var(--tg-ease), transform .34s var(--tg-ease), visibility .34s; }
+.tg .tgnav-drawer-links{ display:flex; flex-direction:column; }
+.tg .tgnav-drawer-links a{ padding:16px 2px; font-family:var(--display); font-size:22px; font-weight:400;
+  color:var(--ink); border-bottom:1px solid var(--line); }
+.tg .tgnav-drawer-links a.on{ color:var(--accent); }
+.tg .tgnav-drawer-actions{ display:flex; flex-direction:column; gap:14px; margin-top:26px; }
+.tg .tgnav-drawer-actions .tgnav-cta{ height:50px; justify-content:center; font-size:15px; }
+.tg .tgnav-drawer-actions .tgnav-login,
+.tg .tgnav-drawer-actions .tgnav-logout{ color:var(--ink-2); font-size:16px; text-align:start; }
+.tg .tgnav-drawer-actions .tgnav-user{ font-size:16px; color:var(--ink); }
+
+/* staggered reveal: links cascade in once the drawer opens, the action block
+   follows last. Delays live only under `.open`, so closing snaps out cleanly. */
+.tg .tgnav-drawer-links a,
+.tg .tgnav-drawer-actions{ opacity:0; transform:translateY(10px);
+  transition:opacity .3s var(--tg-ease), transform .3s var(--tg-ease); }
+.tg .tgnav-drawer.open .tgnav-drawer-links a,
+.tg .tgnav-drawer.open .tgnav-drawer-actions{ opacity:1; transform:none; }
+.tg .tgnav-drawer.open .tgnav-drawer-links a:nth-child(1){ transition-delay:.06s; }
+.tg .tgnav-drawer.open .tgnav-drawer-links a:nth-child(2){ transition-delay:.12s; }
+.tg .tgnav-drawer.open .tgnav-drawer-links a:nth-child(3){ transition-delay:.18s; }
+.tg .tgnav-drawer.open .tgnav-drawer-links a:nth-child(4){ transition-delay:.24s; }
+.tg .tgnav-drawer.open .tgnav-drawer-actions{ transition-delay:.3s; }
+
+@media (prefers-reduced-motion:reduce){
+  .tg .tgnav-drawer,
+  .tg .tgnav-drawer-links a,
+  .tg .tgnav-drawer-actions{ transition:none; transform:none; }
+}
+
+@media (max-width:760px){
+  .tg .tgnav-links{ display:none; }   /* hide desktop links… */
+  .tg .tgnav-right{ display:none; }    /* …and desktop right-side actions */
+  .tg .tgnav-burger{ display:block; } /* …reveal the hamburger */
+  .tg .tgnav .wrap{ padding:0 22px; }
+  .tg .tgnav-backdrop.show{ opacity:1; visibility:visible; }
+  .tg .tgnav-drawer.open{ opacity:1; visibility:visible; transform:none; }
+}

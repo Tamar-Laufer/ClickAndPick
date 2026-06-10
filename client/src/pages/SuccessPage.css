@@ -1,0 +1,63 @@
+/* SuccessPage.css — "ביחד" payment-success page.
+   Ported from the Claude Design prototype (אישור.html + items.css).
+   Self-contained under the `.tg` namespace. */
+
+.tg{
+  --ink:#1C1610; --ink-dk:#110C08;
+  --cream:#F7F0E2; --cream-2:#F1E7D3; --white:#FFFFFF;
+  --accent:#EE5A2A; --accent-dk:#D5481B;
+  --block:#0E6E63; --block-dk:#0A554C;
+  --butter:#F3C24A; --blush:#F3DEC9;
+  --ink-2:#4F463C; --muted:#8A8174;
+  --line:#E2D9C6; --line-2:#EBE2D0;
+  --tg-wrap:1240px;
+  --tg-ease:cubic-bezier(.22,.61,.36,1);
+  --display:'Albert Sans','Assistant', system-ui, sans-serif;
+  --body:'Albert Sans','Heebo', system-ui, sans-serif;
+  font-family:var(--body); color:var(--ink); background:var(--cream);
+  line-height:1.6; -webkit-font-smoothing:antialiased; min-height:100vh;
+}
+.tg *,.tg *::before,.tg *::after{ box-sizing:border-box; }
+.tg.tg-white{ background:#fff; }
+.tg a{ color:inherit; text-decoration:none; }
+.tg button{ font-family:inherit; cursor:pointer; }
+
+/* primitives */
+.tg .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; height:50px; padding:0 28px;
+  border:none; border-radius:0; font-family:var(--body); font-size:14px; font-weight:500; letter-spacing:.02em;
+  transition:.2s var(--tg-ease); white-space:nowrap; }
+.tg .btn-accent{ background:var(--accent); color:#fff; }
+.tg .btn-accent:hover{ background:var(--accent-dk); }
+.tg .btn-line{ background:transparent; border:1px solid; }
+.tg .btn-line.on-light{ color:var(--ink); border-color:var(--ink); }
+.tg .btn-line.on-light:hover{ background:var(--ink); color:#fff; }
+
+/* ════════ SUCCESS ════════ */
+.tg .success{ min-height:calc(100vh - 74px); display:flex; align-items:center; justify-content:center; padding:60px 22px; }
+.tg .success-card{ width:100%; max-width:560px; background:var(--white); border:1px solid var(--line); text-align:center; }
+.tg .success-top{ background:var(--block); color:#fff; padding:48px 40px 40px; }
+.tg .success-check{ width:72px; height:72px; margin:0 auto 22px; border-radius:50%; background:rgba(255,255,255,.16); display:flex; align-items:center; justify-content:center; }
+.tg .success-check svg{ width:34px; height:34px; }
+.tg .success-top h1{ font-family:var(--display); font-weight:300; font-size:38px; margin:0 0 8px; }
+.tg .success-top p{ color:rgba(255,255,255,.85); font-size:15px; margin:0; }
+.tg .success-body{ padding:36px 40px 40px; }
+
+.tg .receipt{ text-align:start; border:1px solid var(--line); }
+.tg .receipt-row{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:15px 20px; font-size:14.5px; }
+.tg .receipt-row + .receipt-row{ border-top:1px solid var(--line-2); }
+.tg .receipt-row .k{ color:var(--muted); }
+.tg .receipt-row .v{ color:var(--ink); font-weight:500; text-align:end; }
+.tg .receipt-row.total .v{ font-family:var(--display); font-weight:600; font-size:18px; }
+
+.tg .pickup-box{ display:flex; gap:13px; text-align:start; background:var(--blush); padding:20px; margin-top:22px; }
+.tg .pickup-box svg{ width:24px; height:24px; color:var(--accent); flex:0 0 auto; margin-top:2px; }
+.tg .pickup-box .pt{ font-family:var(--display); font-weight:500; font-size:16px; color:var(--ink); margin-bottom:3px; }
+.tg .pickup-box .pa{ font-size:13.5px; color:var(--ink-2); line-height:1.5; }
+
+.tg .success-actions{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:28px; }
+
+@media (max-width:520px){
+  .tg .success-top{ padding:38px 24px 30px; }
+  .tg .success-body{ padding:28px 22px 30px; }
+  .tg .success-actions .btn{ width:100%; }
+}

@@ -1,0 +1,38 @@
+/* ReviewModal — standalone (works regardless of .tg) */
+
+.rv-overlay{ position:fixed; inset:0; z-index:100; background:rgba(20,14,8,.55);
+  display:flex; align-items:center; justify-content:center; padding:20px; animation:rv-fade .2s ease; }
+@keyframes rv-fade{ from{ opacity:0; } to{ opacity:1; } }
+.rv-box{ position:relative; width:100%; max-width:440px; background:#fff; padding:36px 32px 26px;
+  font-family:'Albert Sans','Heebo',system-ui,sans-serif; box-shadow:0 30px 70px -20px rgba(20,14,8,.5);
+  animation:rv-pop .22s cubic-bezier(.22,.61,.36,1); }
+@keyframes rv-pop{ from{ transform:translateY(12px); opacity:0; } to{ transform:none; opacity:1; } }
+.rv-close{ position:absolute; top:14px; inset-inline-start:16px; width:32px; height:32px; border:none; background:none;
+  font-size:18px; color:#8A8174; cursor:pointer; line-height:1; }
+.rv-close:hover{ color:#1C1610; }
+
+.rv-title{ font-weight:300; font-size:26px; color:#1C1610; margin:0 0 4px; }
+.rv-subject{ font-size:14px; color:#8A8174; margin:0 0 22px; }
+
+.rv-stars{ display:flex; gap:8px; margin-bottom:22px; }
+.rv-star{ background:none; border:none; padding:0; cursor:pointer; color:#E2D9C6; transition:transform .1s, color .1s; }
+.rv-star:hover{ transform:scale(1.12); }
+.rv-star.on{ color:#F3C24A; }
+.rv-star svg{ width:34px; height:34px; }
+
+.rv-text{ width:100%; border:1px solid #E2D9C6; padding:12px 14px; font-family:inherit; font-size:14.5px;
+  color:#1C1610; line-height:1.6; resize:vertical; }
+.rv-text:focus{ outline:none; border-color:#EE5A2A; }
+
+.rv-error{ color:#B23A2A; font-size:13.5px; font-weight:500; margin:12px 0 0; }
+.rv-submit{ width:100%; height:50px; margin-top:18px; background:#EE5A2A; color:#fff; border:none;
+  font-family:inherit; font-size:14px; font-weight:500; cursor:pointer; transition:.18s; }
+.rv-submit:hover{ background:#D5481B; }
+.rv-submit:disabled{ background:#8A8174; cursor:default; }
+.rv-note{ font-size:12px; color:#8A8174; line-height:1.5; margin:14px 0 0; text-align:center; }
+
+.rv-done{ text-align:center; padding:14px 0; }
+.rv-done-ic{ width:56px; height:56px; margin:0 auto 16px; border-radius:50%; background:#DCEFEC; color:#0E6E63;
+  display:flex; align-items:center; justify-content:center; font-size:26px; }
+.rv-done h3{ font-weight:400; font-size:22px; color:#1C1610; margin:0 0 8px; }
+.rv-done p{ font-size:14.5px; color:#4F463C; line-height:1.6; margin:0 0 20px; }

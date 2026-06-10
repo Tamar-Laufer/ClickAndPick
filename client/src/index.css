@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  /* ── Backgrounds — LoT warm peach-cream base, white cards float on top ── */
+  --bg:       #FFFFFF;
+  --soft:     #FBEEE6;   /* LoT page background (warm peach cream — matched to live hero) */
+  --surface:  #FFFFFF;
+  --surface-2:#FBEEE6;   /* soft peach panels */
+  --surface-3:#F3E1D5;
+  --surface-4:#EAD3C4;
+
+  /* ── Text — LoT navy family (confirmed #0A1646) ── */
+  --fg:   #0A1646;
+  --fg-2: #2B3354;
+  --fg-3: #5B6178;
+  --fg-4: #8B90A2;
+  --fg-5: #C4C7D2;
+
+  /* ── Borders — warm, on cream ── */
+  --border:   #E7E3DA;
+  --border-2: #D0CCC2;
+  --border-3: #AEA99B;
+
+  /* ── PRIMARY — LoT indigo-purple (matched to live hero screenshot) ── */
+  --accent:    #5A3FCC;   /* primary-500 */
+  --accent-lt: #7257E0;   /* lighter tint */
+  --accent-dk: #46309E;   /* primary-700 — hover (LoT darkens on hover) */
+  --accent-bg: #ECE7FB;   /* purple tint background */
+  --accent-b:  #C9BEF3;   /* purple tint border */
+
+  /* ── Teal — card image backgrounds like LoT ── */
+  --teal:    #8BBFBF;
+  --teal-lt: #B5D8D8;
+  --teal-bg: #D0EAEA;
+
+  /* ── Yellow — warnings & highlights ── */
+  --yellow-hi:    #F5C64A;
+  --yellow-hi-bg: #FFFBEA;
+  --yellow-hi-b:  #F0C050;
+
+  /* ── Semantic ── */
+  --green:    #16A34A; --green-bg:  #F0FDF4; --green-b:  #BBF7D0;
+  --red:      #DC2626; --red-bg:    #FEF2F2; --red-b:    #FECACA;
+  --yellow:   #CA8A04; --yellow-bg: #FEFCE8; --yellow-b: #FDE68A;
+
+  /* ── Interactive ── */
+  --primary:    #5A3FCC;
+  --primary-bg: rgba(90,63,204,0.06);
+  --primary-b:  rgba(90,63,204,0.18);
+  --focus:      #2F80ED;   /* LoT focus blue [CONFIRM] */
+  --focus-bg:   #EAF2FE;
+  --dark:       #0A1646;   /* LoT uses navy, never pure black */
+  --dark-2:     #1B2547;
+
+  /* ── Shadows — LoT navy-tinted rgba(10,22,70) (matches --floating-card) ── */
+  --shadow-s:   0 1px 1px 0 rgba(10,22,70,0.10), 0 0 1px 0 rgba(10,22,70,0.06);
+  --shadow-m:   0 3px 3px -1px rgba(10,22,70,0.10), 0 0 1px 0 rgba(10,22,70,0.06);
+  --shadow-l:   0 6px 6px -1px rgba(10,22,70,0.10), 0 0 1px 0 rgba(10,22,70,0.06);
+  --shadow-xl:  0 16px 16px -1px rgba(10,22,70,0.10), 0 0 1px 0 rgba(10,22,70,0.06);
+  --shadow-dark:0 32px 40px -2px rgba(10,22,70,0.12), 0 0 1px 0 rgba(10,22,70,0.06);
+
+  /* ── Border radius ── */
+  --radius:   8px;
+  --radius-s: 4px;
+  --radius-l: 16px;
+  --radius-xl:24px;
+
+  /* ── Typography ── */
+  --font-display: 'Heebo', 'Inter', system-ui, sans-serif;
+  --font-body:    'Heebo', 'Inter', system-ui, sans-serif;
+
+  /* ── Spacing ── */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 20px; --s6: 24px; --s8: 32px; --s10: 40px;
+  --s12: 48px; --s16: 64px; --s20: 80px; --s24: 96px;
+
+  /* ── Motion ── */
+  --t:    0.18s ease;
+  --t2:   0.28s ease;
+  --spring: 0.25s cubic-bezier(0.4,0,0.2,1);
+
+  /* ── Nav height ── */
+  --nav-h: 64px;
+}
+
+/* ════════════════════════════════════════════
+   RESET
+════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+/* ════════════════════════════════════════════
+   SQUARE CORNERS — brand direction: every box (buttons, inputs, cards, images,
+   popups/modals, avatars, status dots) renders with straight corners. One global
+   override so no per-component rule can re-introduce a radius. The radius design
+   tokens are flattened too, so anything reading them stays square as well.
+════════════════════════════════════════════ */
+:root { --radius: 0; --radius-s: 0; --radius-l: 0; --radius-xl: 0; }
+*, *::before, *::after { border-radius: 0 !important; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.6;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  direction: rtl;
+  /* No global fixed navbar anymore — every page renders its own sticky
+     TgNavbar/topbar in normal flow, so the body needs no top offset. (Leaving
+     this as var(--nav-h) forced all 14 pages to JS-override it to 0, which
+     raced on route changes and left a ~64px gap at the top of the page.) */
+}
+
+::-webkit-scrollbar        { width: 4px; }
+::-webkit-scrollbar-track  { background: var(--bg); }
+::-webkit-scrollbar-thumb  { background: var(--border-2); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-3); }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  line-height: 1.12;
+  color: var(--fg);
+  letter-spacing: -0.02em;
+}
+
+a    { text-decoration: none; color: inherit; }
+img  { max-width: 100%; display: block; }
+button, input, select, textarea { font-family: inherit; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+/* The one global utility still in use — the LoanRequestModal error banner
+   (it renders outside the `.tg` scope, so it can't use a scoped rule). */
+.form-error {
+  padding: 10px 14px; font-size: 0.83rem;
+  color: var(--red); background: var(--red-bg);
+  border-right: 3px solid var(--red);
+  border-radius: var(--radius-s); margin-bottom: 12px;
+}

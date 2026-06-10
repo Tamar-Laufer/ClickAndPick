@@ -1,0 +1,66 @@
+/* Seamless infinite marquee — standard CSS Module (no Tailwind).
+
+   Zero-jump guarantee:
+   - .track has EXACTLY two children (.half), flush against each other (no gap,
+     no padding on the track). The two halves hold identical content, so each is
+     the same width W and the track is 2W wide.
+   - The keyframe slides the track from 0 to -50% = exactly W (one half). The
+     second half lands precisely where the first began, so the loop is seamless
+     every cycle — it does NOT rely on margin/max-content rounding.
+   - Spacing between items lives inside each half via flex `gap`; each half also
+     has a trailing `padding-inline-end` (set inline) so the gap at the seam
+     matches the gap between items. Padding is always in the box width, keeping
+     the two halves exactly equal. */
+
+.viewport {
+  overflow: hidden;
+  width: 100%;
+  /* On RTL pages the viewport inherits direction:rtl, which right-aligns the
+     over-wide track and the leftward keyframe then carries it fully off-screen
+     to the left (blank marquee). Force LTR here so the track's left edge sits at
+     0 and the scroll works identically to LTR. Inner cells set their own
+     direction:rtl, so Hebrew content is unaffected. */
+  direction: ltr;
+  /* soft fade at both edges (purely cosmetic) */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+
+.track {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
+  /* force LTR so horizontal scroll behaves identically on RTL pages;
+     individual cells/content set their own direction */
+  direction: ltr;
+  will-change: transform;
+  animation: marquee-scroll var(--marquee-duration, 30s) linear infinite;
+}
+
+.half {
+  display: flex;
+  flex-wrap: nowrap;
+  flex: 0 0 auto;
+}
+
+.cell {
+  flex: 0 0 auto;
+}
+
+/* pause when hovering anywhere over the track/viewport */
+.viewport[data-pause="true"]:hover .track {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* respect users who asked for less motion */
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+    transform: none;
+  }
+}

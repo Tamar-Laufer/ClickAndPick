@@ -1,0 +1,89 @@
+/* CreateItem.css — "ביחד" create-item form. Self-contained under `.tg`. */
+
+.tg{
+  --ink:#1C1610; --ink-dk:#110C08;
+  --cream:#F7F0E2; --cream-2:#F1E7D3; --white:#FFFFFF;
+  --accent:#EE5A2A; --accent-dk:#D5481B;
+  --block:#0E6E63; --butter:#F3C24A; --blush:#F3DEC9;
+  --ink-2:#4F463C; --muted:#8A8174;
+  --line:#E2D9C6; --line-2:#EBE2D0;
+  --tg-ease:cubic-bezier(.22,.61,.36,1);
+  --display:'Albert Sans','Assistant', system-ui, sans-serif;
+  --body:'Albert Sans','Heebo', system-ui, sans-serif;
+  font-family:var(--body); color:var(--ink); background:var(--cream);
+  line-height:1.6; -webkit-font-smoothing:antialiased; min-height:100vh;
+}
+.tg *,.tg *::before,.tg *::after{ box-sizing:border-box; }
+/* white page background (every page except home) */
+.tg.tg-white{ background:#fff; }
+.tg.tg-white .topbar{ background:#fff; }
+.tg a{ color:inherit; text-decoration:none; }
+.tg img{ max-width:100%; display:block; }
+.tg button{ font-family:inherit; cursor:pointer; }
+.tg .wrap{ max-width:1240px; margin:0 auto; padding:0 48px; }
+
+/* primitives */
+.tg .kicker{ display:inline-flex; align-items:center; gap:12px; font-size:12px; font-weight:500; letter-spacing:.24em; color:var(--muted); }
+.tg .kicker .idx{ color:var(--accent); font-weight:700; }
+.tg .kicker::before{ content:""; width:26px; height:1px; background:currentColor; opacity:.45; }
+.tg .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; height:50px; padding:0 28px; border:none; border-radius:0; font-family:var(--body); font-size:14px; font-weight:500; letter-spacing:.02em; transition:.2s var(--tg-ease); }
+.tg .btn-accent{ background:var(--accent); color:#fff; }
+.tg .btn-accent:hover{ background:var(--accent-dk); }
+.tg .btn-accent:disabled{ background:var(--muted); cursor:default; }
+.tg .brand-name{ font-family:var(--display); font-weight:500; font-size:22px; color:var(--ink); }
+
+/* topbar */
+.tg .topbar{ position:sticky; top:0; z-index:40; background:var(--cream); border-bottom:1px solid var(--line); }
+.tg .topbar .wrap{ display:flex; align-items:center; gap:30px; height:74px; }
+.tg .top-links{ display:flex; align-items:center; gap:28px; margin-inline:auto; }
+.tg .top-links a{ font-size:14.5px; font-weight:400; color:var(--ink-2); transition:.15s; }
+.tg .top-links a.active{ color:var(--accent); font-weight:500; }
+.tg .top-links a:hover{ color:var(--ink); }
+.tg .top-right{ display:flex; align-items:center; gap:16px; flex:0 0 auto; }
+.tg .icon-btn{ width:42px; height:42px; border:1px solid var(--line); background:transparent; display:flex; align-items:center; justify-content:center; color:var(--ink); transition:.15s; }
+.tg .icon-btn:hover{ border-color:var(--ink); }
+.tg .icon-btn svg{ width:18px; height:18px; }
+
+/* form card */
+.tg .ci{ padding:48px 0 90px; }
+.tg .ci-card{ max-width:620px; margin:0 auto; padding:0 24px; }
+.tg .ci-card h1{ font-family:var(--display); font-weight:300; font-size:clamp(28px,3.4vw,42px); letter-spacing:-.01em; color:var(--ink); margin:14px 0 8px; line-height:1.1; }
+.tg .ci-lead{ font-size:15px; color:var(--ink-2); margin:0 0 26px; }
+.tg .ci-error{ background:#FCE8E1; border:1px solid var(--accent); color:var(--accent-dk); font-size:13.5px; font-weight:500; padding:11px 14px; margin-bottom:18px; }
+
+/* fields */
+.tg .field{ margin-bottom:18px; }
+.tg .field label{ display:block; font-size:13.5px; color:var(--ink-2); font-weight:500; margin-bottom:8px; }
+.tg .field input, .tg .field select, .tg .field textarea{ width:100%; border:1px solid var(--line); background:var(--white); padding:0 15px; font-family:var(--body); font-size:14.5px; color:var(--ink); transition:.15s; }
+.tg .field input, .tg .field select{ height:48px; }
+.tg .field textarea{ padding:12px 15px; line-height:1.6; resize:vertical; }
+.tg .field input::placeholder, .tg .field textarea::placeholder{ color:var(--muted); }
+.tg .field input:focus, .tg .field select:focus, .tg .field textarea:focus{ outline:none; border-color:var(--accent); }
+.tg .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+
+/* image dropzone */
+.tg .ci-drop{ position:relative; width:100%; min-height:220px; border:1.5px dashed var(--border, var(--line)); background:var(--cream-2);
+  display:flex; align-items:center; justify-content:center; overflow:hidden; transition:.15s; padding:0; }
+.tg .ci-drop:hover{ border-color:var(--accent); }
+.tg .ci-drop.has-img{ border-style:solid; border-color:var(--line); }
+.tg .ci-drop img{ width:100%; height:280px; object-fit:cover; }
+.tg .ci-drop-empty{ display:flex; flex-direction:column; align-items:center; gap:8px; color:var(--ink-2); font-size:15px; font-weight:500; }
+.tg .ci-drop-empty svg{ width:34px; height:34px; color:var(--accent); }
+.tg .ci-drop-empty small{ color:var(--muted); font-weight:400; font-size:12.5px; }
+.tg .ci-drop-replace{ position:absolute; bottom:0; inset-inline:0; background:rgba(28,22,16,.72); color:#fff; font-size:13px; font-weight:500; padding:9px; text-align:center; }
+
+.tg .ci-loc-input{ position:relative; display:flex; align-items:center; }
+.tg .ci-loc-input svg{ position:absolute; inset-inline-start:14px; width:18px; height:18px; color:var(--accent); pointer-events:none; }
+.tg .ci-loc-input input{ width:100%; height:50px; border:1px solid var(--line); background:var(--white); padding:0 44px;
+  font-family:var(--body); font-size:14.5px; color:var(--ink); }
+.tg .ci-loc-input input::placeholder{ color:var(--muted); }
+.tg .ci-loc-input input:focus{ outline:none; border-color:var(--accent); }
+.tg .ci-loc-note{ display:block; margin-top:8px; font-size:12px; color:var(--muted); line-height:1.5; }
+
+.tg .ci-submit{ width:100%; margin-top:8px; }
+
+@media (max-width:520px){
+  .tg .field-row{ grid-template-columns:1fr; }
+  .tg .top-links{ display:none; }
+  .tg .wrap{ padding:0 22px; }
+}

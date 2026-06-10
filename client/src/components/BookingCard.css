@@ -1,0 +1,52 @@
+/* BookingCard — ביחד style (used under a .tg root) */
+
+.tg .bk{ display:flex; gap:18px; background:var(--white); border:1px solid var(--line); padding:16px; transition:.2s var(--tg-ease); }
+.tg .bk:hover{ border-color:var(--accent); }
+.tg .bk-media{ position:relative; flex:0 0 auto; width:120px; height:120px; overflow:hidden; background:#F1EFEA; display:block; }
+.tg .bk-media .bk-ph{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:var(--display); font-weight:600; font-size:34px; color:var(--accent); opacity:.55; background:linear-gradient(135deg,var(--cream-2),var(--blush)); }
+/* orphaned booking — the referenced item was removed: muted, neutral placeholder */
+.tg .bk-media .bk-ph.bk-ph-missing{ color:var(--muted,#8A8174); opacity:.6; background:#F1EFEA; }
+.tg .bk-media img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+
+.tg .bk-body{ flex:1; min-width:0; display:flex; flex-direction:column; }
+.tg .bk-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+.tg .bk-title{ font-family:var(--display); font-weight:500; font-size:18px; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.tg .bk-meta{ font-size:13px; color:var(--muted); margin-top:4px; display:flex; align-items:center; gap:7px; }
+.tg .bk-dates{ display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--ink-2); margin-top:10px; }
+.tg .bk-dates svg{ width:16px; height:16px; color:var(--muted); flex:0 0 auto; }
+.tg .bk-foot{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-top:auto; padding-top:14px; }
+.tg .bk-price{ font-family:var(--display); font-weight:600; font-size:18px; color:var(--ink); }
+
+/* owner payout breakdown */
+.tg .bk-payout{ margin-top:12px; padding:12px 14px; background:var(--cream); border:1px solid var(--line); }
+.tg .bk-payout-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:13.5px; color:var(--ink-2); }
+.tg .bk-payout-row + .bk-payout-row{ margin-top:6px; }
+.tg .bk-payout-fee{ color:var(--muted); }
+.tg .bk-payout-net{ margin-top:8px; padding-top:8px; border-top:1px solid var(--line); font-family:var(--display); font-weight:600; font-size:15.5px; color:var(--block); }
+.tg .bk-payout-net span:last-child{ font-size:17px; }
+
+/* status pill */
+.tg .bk-status{ flex:0 0 auto; font-size:12px; font-weight:600; padding:4px 11px; white-space:nowrap; }
+.tg .bk-status.pending{   background:#FBEEC8; color:#9A7B16; }
+.tg .bk-status.approved{  background:#DCEFEC; color:var(--block); }
+.tg .bk-status.active{    background:var(--accent); color:#fff; }
+.tg .bk-status.completed{ background:#E6E3DA; color:var(--ink-2); }
+.tg .bk-status.cancelled{ background:#F3DAD2; color:#B23A2A; }
+.tg .bk-status.available{ background:#E3F0E0; color:#3E7A2E; }
+
+/* action buttons */
+.tg .bk-actions{ display:flex; gap:8px; }
+.tg .bk-btn{ height:38px; padding:0 16px; border:1px solid transparent; font-family:var(--body); font-size:13.5px; font-weight:500; cursor:pointer; transition:.15s; }
+.tg .bk-btn.accent{ background:var(--accent); color:#fff; }
+.tg .bk-btn.accent:hover{ background:var(--accent-dk); }
+.tg .bk-btn.line{ background:transparent; border-color:var(--line); color:var(--ink-2); }
+.tg .bk-btn.line:hover{ border-color:var(--ink); color:var(--ink); }
+.tg .bk-btn:disabled{ opacity:.55; cursor:default; }
+/* destructive variant — the "מחיקה" (delete) button on an owner's item card */
+.tg .bk-btn.bk-del{ display:inline-flex; align-items:center; gap:6px; border-color:#E7B8B0; color:#D33A2C; }
+.tg .bk-btn.bk-del:hover{ border-color:#D33A2C; background:#FCE8E1; color:#BB3024; }
+
+@media (max-width:520px){
+  .tg .bk{ flex-direction:column; }
+  .tg .bk-media{ width:100%; height:170px; }
+}
