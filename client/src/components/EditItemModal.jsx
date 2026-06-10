@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { apiFetch, uploadImage } from '../services/api';
 import { useCategories } from '../context/CategoriesContext';
+import { useAsyncAction } from '../hooks/useAsyncAction';
 import Modal from './Modal';
 import './LoanRequestModal.css'; // reuse the shared modal shell + form field styles
 import './EditItemModal.css';
@@ -27,8 +28,6 @@ export default function EditItemModal({ item, token, onClose, onSaved }) {
   });
   const [imageUrl, setImageUrl] = useState(item.imageUrl || '');
   const [uploading, setUploading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
   const fileRef = useRef(null);
 
   function handleChange(e) {
@@ -48,32 +47,25 @@ export default function EditItemModal({ item, token, onClose, onSaved }) {
     }
   }
 
-  async function handleSubmit(e) {
+  const { run: handleSubmit, loading: saving, error, setError } = useAsyncAction(async (e) => {
     e.preventDefault();
-    if (!form.title.trim()) { setError('שם הפריט הוא שדה חובה'); return; }
-    setError(''); setSaving(true);
-    try {
-      const { item: updated } = await apiFetch(`/items/${item.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          title: form.title.trim(),
-          description: form.description,
-          category: form.category,
-          dailyRate: Number(form.dailyRate) || 0,
-          imageUrl,
-          // only send address when the owner typed one — blank leaves the
-          // current pickup location untouched.
-          ...(form.address.trim() ? { address: form.address.trim() } : {}),
-        }),
-      }, token);
-      onSaved(updated); // let the parent patch its list state
-      onClose();
-    } catch (err) {
-      setError(err.message || 'שמירת השינויים נכשלה');
-    } finally {
-      setSaving(false);
-    }
-  }
+    if (!form.title.trim()) throw new Error('שם הפריט הוא שדה חובה');
+    const { item: updated } = await apiFetch(`/items/${item.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        title: form.title.trim(),
+        description: form.description,
+        category: form.category,
+        dailyRate: Number(form.dailyRate) || 0,
+        imageUrl,
+        // only send address when the owner typed one — blank leaves the
+        // current pickup location untouched.
+        ...(form.address.trim() ? { address: form.address.trim() } : {}),
+      }),
+    }, token);
+    onSaved(updated); // let the parent patch its list state
+    onClose();
+  });
 
   return (
     <Modal onClose={onClose} showClose>

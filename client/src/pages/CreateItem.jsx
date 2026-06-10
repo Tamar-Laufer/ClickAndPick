@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch, uploadImage } from '../services/api';
 import { useCategories } from '../context/CategoriesContext';
+import { useAsyncAction } from '../hooks/useAsyncAction';
 import TgNavbar from '../components/TgNavbar';
 import './CreateItem.css';
 
@@ -20,8 +21,6 @@ export default function CreateItem() {
   const [form, setForm]   = useState({ title: '', description: '', category: 'TOOLS', dailyRate: '', address: '' });
   const [imageUrl, setImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
   // full-bleed page — drop the global fixed-navbar spacing
   useEffect(() => {
@@ -45,23 +44,16 @@ export default function CreateItem() {
     }
   }
 
-  async function handleSubmit(e) {
+  const { run: handleSubmit, loading, error, setError } = useAsyncAction(async (e) => {
     e.preventDefault();
-    setError(''); setLoading(true);
-    try {
-      // address flows through ...form; the server geocodes it server-side.
-      const payload = { ...form, dailyRate: Number(form.dailyRate), imageUrl };
-      const data = await apiFetch('/items', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      }, token);
-      navigate(`/item/${data.item.id}`);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+    // address flows through ...form; the server geocodes it server-side.
+    const payload = { ...form, dailyRate: Number(form.dailyRate), imageUrl };
+    const data = await apiFetch('/items', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }, token);
+    navigate(`/item/${data.item.id}`);
+  });
 
   return (
     <div className="tg tg-white" dir="rtl">

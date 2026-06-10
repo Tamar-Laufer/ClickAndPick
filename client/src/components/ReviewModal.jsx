@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
+import { useAsyncAction } from '../hooks/useAsyncAction';
 import Modal from './Modal';
 import './ReviewModal.css';
 
@@ -12,8 +13,6 @@ export default function ReviewModal({ booking, role, onClose, onSubmitted }) {
   const [rating, setRating] = useState(0);
   const [hover, setHover]   = useState(0);
   const [comment, setComment] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError]   = useState('');
   const [result, setResult] = useState(null); // { revealed }
 
   const item = booking.item || {};
@@ -23,23 +22,16 @@ export default function ReviewModal({ booking, role, onClose, onSubmitted }) {
     ? (item.title || 'הפריט')
     : (booking.renter ? [booking.renter.firstName, booking.renter.lastName].filter(Boolean).join(' ') : 'השוכר');
 
-  async function handleSubmit(e) {
+  const { run: handleSubmit, loading, error } = useAsyncAction(async (e) => {
     e.preventDefault();
-    if (rating < 1) { setError('בחרו דירוג בין 1 ל-5 כוכבים'); return; }
-    setError(''); setLoading(true);
-    try {
-      const data = await apiFetch(`/bookings/${booking.id}/reviews`, {
-        method: 'POST',
-        body: JSON.stringify({ rating, comment }),
-      }, token);
-      setResult(data); // { review, revealed }
-      onSubmitted?.(booking.id);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+    if (rating < 1) throw new Error('בחרו דירוג בין 1 ל-5 כוכבים');
+    const data = await apiFetch(`/bookings/${booking.id}/reviews`, {
+      method: 'POST',
+      body: JSON.stringify({ rating, comment }),
+    }, token);
+    setResult(data); // { review, revealed }
+    onSubmitted?.(booking.id);
+  });
 
   return (
     <Modal onClose={onClose} overlayClassName="rv-overlay" className="rv-box">
