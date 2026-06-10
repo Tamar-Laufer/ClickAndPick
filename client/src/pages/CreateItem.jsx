@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { apiFetch } from '../services/api';
+import { apiFetch, uploadImage } from '../services/api';
 import { useCategories } from '../context/CategoriesContext';
-import TgNavbar from '../components/TgNavbar';
+import { useAsyncAction } from '../hooks/useAsyncAction';
+import { useFullBleed } from '../hooks/useFullBleed';
+import TgNavbar from '../components/layout/TgNavbar';
 import './CreateItem.css';
 
 /* ── "ביחד" create-item page — form + image upload ── */
-
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export default function CreateItem() {
   const { token } = useAuth();
@@ -22,15 +22,8 @@ export default function CreateItem() {
   const [form, setForm]   = useState({ title: '', description: '', category: 'TOOLS', dailyRate: '', address: '' });
   const [imageUrl, setImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  // full-bleed page — drop the global fixed-navbar spacing
-  useEffect(() => {
-    const prev = document.body.style.paddingTop;
-    document.body.style.paddingTop = '0';
-    return () => { document.body.style.paddingTop = prev; };
-  }, []);
+  useFullBleed(); // full-bleed page — drop the global fixed-navbar spacing
 
   function handleChange(e) { setForm(f => ({ ...f, [e.target.name]: e.target.value })); }
 
@@ -39,17 +32,7 @@ export default function CreateItem() {
     if (!file) return;
     setError(''); setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append('image', file);
-      // raw fetch (not apiFetch) so the browser sets the multipart boundary itself
-      const res = await fetch(`${API_BASE}/uploads/image`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: fd,
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.message || 'שגיאה בהעלאת התמונה');
-      setImageUrl(data.url);
+      setImageUrl(await uploadImage(file, token));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -57,23 +40,16 @@ export default function CreateItem() {
     }
   }
 
-  async function handleSubmit(e) {
+  const { run: handleSubmit, loading, error, setError } = useAsyncAction(async (e) => {
     e.preventDefault();
-    setError(''); setLoading(true);
-    try {
-      // address flows through ...form; the server geocodes it server-side.
-      const payload = { ...form, dailyRate: Number(form.dailyRate), imageUrl };
-      const data = await apiFetch('/items', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      }, token);
-      navigate(`/item/${data.item.id}`);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+    // address flows through ...form; the server geocodes it server-side.
+    const payload = { ...form, dailyRate: Number(form.dailyRate), imageUrl };
+    const data = await apiFetch('/items', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }, token);
+    navigate(`/item/${data.item.id}`);
+  });
 
   return (
     <div className="tg tg-white" dir="rtl">

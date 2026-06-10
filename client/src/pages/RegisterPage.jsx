@@ -2,10 +2,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
 import { useAuthForm } from '../hooks/useAuthForm';
-import { useAuthLayout } from '../hooks/useAuthLayout';
-import FormInput from '../components/FormInput';
-import Button from '../components/Button';
-import AuthPanel from '../components/AuthPanel';
+import { useFullBleed } from '../hooks/useFullBleed';
+import FormInput from '../components/ui/FormInput';
+import Button from '../components/ui/Button';
+import AuthPanel from '../components/auth/AuthPanel';
 import './AuthPages.css';
 
 /* ── "ביחד" signup (ported from הצטרפות.html) ── */
@@ -13,7 +13,7 @@ import './AuthPages.css';
 export default function RegisterPage() {
   const { login } = useAuth();
   const navigate  = useNavigate();
-  useAuthLayout();
+  useFullBleed();
 
   const { form, handleChange, error, loading, submit } =
     useAuthForm({ firstName: '', lastName: '', email: '', password: '', phone: '' });
