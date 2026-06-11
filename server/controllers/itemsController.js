@@ -8,8 +8,8 @@ exports.list = asyncHandler(async (req, res) => {
   res.json(result);
 });
 
-// Public: turn a typed search address ("Tel Aviv") into a { lat, lng } centre,
-// which the catalog then feeds back into GET /api/items?lat&lng for the radius search.
+// ציבורי: הופך כתובת חיפוש שהוקלדה ("תל אביב") למרכז { lat, lng }, שהקטלוג מזין
+// בחזרה ל-GET /api/items?lat&lng עבור חיפוש הרדיוס.
 exports.geocode = asyncHandler(async (req, res) => {
   const result = await itemsService.geocode(req.query.q);
   res.json(result);
@@ -20,8 +20,8 @@ exports.getOne = asyncHandler(async (req, res) => {
   res.json({ item });
 });
 
-// Public: the confirmed (APPROVED) bookings for an item, as [{ startDate, endDate }]
-// ranges. The booking calendar uses these to grey-out / disable unavailable days.
+// ציבורי: ההזמנות המאושרות (APPROVED) של פריט, כטווחי [{ startDate, endDate }].
+// לוח ההזמנות משתמש בהם כדי לאפור / להשבית ימים לא זמינים.
 exports.bookedDates = asyncHandler(async (req, res) => {
   const bookedDates = await itemsService.bookedDates(req.params.id);
   res.json({ bookedDates });

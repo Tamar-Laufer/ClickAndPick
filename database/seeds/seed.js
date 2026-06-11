@@ -1,7 +1,7 @@
 'use strict';
 
 require('dotenv').config();
-const { connectMongo, disconnectMongo } = require('../config/db');
+const { connectMongo, disconnectMongo } = require('../db');
 const { User, Item, Booking } = require('../models');
 
 // --- מאגרי נתונים ליצירה רנדומלית ---
@@ -127,13 +127,13 @@ async function seedDatabase() {
         else if (startDate > now) status = Math.random() > 0.5 ? 'APPROVED' : 'PENDING';
         else status = 'APPROVED';
 
-        // mirror the production fee split (totalPrice → 10% platform / 90% owner)
+        // משקף את פיצול העמלה בפרודקשן (totalPrice → 10% פלטפורמה / 90% בעלים)
         const totalPrice = item.dailyRate * durationDays;
         const platformFee = Math.round(totalPrice * Booking.PLATFORM_FEE_RATE * 100) / 100;
         const ownerEarnings = Math.round((totalPrice - platformFee) * 100) / 100;
 
-        // spread createdAt across the last 6 months so revenue-by-month charts
-        // show real history (insert-time stamps, not all "today").
+        // פיזור createdAt על פני 6 החודשים האחרונים כדי שגרפי ההכנסה-לפי-חודש
+        // יציגו היסטוריה אמיתית (חותמות זמן בעת ההוספה, לא הכול "היום").
         return { item: item._id, renter: renter._id, startDate, endDate, totalPrice, platformFee, ownerEarnings, status, createdAt: randomDate(sixMonthsAgo, now) };
     });
     const bookings = await Booking.insertMany(bookingDocs);

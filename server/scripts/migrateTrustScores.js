@@ -37,8 +37,8 @@
  */
 
 require('dotenv').config();
-const { connectMongo, disconnectMongo } = require('../config/db');
-const { User, Booking, Review } = require('../models');
+const { connectMongo, disconnectMongo } = require('../../database/db');
+const { User, Booking, Review } = require('../../database/models');
 
 const DRY_RUN = process.argv.includes('--dry-run');
 const IGNORE_CANCELLATIONS = process.argv.includes('--ignore-cancellations');

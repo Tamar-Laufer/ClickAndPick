@@ -51,6 +51,7 @@ export default function SearchResults() {
                 <label className="cat-sort">
                   מיון:
                   <select value={sort} onChange={e => setSort(e.target.value)}>
+                    <option value="newest">מהחדש לישן</option>
                     <option value="recommended">מומלצים</option>
                     <option value="price-asc">מחיר: מהזול ליקר</option>
                     <option value="price-desc">מחיר: מהיקר לזול</option>

@@ -1,6 +1,6 @@
 'use strict';
 
-const { Review, Booking, User } = require('../models');
+const { Review, Booking, User } = require('../../database/models');
 const { ApiError } = require('../utils/errors');
 
 const REVIEW_WINDOW_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -94,9 +94,9 @@ async function submitReview(user, bookingId, { rating, comment }) {
  */
 async function revealExpiredReviews() {
   const cutoff = new Date(Date.now() - REVIEW_WINDOW_MS);
-  const expired = await Booking.find({ status: 'COMPLETED', completedAt: { $lt: cutoff } }).select('_id');
+  const expired = await Booking.find({ status: 'COMPLETED', completedAt: { $lt: cutoff } }).select('_id').lean();
 
-  const stale = await Review.find({ isPublic: false, bookingId: { $in: expired.map((b) => b._id) } });
+  const stale = await Review.find({ isPublic: false, bookingId: { $in: expired.map((b) => b._id) } }).lean();
   if (!stale.length) return 0;
 
   await Review.updateMany({ _id: { $in: stale.map((r) => r._id) } }, { isPublic: true });

@@ -3,12 +3,12 @@
    checkout, admin). The markup + `.mini-footer` styles were duplicated in each
    page; this renders it once. `note` is the tagline after "ביחד ·" — defaults
    to the public-facing one, overridden to "לוח ניהול" on the admin dashboard. */
-export default function MiniFooter({ note = 'שיתוף שכונתי' }) {
+export default function MiniFooter({ note = 'השאלה שיתופית' }) {
   return (
     <footer className="mini-footer">
       <div className="wrap">
         <img className="mf-logo" src="/images/logo-light.png" alt="Click & Pick" />
-        <span>© {new Date().getFullYear()} ביחד · {note}</span>
+        <span>© {new Date().getFullYear()} Click&Pick · {note}</span>
       </div>
     </footer>
   );

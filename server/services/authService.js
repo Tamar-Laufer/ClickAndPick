@@ -2,18 +2,18 @@
 
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const { User } = require('../models');
+const { User } = require('../../database/models');
 const emailService = require('./emailService');
 const { ApiError } = require('../utils/errors');
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const RESET_TOKEN_TTL_MS = 60 * 60 * 1000; // 1 hour
-// Returned verbatim whether or not the email exists — prevents account enumeration.
+const RESET_TOKEN_TTL_MS = 60 * 60 * 1000; // שעה אחת
+// מוחזר כמות שהוא בין אם האימייל קיים ובין אם לא — מונע מנייה (enumeration) של חשבונות.
 const GENERIC_RESET_MESSAGE = 'If an account with that email exists, a reset link has been sent.';
 
-// One-way hash of the raw reset token. We persist ONLY this, so the token in the
-// DB is useless to an attacker; the raw token lives solely in the user's email.
+// hash חד-כיווני של טוקן האיפוס הגולמי. שומרים אך ורק אותו, כך שהטוקן ב-DB חסר
+// ערך לתוקף; הטוקן הגולמי חי אך ורק במייל של המשתמש.
 const hashResetToken = (raw) => crypto.createHash('sha256').update(raw).digest('hex');
 
 function signToken(user) {
@@ -36,7 +36,7 @@ async function register({ firstName, lastName, email, password, phone }) {
   }
 
   const user = new User({ firstName: firstName.trim(), lastName: lastName.trim(), email: normalisedEmail, phone });
-  await user.setPassword(password); // never accept a role on self-registration → defaults to USER
+  await user.setPassword(password); // לעולם לא מקבלים role בהרשמה עצמית → ברירת מחדל USER
   await user.save();
 
   return { user: user.toJSON(), token: signToken(user) };
@@ -67,8 +67,8 @@ async function updateProfile(userId, { firstName, lastName, phone, avatarUrl }) 
   if (lastName !== undefined) user.lastName = lastName;
   if (phone !== undefined) user.phone = phone;
   if (avatarUrl !== undefined) user.avatarUrl = avatarUrl;
-  // validate only the modified fields so unrelated legacy data (e.g. an old
-  // empty defaultLocation) can't block a simple photo/detail update.
+  // מאמתים רק את השדות ששונו, כך שדאטה ישן ולא קשור (למשל defaultLocation ריק
+  // וישן) לא יחסום עדכון פשוט של תמונה/פרטים.
   await user.save({ validateModifiedOnly: true });
   return user;
 }
@@ -86,27 +86,26 @@ async function changePassword(userId, { currentPassword, newPassword }) {
 }
 
 /**
- * Forgot password — issue a reset token if (and only if) the email matches a
- * real, active account. To defeat user enumeration this ALWAYS resolves to the
- * same generic message and performs the same observable work regardless of
- * whether the user exists; the difference (token + email) happens silently.
+ * שכחתי סיסמה — מנפיק טוקן איפוס אם (ורק אם) האימייל תואם חשבון אמיתי ופעיל.
+ * כדי לסכל מניית משתמשים, הפונקציה תמיד מחזירה את אותה הודעה גנרית ומבצעת את אותה
+ * עבודה נצפית ללא קשר לקיום המשתמש; ההבדל (טוקן + מייל) קורה בשקט.
  */
 async function forgotPassword({ email }) {
   if (!email || !EMAIL_RE.test(email)) throw new ApiError(400, 'A valid email is required');
 
   const user = await User.findOne({ email: email.toLowerCase().trim() });
 
-  // Only act for real, enabled accounts — but never signal that to the caller.
+  // פועלים רק עבור חשבונות אמיתיים ומאופשרים — אך לעולם לא מאותתים זאת לקורא.
   if (user && user.isActive) {
     const rawToken = crypto.randomBytes(20).toString('hex');
     user.resetPasswordToken = hashResetToken(rawToken);
     user.resetPasswordExpires = new Date(Date.now() + RESET_TOKEN_TTL_MS);
-    // validate ONLY the fields we just set — a full re-validation would choke on
-    // unrelated legacy data on the doc (e.g. an old/empty defaultLocation).
+    // מאמתים אך ורק את השדות שזה עתה קבענו — אימות מלא מחדש היה נכשל על דאטה
+    // ישן ולא קשור במסמך (למשל defaultLocation ישן/ריק).
     await user.save({ validateModifiedOnly: true });
 
-    // Fire the email (the service never throws; it logs on failure). We await so
-    // a misconfigured SMTP surfaces in logs, but the response is generic either way.
+    // שולחים את המייל (השירות לעולם לא זורק; הוא רושם ללוג בכישלון). מחכים (await)
+    // כדי ש-SMTP שגוי יופיע בלוגים, אבל התשובה גנרית כך או כך.
     await emailService.sendPasswordReset({ to: user.email, name: user.firstName, token: rawToken });
   }
 
@@ -114,11 +113,10 @@ async function forgotPassword({ email }) {
 }
 
 /**
- * Reset password — redeem a raw token from the email link. The incoming token is
- * SHA-256 hashed and matched against the stored hash AND an unexpired expiry, in
- * a single query (so an expired token reads as simply "not found"). On success
- * the new password is bcrypt-hashed via setPassword() and the token is cleared,
- * making it strictly single-use.
+ * איפוס סיסמה — מימוש טוקן גולמי מקישור המייל. הטוקן הנכנס עובר hash ב-SHA-256
+ * ומותאם מול ההאש השמור וגם מול תוקף שלא פג, בשאילתה אחת (כך שטוקן שפג נקרא פשוט
+ * כ"לא נמצא"). בהצלחה הסיסמה החדשה עוברת hash ב-bcrypt דרך setPassword() והטוקן
+ * מנוקה, מה שהופך אותו לחד-פעמי בהחלט.
  */
 async function resetPassword({ token, newPassword }) {
   if (!token) throw new ApiError(400, 'Invalid or expired token');
@@ -134,11 +132,11 @@ async function resetPassword({ token, newPassword }) {
   if (!user) throw new ApiError(400, 'Invalid or expired token');
 
   await user.setPassword(newPassword);
-  // Invalidate the token so it cannot be replayed.
+  // מבטלים את הטוקן כדי שלא ניתן יהיה לעשות בו שימוש חוזר.
   user.resetPasswordToken = undefined;
   user.resetPasswordExpires = undefined;
-  // validate only the modified fields (password + cleared token), not legacy
-  // data like an old defaultLocation that would otherwise fail re-validation.
+  // מאמתים רק את השדות ששונו (סיסמה + טוקן מנוקה), לא דאטה ישן כמו
+  // defaultLocation שהיה נכשל באימות מחדש.
   await user.save({ validateModifiedOnly: true });
 
   return { message: 'Your password has been reset. You can now sign in.' };

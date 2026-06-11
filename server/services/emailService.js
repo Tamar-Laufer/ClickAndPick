@@ -14,12 +14,12 @@
 
 const nodemailer = require('nodemailer');
 const logger = require('../utils/logger');
-const { Booking } = require('../models');
+const { Booking } = require('../../database/models');
 
 /* ───────────────────────────── config ───────────────────────────── */
-const FROM = process.env.SMTP_FROM || 'ביחד <no-reply@yachad.app>';
+const FROM = process.env.SMTP_FROM || 'Click&Pick <no-reply@clickandpick.app>';
 const CLIENT_URL = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/+$/, '');
-const BRAND = 'ביחד';
+const BRAND = 'Click&Pick';
 const ACCENT = '#EE5A2A';
 const INK = '#1C1610';
 
@@ -91,7 +91,7 @@ function layout({ title, intro, rows = [], cta, footerNote }) {
       <table role="presentation" width="100%" style="border-collapse:collapse;">${rowsHtml}${ctaHtml}</table>
       ${footerNote ? `<p style="margin:24px 0 0;color:#8A8174;font-size:13px;line-height:1.6;">${footerNote}</p>` : ''}
     </div>
-    <div style="text-align:center;color:#8A8174;font-size:12px;margin-top:18px;">© ${new Date().getFullYear()} ${BRAND} · שיתוף שכנתי</div>
+    <div style="text-align:center;color:#8A8174;font-size:12px;margin-top:18px;">© ${new Date().getFullYear()} ${BRAND} · השאלה שיתופית</div>
   </div>
 </body></html>`;
 }

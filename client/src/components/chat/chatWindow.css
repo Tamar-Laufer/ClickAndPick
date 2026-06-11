@@ -1,0 +1,272 @@
+/* ChatWindow — floating bottom-right chat panel */
+
+.tg .cw {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 340px;
+    height: 460px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    z-index: 1200;
+    box-shadow: 0 8px 32px rgba(28, 22, 16, 0.15);
+}
+
+/* ── Header ── */
+.tg .cw-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    flex: 0 0 auto;
+}
+
+.tg .cw-head-info {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+}
+
+.tg .cw-name {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tg .cw-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex: 0 0 auto;
+}
+
+.tg .cw-dot.on {
+    background: #4caf7d;
+}
+
+.tg .cw-dot.off {
+    background: var(--muted);
+}
+
+.tg .cw-status-lbl {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.tg .cw-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1;
+    padding: 2px 6px;
+    transition: color 0.15s;
+}
+
+.tg .cw-close:hover {
+    color: var(--ink);
+}
+
+/* ── Messages ── */
+.tg .cw-msgs {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tg .cw-empty {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    margin: auto;
+    line-height: 1.5;
+}
+
+.tg .cw-msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 78%;
+}
+
+.tg .cw-msg.mine {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.tg .cw-msg.theirs {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.tg .cw-bubble {
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 1.45;
+    word-break: break-word;
+}
+
+.tg .cw-msg.mine .cw-bubble {
+    background: var(--accent);
+    color: #fff;
+}
+
+.tg .cw-msg.theirs .cw-bubble {
+    background: var(--cream);
+    color: var(--ink);
+    border: 1px solid var(--line);
+}
+
+.tg .cw-time {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+}
+
+/* ── Error banner ── */
+.tg .cw-err {
+    padding: 7px 14px;
+    background: #FCE8E1;
+    color: #B23A2A;
+    font-size: 12.5px;
+    border-top: 1px solid #F3DAD2;
+    flex: 0 0 auto;
+}
+
+/* ── Input form ── */
+.tg .cw-form {
+    display: flex;
+    border-top: 1px solid var(--line);
+    flex: 0 0 auto;
+}
+
+.tg .cw-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: none;
+    outline: none;
+    font-family: var(--body);
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--white);
+}
+
+.tg .cw-input::placeholder {
+    color: var(--muted);
+}
+
+.tg .cw-input:disabled {
+    background: var(--cream);
+    cursor: not-allowed;
+}
+
+.tg .cw-send {
+    padding: 0 16px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    font-family: var(--body);
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.tg .cw-send:hover:not(:disabled) {
+    background: var(--accent-dk);
+}
+
+.tg .cw-send:disabled {
+    background: var(--muted);
+    cursor: default;
+}
+
+/* ── Voice messages ── */
+.tg .cw-mic {
+    padding: 0 12px;
+    background: var(--white);
+    border: none;
+    border-right: 1px solid var(--line);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.tg .cw-mic:hover:not(:disabled) {
+    background: var(--cream);
+}
+
+.tg .cw-mic:disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
+/* recording / uploading footer (replaces the input row) */
+.tg .cw-rec {
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+}
+
+.tg .cw-rec-live {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    color: var(--ink);
+}
+
+.tg .cw-rec-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #B23A2A;
+    animation: cw-pulse 1s ease-in-out infinite;
+}
+
+@keyframes cw-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+}
+
+.tg .cw-rec-cancel {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--muted);
+    padding: 2px 6px;
+    transition: color 0.15s;
+}
+
+.tg .cw-rec-cancel:hover {
+    color: var(--ink);
+}
+
+.tg .cw-audio {
+    height: 36px;
+    max-width: 100%;
+}
+
+.tg .cw-audio-loading {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.tg .cw-icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+}

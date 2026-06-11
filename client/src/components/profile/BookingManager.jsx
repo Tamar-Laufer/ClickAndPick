@@ -1,12 +1,16 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import BookingCard from '../booking/BookingCard';
 import OwnerItemCard from '../item/OwnerItemCard';
 import ErrorBoundary from '../ui/ErrorBoundary';
+import ChatWindow from '../chat/ChatWindow';
+import { useAuth } from '../../context/AuthContext';
+import { useWebSocketChat } from '../../hooks/useWebSocketChat';
 
 /* per-tab empty state */
 const EMPTY = {
-  rentals:  { ic: '🧰', title: 'עוד לא שאלת פריטים', desc: 'מצאו פריט מהשכנים והזמינו אותו.', to: '/search', cta: 'לכל הפריטים' },
-  items:    { ic: '📦', title: 'עוד לא פרסמת פריטים', desc: 'פרסמו פריט כדי ששכנים יוכלו לשאול אותו.', to: '/items/new', cta: 'פרסמו פריט' },
+  rentals: { ic: '🧰', title: 'עוד לא שאלת פריטים', desc: 'מצאו פריט מהשכנים והזמינו אותו.', to: '/search', cta: 'לכל הפריטים' },
+  items: { ic: '📦', title: 'עוד לא פרסמת פריטים', desc: 'פרסמו פריט כדי ששכנים יוכלו לשאול אותו.', to: '/items/new', cta: 'פרסמו פריט' },
   incoming: { ic: '📥', title: 'אין עדיין בקשות לפריטים שלך', desc: 'כשמישהו יבקש לשאול פריט שלך — הבקשה תופיע כאן.', to: '/items/new', cta: 'פרסמו פריט' },
 };
 
@@ -24,6 +28,23 @@ export default function BookingManager({
   const tabList = tab === 'rentals' ? rentals : tab === 'items' ? myItems : incoming;
   const tabRole = tab === 'rentals' ? 'renter' : 'owner';
   const empty = EMPTY[tab];
+
+  const { token } = useAuth();
+
+  // chatTarget: { id, name } of the counterparty currently in the chat window
+  const [chatTarget, setChatTarget] = useState(null);
+
+  // The hook owns the conversation (history from Mongo + live messages), scoped
+  // to chatTarget, and returns it ready-to-render as { text, timestamp, isMine }.
+  const { messages, connected, error, sendMessage } = useWebSocketChat(token, chatTarget?.id);
+
+  function handleOpenChat(recipientId, recipientName) {
+    setChatTarget({ id: recipientId, name: recipientName });
+  }
+
+  function handleSend(text, type = 'text') {
+    sendMessage(text, type);
+  }
 
   return (
     <div className="prof-card">
@@ -77,11 +98,24 @@ export default function BookingManager({
                   busy={busyId === b.id}
                   onAction={handleAction}
                   onReview={(booking) => onReview({ booking, role: tabRole })}
+                  onOpenChat={handleOpenChat}
                 />
               ))}
           </div>
         </ErrorBoundary>
       )}
+      {chatTarget && (
+        <ChatWindow
+          recipientName={chatTarget.name}
+          messages={messages}
+          connected={connected}
+          error={error}
+          token={token}
+          onSend={handleSend}
+          onClose={() => setChatTarget(null)}
+        />
+      )}
     </div>
   );
 }
+

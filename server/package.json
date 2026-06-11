@@ -1,20 +1,17 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "שרת Express — routes / controllers / services / middleware.",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "seed": "node seeds/seed.js",
+    "seed": "node ../database/seeds/seed.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   },
-  "type": "commonjs",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "axios": "^1.17.0",
     "bcryptjs": "^3.0.3",
@@ -22,11 +19,9 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.6.3",
     "multer": "^2.1.1",
     "node-cron": "^4.2.1",
     "nodemailer": "^8.0.10",
-    "socket.io": "^4.8.3",
     "winston": "^3.19.0"
   },
   "devDependencies": {
@@ -34,5 +29,6 @@
     "mongodb-memory-server": "^10.1.4",
     "nodemon": "^3.1.14",
     "supertest": "^7.1.4"
-  }
+  },
+  "license": "ISC"
 }

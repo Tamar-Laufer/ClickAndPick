@@ -5,19 +5,18 @@ const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
 /**
- * Category — the admin-managed item taxonomy (edited from the dashboard
- * instead of a hard-coded enum).
+ * Category — טקסונומיית הפריטים בניהול אדמין (נערכת מלוח הניהול במקום enum קשיח).
  *
- *   value  stable identifier stored on every Item (e.g. 'TOOLS', or a Hebrew
- *          label for admin-added ones). Unique — the 11000 duplicate-key error
- *          is mapped to a clean 409 by the global error handler.
- *   label  Hebrew display text shown in forms, filters and item cards.
- *   color  chip colour token (coral / teal / green / blue / butter …).
- *   icon   optional icon identifier the UI may resolve.
+ *   value  מזהה יציב שנשמר על כל Item (למשל 'TOOLS', או תווית עברית עבור קטגוריות
+ *          שאדמין הוסיף). ייחודי — שגיאת מפתח כפול 11000 ממופה ל-409 נקי ע"י
+ *          ה-error handler הגלובלי.
+ *   label  טקסט תצוגה בעברית המוצג בטפסים, מסננים וכרטיסי פריט.
+ *   color  אסימון צבע לתגית (coral / teal / green / blue / butter …).
+ *   icon   מזהה אייקון אופציונלי שה-UI יכול לפענח.
  *
- * Items reference a category by its `value`. The four original categories
- * (TOOLS / CAMPING / EVENTS / CLEANING) are seeded so existing items keep
- * resolving; see server/seeds/categories.js.
+ * פריטים מצביעים על קטגוריה דרך ה-`value` שלה. ארבע הקטגוריות המקוריות
+ * (TOOLS / CAMPING / EVENTS / CLEANING) נזרעות כדי שפריטים קיימים ימשיכו
+ * להיפתר; ראו database/seeds/categories.js.
  */
 const COLORS = ['coral', 'teal', 'green', 'blue', 'butter'];
 
