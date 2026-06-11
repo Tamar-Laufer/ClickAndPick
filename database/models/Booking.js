@@ -6,12 +6,12 @@ const { Schema, model } = mongoose;
 
 const BOOKING_STATUS = ['PENDING', 'APPROVED', 'COMPLETED', 'CANCELLED'];
 
-// The platform keeps this fraction of every booking's totalPrice as commission.
-// Centralised here so the booking calc and the admin revenue aggregation agree.
+// הפלטפורמה שומרת חלק זה מ-totalPrice של כל הזמנה כעמלה. מרוכז כאן כדי שחישוב
+// ההזמנה ואגרגציית ההכנסות של האדמין יהיו עקביים.
 const PLATFORM_FEE_RATE = 0.1; // 10%
 
 /**
- * Booking — a rental transaction: a renter books an item for a date range.
+ * Booking — עסקת השכרה: שוכר מזמין פריט לטווח תאריכים.
  */
 const bookingSchema = new Schema(
   {
@@ -40,15 +40,15 @@ const bookingSchema = new Schema(
       required: [true, 'Total price is required'],
       min: [0, 'Total price cannot be negative'],
     },
-    // Commission the platform keeps (totalPrice * PLATFORM_FEE_RATE).
-    // Computed server-side at booking creation — never trusted from the client.
+    // העמלה שהפלטפורמה שומרת (totalPrice * PLATFORM_FEE_RATE).
+    // מחושב בצד השרת ביצירת ההזמנה — לעולם לא נסמך על הלקוח.
     platformFee: {
       type: Number,
       required: [true, 'Platform fee is required'],
       min: [0, 'Platform fee cannot be negative'],
       default: 0,
     },
-    // What the item owner is paid out (totalPrice - platformFee).
+    // הסכום המשולם לבעלים (totalPrice - platformFee).
     ownerEarnings: {
       type: Number,
       required: [true, 'Owner earnings are required'],
@@ -61,25 +61,25 @@ const bookingSchema = new Schema(
       default: 'PENDING',
       index: true,
     },
-    // set when status becomes COMPLETED — starts the 7-day review window
+    // נקבע כשהסטטוס הופך ל-COMPLETED — מתחיל את חלון הביקורות בן 7 הימים
     completedAt: { type: Date },
-    // set when the pre-return reminder email is sent — ensures each rental is
-    // reminded exactly once (the cron re-runs hourly and skips reminded ones).
+    // נקבע כשנשלח מייל תזכורת לפני ההחזרה — מבטיח שכל השכרה תקבל תזכורת בדיוק
+    // פעם אחת (ה-cron רץ שוב כל שעה ומדלג על אלו שכבר קיבלו).
     returnReminderSentAt: { type: Date, default: null },
   },
   { timestamps: true },
 );
 
-/* The booking window must be valid (end strictly after start) */
+/* חלון ההזמנה חייב להיות תקין (תאריך הסיום ממש אחרי תאריך ההתחלה) */
 bookingSchema.pre('validate', function validateDates() {
   if (this.startDate && this.endDate && this.endDate <= this.startDate) {
     this.invalidate('endDate', 'End date must be after start date');
   }
 });
 
-/* Indexes for the common access patterns */
-bookingSchema.index({ item: 1, status: 1 }); // availability / overlap checks per item
-bookingSchema.index({ renter: 1, createdAt: -1 }); // a user's booking history
+/* אינדקסים לדפוסי הגישה הנפוצים */
+bookingSchema.index({ item: 1, status: 1 }); // בדיקות זמינות / חפיפה לכל פריט
+bookingSchema.index({ renter: 1, createdAt: -1 }); // היסטוריית ההזמנות של משתמש
 
 bookingSchema.set('toJSON', {
   virtuals: true,

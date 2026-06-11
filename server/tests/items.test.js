@@ -2,7 +2,7 @@
 
 const request = require('supertest');
 const app = require('../app');
-const { Booking } = require('../models');
+const { Booking } = require('../../database/models');
 const {
   createUser, createAdmin, tokenFor, seedCategory, createItem,
 } = require('./helpers');
@@ -26,12 +26,12 @@ describe('GET /api/items (public catalog)', () => {
 
   it('filters by category', async () => {
     const owner = await createUser();
-    await createItem(owner, { title: 'A', category: 'tools' });
-    await createItem(owner, { title: 'B', category: 'camping' });
+    await createItem(owner, { title: 'Item A', category: 'tools' });
+    await createItem(owner, { title: 'Item B', category: 'camping' });
 
     const res = await request(app).get('/api/items').query({ category: 'camping' });
     expect(res.status).toBe(200);
-    expect(res.body.items.map((i) => i.title)).toEqual(['B']);
+    expect(res.body.items.map((i) => i.title)).toEqual(['Item B']);
   });
 });
 

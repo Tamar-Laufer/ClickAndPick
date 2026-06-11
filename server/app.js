@@ -1,17 +1,12 @@
 'use strict';
 
 /**
- * The Express application — routes, middleware and the global error handler,
- * with NO side effects (no DB connection, no socket.io server, no listen()).
+ * אפליקציית ה-Express — נתיבים, middleware וה-error handler הגלובלי, ללא שום
+ * תופעות לוואי (אין חיבור ל-DB, אין listen()).
  *
- * Pulled out of index.js so it can be imported directly by Supertest in the
- * integration tests. Production wiring (HTTP server + socket.io + Mongo + cron)
- * lives in index.js, which requires this module.
- *
- * `req.io` is still made available to controllers exactly as before: index.js
- * registers the live socket server via `app.set('io', io)`, and the passthrough
- * middleware below hands it to each request. In tests no io is set, so `req.io`
- * is simply `null` (no controller depends on it today).
+ * הופרד מ-index.js כדי שאפשר יהיה לייבא אותו ישירות ב-Supertest בבדיקות
+ * האינטגרציה. החיווט של הפרודקשן (שרת HTTP + Mongo + cron) חי ב-index.js,
+ * שמייבא את המודול הזה. הצ'אט בזמן-אמת מטופל בשירות C++ נפרד (פורט 8080).
  */
 const express = require('express');
 const cors = require('cors');
@@ -21,7 +16,7 @@ const logger = require('./utils/logger');
 const app = express();
 
 // ========================================
-// CORS — allow the configured client URL(s) plus any localhost port in dev.
+// CORS — מתיר את כתובת/כתובות הלקוח שהוגדרו, ובנוסף כל פורט localhost בפיתוח.
 // ========================================
 const configuredOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
   .split(',')
@@ -29,16 +24,13 @@ const configuredOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
   .filter(Boolean);
 
 function isAllowedOrigin(origin) {
-  if (!origin) return true; // non-browser clients (curl, supertest, server-to-server)
+  if (!origin) return true; // לקוחות שאינם דפדפן (curl, supertest, שרת-לשרת)
   if (configuredOrigins.includes(origin)) return true;
   return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 }
 
 const corsOrigin = (origin, cb) =>
   isAllowedOrigin(origin) ? cb(null, true) : cb(new Error(`Origin not allowed by CORS: ${origin}`));
-
-// expose the corsOrigin helper so index.js can reuse it for the socket.io server
-app.locals.corsOrigin = corsOrigin;
 
 // ========================================
 // Middleware
@@ -47,11 +39,11 @@ app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// hand the real-time channel to controllers (set by index.js in production;
-// absent — and harmlessly null — under test).
-app.use((req, _res, next) => { req.io = req.app.get('io') || null; next(); });
-
-// serve uploaded images (the files live on disk; the DB only stores their URL)
+// הגשת תמונות שהועלו (הקבצים על הדיסק; ה-DB שומר רק את ה-URL שלהם).
+// חוסמים במפורש את תת-התיקייה /uploads/audio: הקלטות קוליות הן פרטיות ומוגשות
+// אך ורק דרך הנתיב המאומת GET /api/uploads/audio/:filename. בלי החסימה הזו,
+// express.static היה חושף אותן לכל מי שמנחש שם קובץ.
+app.use('/uploads/audio', (_req, res) => res.status(403).json({ message: 'Forbidden' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ========================================
@@ -65,6 +57,7 @@ app.use('/api/uploads', require('./routes/uploads'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/categories', require('./routes/categories'));
 app.use('/api/feedback', require('./routes/feedback'));
+app.use('/api/messages', require('./routes/messages'));
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -76,7 +69,7 @@ app.use((_req, res) => {
 });
 
 // ========================================
-// Global error handler — maps Mongoose errors to clean HTTP responses
+// Error handler גלובלי — ממפה שגיאות Mongoose לתשובות HTTP נקיות
 // ========================================
 app.use((err, _req, res, _next) => {
   let status = err.status || 500;

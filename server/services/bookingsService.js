@@ -1,16 +1,16 @@
 'use strict';
 
-const { Booking, Item, User } = require('../models');
+const { Booking, Item, User } = require('../../database/models');
 const { ApiError } = require('../utils/errors');
 const emailService = require('./emailService');
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const ACTIVE_STATUSES = ['PENDING', 'APPROVED'];
 
-/** Round a money amount to 2 decimals (avoids float drift like 4.500000001). */
+/** עיגול סכום כסף ל-2 ספרות אחרי הנקודה (מונע סחף float כמו 4.500000001). */
 const money = (n) => Math.round(n * 100) / 100;
 
-/** Create a booking: validates dates, availability, ownership and computes price. */
+/** יצירת הזמנה: מאמת תאריכים, זמינות, בעלוּת ומחשב מחיר. */
 async function create(renterId, { item: itemId, startDate, endDate }) {
   if (!itemId || !startDate || !endDate) throw new ApiError(400, 'item, startDate and endDate are required');
 
@@ -23,7 +23,7 @@ async function create(renterId, { item: itemId, startDate, endDate }) {
   if (!item || !item.isActive) throw new ApiError(404, 'Item is not available');
   if (String(item.owner) === String(renterId)) throw new ApiError(400, 'You cannot book your own item');
 
-  // overlap with any still-active booking for the same item
+  // חפיפה עם כל הזמנה שעדיין פעילה עבור אותו פריט
   const clash = await Booking.exists({
     item: itemId,
     status: { $in: ACTIVE_STATUSES },
@@ -35,10 +35,9 @@ async function create(renterId, { item: itemId, startDate, endDate }) {
   const days = Math.max(1, Math.ceil((end - start) / MS_PER_DAY));
   const totalPrice = money(days * item.dailyRate);
 
-  // Split the fee server-side. The renter pays totalPrice; the platform keeps
-  // PLATFORM_FEE_RATE of it and the owner is paid the remainder. ownerEarnings
-  // is derived by subtraction (not a second %), so fee + earnings === totalPrice
-  // exactly. Client-supplied amounts are ignored — these are the source of truth.
+  // פיצול העמלה בצד השרת. השוכר משלם totalPrice; הפלטפורמה שומרת PLATFORM_FEE_RATE
+  // ממנו והבעלים מקבל את היתרה. ownerEarnings נגזר בחיסור (לא אחוז שני), כך
+  // ש-fee + earnings === totalPrice בדיוק. סכומים מהלקוח מתעלמים — אלה מקור האמת.
   const platformFee = money(totalPrice * Booking.PLATFORM_FEE_RATE);
   const ownerEarnings = money(totalPrice - platformFee);
 
@@ -52,14 +51,14 @@ async function create(renterId, { item: itemId, startDate, endDate }) {
     ownerEarnings,
   });
 
-  // Trigger 1 — email the owner about the new PENDING request.
-  // Fire-and-forget: it self-handles errors and must never block/break booking.
+  // טריגר 1 — מייל לבעלים על בקשת ה-PENDING החדשה.
+  // Fire-and-forget: מטפל בשגיאות בעצמו ולעולם לא חוסם/שובר את ההזמנה.
   emailService.notifyNewBookingRequest(booking.id);
 
   return booking;
 }
 
-/** Bookings the user has made (as renter) — includes who they're renting from. */
+/** ההזמנות שהמשתמש ביצע (כשוכר) — כולל ממי הוא שוכר. */
 async function listMine(renterId) {
   return Booking.find({ renter: renterId })
     .populate({
@@ -70,9 +69,9 @@ async function listMine(renterId) {
     .sort({ createdAt: -1 });
 }
 
-/** Bookings on items the user owns (incoming requests). */
+/** הזמנות על פריטים שבבעלות המשתמש (בקשות נכנסות). */
 async function listIncoming(ownerId) {
-  const owned = await Item.find({ owner: ownerId }).select('_id');
+  const owned = await Item.find({ owner: ownerId }).select('_id').lean();
   return Booking.find({ item: { $in: owned.map((i) => i._id) } })
     .populate('item', 'title imageUrl')
     .populate('renter', 'firstName lastName email avatarUrl')
@@ -89,9 +88,9 @@ async function getById(id, user) {
 }
 
 /**
- * Transition a booking's status.
- *  - Owner/Admin may set APPROVED, COMPLETED or CANCELLED.
- *  - The renter may only CANCEL their own pending/approved booking.
+ * מעבר סטטוס של הזמנה.
+ *  - בעלים/אדמין רשאים לקבוע APPROVED, COMPLETED או CANCELLED.
+ *  - השוכר רשאי רק לבטל (CANCEL) הזמנה ממתינה/מאושרת שלו.
  */
 async function updateStatus(id, user, status) {
   const booking = await Booking.findById(id).populate('item', 'owner');
@@ -105,8 +104,8 @@ async function updateStatus(id, user, status) {
   const allowed = isOwner || isAdmin ? ['APPROVED', 'COMPLETED', 'CANCELLED'] : ['CANCELLED'];
   if (!allowed.includes(status)) throw new ApiError(403, `You cannot set status to ${status}`);
 
-  // capture the prior status BEFORE mutating — needed to detect a first-time
-  // COMPLETED transition and a cancellation of an already-APPROVED booking.
+  // לוכדים את הסטטוס הקודם לפני השינוי — דרוש כדי לזהות מעבר ראשון ל-COMPLETED
+  // וביטול של הזמנה שכבר הייתה APPROVED.
   const prevStatus = booking.status;
   const firstCompletion = status === 'COMPLETED' && prevStatus !== 'COMPLETED';
   const cancelledAfterApproval = status === 'CANCELLED' && prevStatus === 'APPROVED';
@@ -116,17 +115,17 @@ async function updateStatus(id, user, status) {
   await booking.save();
 
   if (firstCompletion) {
-    // Trigger 3 — "item returned": email BOTH parties their review invitations.
+    // טריגר 3 — "הפריט הוחזר": מייל לשני הצדדים עם הזמנות לכתוב ביקורת.
     emailService.notifyBookingCompleted(booking.id);
-    // Volume term: count this completed rental toward the renter's trust score.
+    // רכיב "ניסיון": סופרים את ההשכרה שהושלמה לטובת ציון האמון של השוכר.
     await bumpRenterReputation(booking.renter, { completed: 1 });
   } else if (cancelledAfterApproval) {
-    // Reliability term: a cancel after approval dents the renter's trust score.
+    // רכיב "אמינות": ביטול אחרי אישור פוגע בציון האמון של השוכר.
     await bumpRenterReputation(booking.renter, { cancelled: 1 });
   }
 
-  // Trigger 2 — notify the renter when the OWNER/ADMIN approves or declines.
-  // (Skip when the renter cancels their own booking — they already know.)
+  // טריגר 2 — מודיעים לשוכר כשהבעלים/אדמין מאשר או דוחה.
+  // (מדלגים כשהשוכר מבטל את ההזמנה שלו עצמו — הוא כבר יודע.)
   if ((isOwner || isAdmin) && (status === 'APPROVED' || status === 'CANCELLED')) {
     emailService.notifyBookingStatusChange(booking.id, status);
   }
@@ -135,10 +134,9 @@ async function updateStatus(id, user, status) {
 }
 
 /**
- * Atomically bump a renter's transaction counters, then refresh their Trust
- * Score from the new values. Counters are incremented with $inc (race-safe);
- * the score is then recomputed on a fresh document. Best-effort — a failure
- * here must never break the status transition, so it self-logs and swallows.
+ * מגדיל אטומית את מוני העסקאות של השוכר, ואז מרענן את ציון האמון מהערכים החדשים.
+ * המונים מוגדלים עם $inc (בטוח למרוץ); הציון מחושב מחדש על מסמך טרי. מאמץ מיטבי —
+ * כישלון כאן לעולם לא ישבור את מעבר הסטטוס, ולכן הוא רושם ללוג ובולע את השגיאה.
  */
 async function bumpRenterReputation(renterId, { completed = 0, cancelled = 0 }) {
   try {
@@ -148,7 +146,7 @@ async function bumpRenterReputation(renterId, { completed = 0, cancelled = 0 }) 
     if (!Object.keys(inc).length) return;
 
     const user = await User.findByIdAndUpdate(renterId, { $inc: inc }, { new: true });
-    if (user) await user.calculateTrustScore(); // recompute + persist trustScore
+    if (user) await user.calculateTrustScore(); // חישוב מחדש + שמירת trustScore
   } catch (err) {
     // eslint-disable-next-line global-require
     require('../utils/logger').error(`bumpRenterReputation(${renterId}) failed: ${err.message}`);

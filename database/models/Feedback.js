@@ -7,11 +7,10 @@ const { Schema, model } = mongoose;
 const FEEDBACK_TYPES = ['question', 'recommendation'];
 
 /**
- * Feedback — a public contact-inbox entry. ANYONE (no login) can submit a
- * `question` (a comment / inquiry for the admin) or a `recommendation`
- * (social proof) via the footer form, giving just a name + email. The admin
- * reads everything in the inbox; only recommendations can be flipped to
- * `isApprovedForHomepage` to appear in the public homepage carousel.
+ * Feedback — רשומת "תיבת פניות" ציבורית. כל אחד (ללא התחברות) יכול לשלוח
+ * `question` (הערה / פנייה לאדמין) או `recommendation` (המלצה / הוכחה חברתית)
+ * דרך טופס ה-footer, עם שם + אימייל בלבד. האדמין קורא הכול בתיבה; רק המלצות ניתן
+ * להפוך ל-`isApprovedForHomepage` כדי שיופיעו בקרוסלת דף הבית הציבורית.
  */
 const feedbackSchema = new Schema(
   {
@@ -42,18 +41,18 @@ const feedbackSchema = new Schema(
       minlength: [5, 'Message is too short'],
       maxlength: [1000, 'Message is too long'],
     },
-    // only meaningful for `recommendation`; admin curates which show publicly
+    // משמעותי רק עבור `recommendation`; האדמין בוחר אילו מוצגות לציבור
     isApprovedForHomepage: {
       type: Boolean,
       default: false,
       index: true,
     },
   },
-  // createdAt (+ updatedAt) provided by timestamps — used for "newest first"
+  // createdAt (+ updatedAt) מסופקים ע"י timestamps — משמשים ל"חדש ביותר קודם"
   { timestamps: true },
 );
 
-// fast path for the public "approved recommendations, newest first" query
+// מסלול מהיר לשאילתה הציבורית "המלצות מאושרות, החדשות קודם"
 feedbackSchema.index({ type: 1, isApprovedForHomepage: 1, createdAt: -1 });
 
 feedbackSchema.set('toJSON', {

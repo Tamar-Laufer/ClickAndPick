@@ -1,6 +1,6 @@
 'use strict';
 
-const { Category } = require('../models');
+const { Category } = require('../../database/models');
 const { ApiError } = require('../utils/errors');
 
 /**

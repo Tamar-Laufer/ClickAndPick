@@ -15,7 +15,7 @@
  */
 
 const cron = require('node-cron');
-const { Booking } = require('../models');
+const { Booking } = require('../../database/models');
 const emailService = require('../services/emailService');
 const logger = require('../utils/logger');
 

@@ -10,7 +10,7 @@ jest.mock('../services/emailService', () => ({
 
 const request = require('supertest');
 const app = require('../app');
-const { User, Booking } = require('../models');
+const { User, Booking } = require('../../database/models');
 const {
   createUser, createAdmin, tokenFor, createItem,
 } = require('./helpers');
