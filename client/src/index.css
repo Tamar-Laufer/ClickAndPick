@@ -99,6 +99,16 @@ html { scroll-behavior: smooth; }
 :root { --radius: 0; --radius-s: 0; --radius-l: 0; --radius-xl: 0; }
 *, *::before, *::after { border-radius: 0 !important; }
 
+/* …with one deliberate exception: profile avatars/photos stay perfectly round
+   everywhere they appear (shared Avatar component, the profile-header photo, and
+   the initial-letter fallback circles in lists). Needs !important to win against
+   the universal square reset above. */
+.avatar, .avatar img, .avatar .avatar-ini,
+.prof-photo, .prof-photo img, .prof-photo .ini,
+.rev-av, .u-av, .review-card-av, .review-av, .quote-av {
+  border-radius: 50% !important;
+}
+
 body {
   font-family: var(--font-body);
   background: var(--bg);

@@ -64,7 +64,7 @@
 /* ── buttons ── */
 .tg .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; height:50px; padding:0 28px;
   border:none; border-radius:0; font-family:var(--body); font-size:14px; font-weight:500; letter-spacing:.02em;
-  transition:.2s var(--tg-ease); white-space:nowrap; }
+  transition:.2s var(--tg-ease); white-space:nowrap; cursor:pointer; }
 .tg .btn svg{ width:16px; height:16px; }
 .tg .btn-accent{ background:var(--accent); color:#fff; }
 .tg .btn-accent:hover{ background:var(--accent-dk); }

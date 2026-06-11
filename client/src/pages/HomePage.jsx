@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { apiFetch } from '../services/api';
 import { useCategories } from '../context/CategoriesContext';
+import { useAuth } from '../context/AuthContext';
 import { useFullBleed } from '../hooks/useFullBleed';
 import { priceParts } from '../utils/format';
 import TgNavbar from '../components/layout/TgNavbar';
@@ -58,6 +59,9 @@ export default function HomePage() {
   const rootRef = useRef(null);
   const location = useLocation();
   const { labelOf } = useCategories();
+  // כשיש משתמש מחובר אין טעם בכפתורי "הצטרפו"/"התחברו" שפזורים בעמוד — מסתירים
+  // אותם ומציעים במקומם יציאה. ברגע ש-logout מאפס את user הם חוזרים אוטומטית.
+  const { user, logout } = useAuth();
   const [items, setItems] = useState([]);
   const [reviews, setReviews] = useState([]);
 
@@ -124,7 +128,7 @@ export default function HomePage() {
             <div>
               <p className="hero-lead">{'אנחנו חולמים על עולם ללא פסולת\nמיליארד פעולות קטנות הכניסו אותנו לבלגן הזה. מיליארד פעולות קטנות יכולות להוציא אותנו ממנו.'}</p>
               <div className="hero-actions">
-                <Link className="btn btn-accent" to="/register">הצטרפו בחינם</Link>
+                {!user && <Link className="btn btn-accent" to="/register">הצטרפו בחינם</Link>}
                 <a className="btn btn-line on-dark" href="#process">איך זה עובד</a>
               </div>
             </div>
@@ -227,7 +231,7 @@ export default function HomePage() {
               <span className="kicker"><span className="idx">05</span> איך זה עובד</span>
               <h2>ארבעה צעדים פשוטים<br />מהבקשה ועד ההחזרה</h2>
             </div>
-            <Link className="btn btn-accent" to="/register">הצטרפו עכשיו</Link>
+            {!user && <Link className="btn btn-accent" to="/register">הצטרפו עכשיו</Link>}
           </div>
           <div className="process-steps">
             {STEPS.map((s, i) => (
@@ -274,11 +278,17 @@ export default function HomePage() {
       {/* ════════ CTA BAND ════════ */}
       <section className="cta" id="cta">
         <div className="wrap">
-          <span className="kicker"><span className="idx">06</span> מצטרפים</span>
-          <h2>הקהילה שלכם מחכה.</h2>
+          <span className="kicker"><span className="idx">06</span> {user ? 'מחוברים' : 'מצטרפים'}</span>
+          <h2>{user ? `שמחים שאתם כאן, ${user.name}.` : 'הקהילה שלכם מחכה.'}</h2>
           <div className="cta-actions">
-            <Link className="btn btn-accent" to="/register">הצטרפות בחינם</Link>
-            <Link className="btn btn-line on-dark" to="/login">כבר רשומים? התחברו</Link>
+            {user ? (
+              <button type="button" className="btn btn-accent" onClick={logout}>יציאה</button>
+            ) : (
+              <>
+                <Link className="btn btn-accent" to="/register">הצטרפות בחינם</Link>
+                <Link className="btn btn-line on-dark" to="/login">כבר רשומים? התחברו</Link>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -308,7 +318,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="footer-bottom">
-            <span>© {new Date().getFullYear()} ביחד · כל הזכויות שמורות</span>
+            <span>© {new Date().getFullYear()} Click&Pick · כל הזכויות שמורות</span>
             <div className="footer-social">
               <a href="#" aria-label="פייסבוק"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg></a>
               <a href="#" aria-label="אינסטגרם"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><rect x="2" y="2" width="20" height="20" rx="0" /><circle cx="12" cy="12" r="4" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></svg></a>

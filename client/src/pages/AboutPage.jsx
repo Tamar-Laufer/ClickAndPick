@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useFullBleed } from '../hooks/useFullBleed';
 import TgNavbar from '../components/layout/TgNavbar';
+import MailForm from '../components/mail/MailForm';
+import { apiFetch } from '../services/api';
 import './HomePage.css';
 
 /* ── "עלינו" — the manifesto ("הרעיון") lives here now, reached only from the
@@ -14,6 +16,19 @@ const ArrowIcon = () => (
 
 export default function AboutPage() {
   useFullBleed(); // full-bleed page — this page has its own sticky nav
+
+  // The page (not the component) owns the actual delivery, so MailForm stays a
+  // pure, reusable UI piece. Routes through the existing feedback/email pipeline.
+  const sendMail = ({ name, email, subject, message }) =>
+    apiFetch('/feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        name,
+        email,
+        type: 'question',
+        message: subject ? `[${subject}] ${message}` : message,
+      }),
+    });
 
   return (
     <div className="tg tg-white" dir="rtl">
@@ -31,10 +46,18 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ════════ CONTACT (mail) ════════ */}
+      <section className="manifesto" id="contact">
+        <div className="wrap">
+          <span className="kicker"><span className="idx">02</span> צרו קשר</span>
+          <MailForm onSend={sendMail} />
+        </div>
+      </section>
+
       {/* ════════ CTA BAND ════════ */}
       <section className="cta" id="cta">
         <div className="wrap">
-          <span className="kicker"><span className="idx">02</span> מצטרפים</span>
+          <span className="kicker"><span className="idx">03</span> מצטרפים</span>
           <h2>הקהילה שלכם מחכה.</h2>
           <div className="cta-actions">
             <Link className="btn btn-accent" to="/register">הצטרפות בחינם</Link>

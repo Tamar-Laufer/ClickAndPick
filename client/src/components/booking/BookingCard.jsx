@@ -7,11 +7,11 @@ import './BookingCard.css';
    `role` ('renter' | 'owner') + `status` drive which action buttons appear. */
 
 const STATUS = {
-  PENDING:   { label: 'ממתין לאישור', cls: 'pending' },
-  APPROVED:  { label: 'מאושר',        cls: 'approved' },
-  ACTIVE:    { label: 'בהשאלה כעת',   cls: 'active' },
-  COMPLETED: { label: 'הושלם',        cls: 'completed' },
-  CANCELLED: { label: 'בוטל',         cls: 'cancelled' },
+  PENDING: { label: 'ממתין לאישור', cls: 'pending' },
+  APPROVED: { label: 'מאושר', cls: 'approved' },
+  ACTIVE: { label: 'בהשאלה כעת', cls: 'active' },
+  COMPLETED: { label: 'הושלם', cls: 'completed' },
+  CANCELLED: { label: 'בוטל', cls: 'cancelled' },
 };
 
 const fmtDate = (d) => new Date(d).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -28,7 +28,7 @@ function displayStatus(b) {
 
 const shekel = (n) => `₪${Number(n || 0).toLocaleString('he-IL', { maximumFractionDigits: 2 })}`;
 
-export default function BookingCard({ booking, role, onAction, onReview, busy }) {
+export default function BookingCard({ booking, role, onAction, onReview, onOpenChat, busy }) {
   // `booking.item` is null when the referenced item no longer exists (an older
   // hard-deleted item left this booking orphaned). Show a clear "removed" state
   // instead of a bare "?" placeholder.
@@ -115,7 +115,7 @@ export default function BookingCard({ booking, role, onAction, onReview, busy })
 
         <div className="bk-foot">
           <span className="bk-price">{role === 'owner' ? '' : `₪${booking.totalPrice}`}</span>
-          {(actions.length > 0 || (booking.status === 'COMPLETED' && onReview)) && (
+          {(actions.length > 0 || booking.status === 'APPROVED' || (booking.status === 'COMPLETED' && onReview)) && (
             <div className="bk-actions">
               {actions.map(a => (
                 <button
@@ -127,6 +127,15 @@ export default function BookingCard({ booking, role, onAction, onReview, busy })
                   {busy ? '…' : a.label}
                 </button>
               ))}
+              {booking.status === 'APPROVED' && counterUser && onOpenChat && (
+                <button
+                  className="bk-btn line bk-btn-chat"
+                  onClick={() => onOpenChat(counterUser.id, fullName(counterUser))}
+                  aria-label="פתח צ'ט"
+                >
+                  <img src="/images/chat.png" alt="צ'ט" className="bk-chat-icon" />
+                </button>
+              )}
               {booking.status === 'COMPLETED' && onReview && (
                 <button className="bk-btn accent" onClick={() => onReview(booking)}>השאירו ביקורת</button>
               )}

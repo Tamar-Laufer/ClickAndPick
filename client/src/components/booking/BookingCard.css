@@ -46,6 +46,9 @@
 .tg .bk-btn.bk-del{ display:inline-flex; align-items:center; gap:6px; border-color:#E7B8B0; color:#D33A2C; }
 .tg .bk-btn.bk-del:hover{ border-color:#D33A2C; background:#FCE8E1; color:#BB3024; }
 
+.tg .bk-btn-chat{ display:inline-flex; align-items:center; justify-content:center; padding:0 12px; }
+.tg .bk-chat-icon{ width:20px; height:20px; display:block; }
+
 @media (max-width:520px){
   .tg .bk{ flex-direction:column; }
   .tg .bk-media{ width:100%; height:170px; }

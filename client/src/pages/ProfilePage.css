@@ -45,7 +45,7 @@
 .tg .profile{ padding:30px 0 90px; }
 .tg .prof-head{ display:flex; gap:28px; align-items:flex-start; background:var(--white); border:1px solid var(--line); padding:30px; }
 .tg .prof-photo{ width:118px; height:118px; flex:0 0 auto; position:relative; border-radius:50%; overflow:hidden; }
-.tg .prof-photo img{ width:100%; height:100%; object-fit:cover; }
+.tg .prof-photo img{ width:100%; height:100%; object-fit:cover;}
 .tg .prof-photo .ini{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--block); color:#fff; font-family:var(--display); font-weight:600; font-size:46px; }
 .tg .prof-photo .cam{ position:absolute; bottom:0; inset-inline-start:0; width:34px; height:34px; background:var(--accent); color:#fff; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; }
 .tg .prof-photo .cam svg{ width:16px; height:16px; }
@@ -62,14 +62,14 @@
 .tg .prof-photo-actions .ppa-link:disabled{ opacity:.5; cursor:default; }
 .tg .prof-id{ flex:1 1 auto; min-width:0; }
 .tg .prof-name-row{ display:flex; align-items:center; gap:11px; flex-wrap:wrap; }
-.tg .prof-name{ font-family:var(--display); font-weight:300; font-size:clamp(28px,3.4vw,40px); color:var(--ink); letter-spacing:-.01em; }
+.tg .prof-name{ font-family:var(--display); font-weight:300; font-size:clamp(28px,3.4vw,40px); color:var(--ink); letter-spacing:-.01em;border-radius: 50%; }
 .tg .prof-verified{ display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:var(--block); background:color-mix(in srgb,var(--block) 12%,var(--white)); padding:5px 11px; }
 .tg .prof-verified svg{ width:14px; height:14px; }
 .tg .prof-loc{ display:flex; align-items:center; gap:7px; font-size:14.5px; color:var(--muted); margin-top:8px; }
 .tg .prof-loc svg{ width:16px; height:16px; }
 .tg .prof-meta{ display:flex; align-items:center; gap:18px; margin-top:14px; font-size:14px; color:var(--ink-2); flex-wrap:wrap; }
 .tg .prof-meta .mi{ display:flex; align-items:center; gap:7px; }
-.tg .prof-meta svg{ width:16px; height:16px; color:var(--accent); }
+.tg .prof-meta svg{ width:16px; height:16px; color:var(--accent);border-radius: 50%; }
 .tg .prof-actions{ flex:0 0 auto; align-self:flex-start; }
 
 .tg .prof-grid{ display:grid; grid-template-columns:1.55fr 1fr; gap:24px; margin-top:24px; align-items:start; }

@@ -29,7 +29,7 @@ export function useItemSearch(geo) {
   /* ── filters (all server-driven) ── */
   const [query, setQuery] = useState(decodeURIComponent(qParam) === '-' ? '' : decodeURIComponent(qParam));
   const [selectedCats, setSelectedCats] = useState(() => new Set());
-  const [sort, setSort] = useState('recommended');
+  const [sort, setSort] = useState('newest'); // default: newest items first (מהחדש לישן)
   const [availFrom, setAvailFrom] = useState('');
   const [availTo, setAvailTo] = useState('');
   const [openSec, setOpenSec] = useState({ cats: true, avail: true, near: true });
@@ -43,7 +43,7 @@ export function useItemSearch(geo) {
     const term = query.trim();
     if (term) params.set('q', term);
     if (selectedCats.size) params.set('category', [...selectedCats].join(','));
-    if (sort !== 'recommended') params.set('sort', sort);
+    if (sort !== 'newest') params.set('sort', sort); // 'newest' is the server default → keep the URL clean
     if (availFrom && availTo) { params.set('availableFrom', availFrom); params.set('availableTo', availTo); }
     if (geo.geo) {
       params.set('lat', geo.geo.lat);
@@ -101,7 +101,7 @@ export function useItemSearch(geo) {
 
   function clearAll() {
     setQuery(''); setSelectedCats(new Set());
-    setAvailFrom(''); setAvailTo(''); setSort('recommended');
+    setAvailFrom(''); setAvailTo(''); setSort('newest');
     geo.clearLocation();
   }
 
