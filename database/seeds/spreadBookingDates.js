@@ -8,7 +8,7 @@
  *   node seeds/spreadBookingDates.js
  */
 require('dotenv').config();
-const { connectMongo, disconnectMongo } = require('../config/db');
+const { connectMongo, disconnectMongo } = require('../db');
 const { Booking } = require('../models');
 
 const MONTHS_BACK = 6;

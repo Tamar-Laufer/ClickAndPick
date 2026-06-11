@@ -1,0 +1,163 @@
+/* ── MailForm ───────────────────────────────────────────────────────────────
+   All presentation for the Email/Mail component. The JSX file carries zero
+   styling — every layout, spacing, colour and breakpoint lives here.
+   Design tokens (--accent, --ink, --line, …) come from the shared .tg theme;
+   fallbacks keep the form usable even outside that namespace. */
+
+.mail {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 28px;
+  background: var(--white, #fff);
+  border: 1px solid var(--line, #e7e1d8);
+  text-align: start;
+}
+
+.mail-title {
+  font-family: var(--display, inherit);
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--ink, #2a2118);
+  margin-bottom: 6px;
+}
+
+.mail-sub {
+  font-size: 14px;
+  color: var(--muted, #8a8175);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* ── Status banners (success / error) ── */
+.mail-banner {
+  font-size: 13.5px;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+  border: 1px solid transparent;
+}
+
+.mail-banner--success {
+  background: #E7F4EC;
+  color: #1E7A48;
+  border-color: #CDE9D8;
+}
+
+.mail-banner--error {
+  background: #FCE8E1;
+  color: #B23A2A;
+  border-color: #F3DAD2;
+}
+
+/* ── Form layout ── */
+.mail-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* two fields side by side on wide screens, stacked on phones (see media query) */
+.mail-row {
+  display: flex;
+  gap: 16px;
+}
+
+.mail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.mail-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink, #2a2118);
+}
+
+.mail-optional {
+  font-weight: 400;
+  color: var(--muted, #8a8175);
+}
+
+.mail-input {
+  width: 100%;
+  padding: 11px 13px;
+  font-family: var(--body, inherit);
+  font-size: 14px;
+  color: var(--ink, #2a2118);
+  background: var(--white, #fff);
+  border: 1px solid var(--line, #d9d2c7);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.mail-input::placeholder {
+  color: var(--muted, #b3ab9e);
+}
+
+.mail-input:focus {
+  border-color: var(--accent, #0e6e63);
+  box-shadow: 0 0 0 3px rgba(14, 110, 99, 0.12);
+}
+
+.mail-input--invalid {
+  border-color: #B23A2A;
+}
+
+.mail-input--invalid:focus {
+  border-color: #B23A2A;
+  box-shadow: 0 0 0 3px rgba(178, 58, 42, 0.12);
+}
+
+.mail-textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+.mail-hint {
+  font-size: 12px;
+  color: #B23A2A;
+}
+
+/* ── Submit ── */
+.mail-submit {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 12px 28px;
+  font-family: var(--body, inherit);
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background: var(--accent, #0e6e63);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.mail-submit:hover:not(:disabled) {
+  background: var(--accent-dk, #0a5750);
+}
+
+.mail-submit:disabled {
+  background: var(--muted, #9c948a);
+  cursor: default;
+}
+
+/* ── Responsive ── */
+@media (max-width: 560px) {
+  .mail {
+    padding: 20px;
+  }
+
+  .mail-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .mail-submit {
+    align-self: stretch;
+    text-align: center;
+  }
+}

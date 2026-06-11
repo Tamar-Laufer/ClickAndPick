@@ -10,6 +10,12 @@ node_modules/
 # Build output
 client/dist/
 
+# C++ realtime service — local build artifacts & vendored binaries (never commit)
+realtime-service-cpp/build/
+realtime-service-cpp/thirdparty/
+realtime-service-cpp/.deps-cache/
+realtime-service-cpp/vcpkg/
+
 # Logs
 logs/
 **/logs/

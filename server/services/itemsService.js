@@ -1,6 +1,6 @@
 'use strict';
 
-const { Item, Booking, User } = require('../models');
+const { Item, Booking, User } = require('../../database/models');
 const { ApiError } = require('../utils/errors');
 const { toPoint } = require('../utils/geo');
 const { geocodeAddress } = require('../utils/geocode');
@@ -84,15 +84,18 @@ function sortStage(sort) {
     case 'price-asc':  return { dailyRate: 1 };
     case 'price-desc': return { dailyRate: -1 };
     case 'recommended':
-    default:
       // "Recommended": surface the best items to the top without hiding any.
       //   1) averageRating  desc — highest-rated first
       //   2) totalReviews   desc — tie-break by how many people rated it
       //   3) createdAt      desc — unreviewed items (rating/reviews = 0) fall
       //                            back to newest-first, so nothing is hidden.
-      // Pure ordering → no schema change, no empty states. The frontend leaves
-      // `sort` unset for "recommended", so this default is the one that runs.
       return { averageRating: -1, totalReviews: -1, createdAt: -1 };
+    case 'newest':
+    default:
+      // Absolute default: newest items (most recently created) first, backed by
+      // the schema's `timestamps: true` createdAt. The frontend leaves `sort`
+      // unset for this default, so the plain no-param browse lands here too.
+      return { createdAt: -1 };
   }
 }
 
@@ -146,14 +149,14 @@ function parseCoords(lat, lng) {
 async function listNearby({ filter, coords, radius, pg, lim, sort }) {
   const radiusKm = Math.min(Math.max(Number(radius) || DEFAULT_RADIUS_KM, 0.1), MAX_RADIUS_KM);
 
-  // Keep "Recommended" meaning the same thing as the non-geo path: best-rated
-  // first, then most-reviewed. Here the final tie-breaker is proximity (closest
-  // first) rather than newest — in a "near me" search distance is the more
-  // useful fallback, and unreviewed items (rating/reviews = 0) therefore still
-  // surface closest-first. `distanceInMeters` is provided by the $geoNear stage.
+  // Mirror the non-geo sort options. The absolute default here is also newest
+  // first. For "Recommended" the final tie-breaker is proximity (closest first)
+  // rather than newest — in a "near me" search distance is the more useful
+  // fallback. `distanceInMeters` is provided by the $geoNear stage.
   const geoSort = sort === 'price-asc' ? [{ $sort: { dailyRate: 1 } }]
     : sort === 'price-desc' ? [{ $sort: { dailyRate: -1 } }]
-      : [{ $sort: { averageRating: -1, totalReviews: -1, distanceInMeters: 1 } }];
+      : sort === 'recommended' ? [{ $sort: { averageRating: -1, totalReviews: -1, distanceInMeters: 1 } }]
+        : [{ $sort: { createdAt: -1 } }]; // newest first — the default, here too
 
   const [result] = await Item.aggregate([
     {

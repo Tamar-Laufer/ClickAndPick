@@ -12,7 +12,10 @@ process.env.NODE_ENV = 'test';
 process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-jwt-secret';
 process.env.JWT_EXPIRES_IN = '7d';
 
-const mongoose = require('mongoose');
+// Use the database package's Mongoose instance — the one the models are
+// registered on — so test operations don't buffer against a second, unconnected
+// copy. (The models resolve mongoose from database/node_modules.)
+const { mongoose } = require('../../database/db');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
 // silence winston (console + file transports) for clean, fast test runs

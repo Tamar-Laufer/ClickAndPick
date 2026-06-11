@@ -2,7 +2,7 @@
 
 /** Shared fixtures + token factories for the integration tests. */
 const jwt = require('jsonwebtoken');
-const { User, Item, Category } = require('../models');
+const { User, Item, Category } = require('../../database/models');
 
 let seq = 0;
 const uniqueEmail = () => `user${Date.now()}_${seq++}@example.com`;

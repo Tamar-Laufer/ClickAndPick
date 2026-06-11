@@ -1,6 +1,6 @@
 'use strict';
 
-const { User, Item, Booking } = require('../models');
+const { User, Item, Booking } = require('../../database/models');
 const { ApiError } = require('../utils/errors');
 
 /**

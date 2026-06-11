@@ -28,7 +28,12 @@
       "Bash(curl -s http://localhost:5173)",
       "PowerShell(Start-Process \"http://localhost:5173\")",
       "Bash(npm run *)",
-      "Bash(node -e \"const app=require\\('./app'\\); console.log\\('app.js loads OK; type:', typeof app, '| has corsOrigin:', typeof app.locals.corsOrigin==='function'\\)\")"
+      "Bash(node -e \"const app=require\\('./app'\\); console.log\\('app.js loads OK; type:', typeof app, '| has corsOrigin:', typeof app.locals.corsOrigin==='function'\\)\")",
+      "Bash(mkdir -p database)",
+      "Bash(git mv *)",
+      "Bash(rmdir server/config)",
+      "Bash(node -e ' *)",
+      "Bash(npm test *)"
     ]
   }
 }

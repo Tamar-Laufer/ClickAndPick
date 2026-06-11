@@ -24,8 +24,8 @@
  */
 
 require('dotenv').config();
-const { connectMongo, disconnectMongo } = require('../config/db');
-const { Item, User } = require('../models');
+const { connectMongo, disconnectMongo } = require('../../database/db');
+const { Item, User } = require('../../database/models');
 const { toPoint } = require('../utils/geo');
 
 const DRY_RUN = process.argv.includes('--dry-run');
