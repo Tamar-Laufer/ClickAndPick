@@ -15,10 +15,10 @@ exports.approved = asyncHandler(async (_req, res) => {
   res.json({ feedback });
 });
 
-// GET /api/admin/feedback — ADMIN: the full inbox.
-exports.listAll = asyncHandler(async (_req, res) => {
-  const feedback = await feedbackService.listAll();
-  res.json({ feedback });
+// GET /api/admin/feedback — ADMIN: the inbox, paged + filterable by type.
+exports.listAll = asyncHandler(async (req, res) => {
+  const { feedback, approvedCount, pagination } = await feedbackService.listAll(req.query);
+  res.json({ feedback, approvedCount, pagination });
 });
 
 // PATCH /api/admin/feedback/:id/toggle-approve — ADMIN: flip homepage visibility.

@@ -33,7 +33,17 @@
       "Bash(git mv *)",
       "Bash(rmdir server/config)",
       "Bash(node -e ' *)",
-      "Bash(npm test *)"
+      "Bash(npm test *)",
+      "Bash(echo \"=== locating EXAMPLE folder ===\")",
+      "Bash(find C:/Users/naama/Desktop/ClickAndPick/client -maxdepth 2 -type d -iname example)",
+      "Bash(echo \"=== structure \\(top 2 levels\\) ===\")",
+      "Bash(find C:/Users/naama/Desktop/ClickAndPick/client/EXAMPLE -maxdepth 2)",
+      "Bash(npx vitest *)",
+      "Bash(npx vite *)",
+      "Bash(npx eslint *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" -X PATCH http://localhost:5000/api/bookings/000000000000000000000000/status -H \"Content-Type: application/json\" -d '{\"status\":\"APPROVED\"}')",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"http://localhost:5000/api/dashboard/incoming-requests?page=1&limit=6\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5000/api/bookings/000000000000000000000000)"
     ]
   }
 }

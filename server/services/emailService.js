@@ -1,16 +1,5 @@
 'use strict';
 
-/**
- * emailService — transactional notification emails (Nodemailer / SMTP).
- *
- * Design goals:
- *  - Robust: a mail failure NEVER throws into the booking flow or the cron job.
- *    Every public function resolves to a boolean (true = sent) and logs on error.
- *  - Self-contained: the trigger functions take a booking id and load exactly the
- *    fields they need, so callers stay one-liners (fire-and-forget).
- *  - Degrades gracefully: with no SMTP env configured, emails are skipped (a single
- *    warning) instead of crashing — handy in local dev.
- */
 
 const nodemailer = require('nodemailer');
 const logger = require('../utils/logger');
@@ -135,7 +124,7 @@ async function notifyNewBookingRequest(bookingId) {
       : 'שוכר/ת חדש/ה (ללא דירוג עדיין)';
 
     const html = layout({
-      title: 'בקשת השאלה חדשה 🎉',
+      title: 'בקשת השאלה חדשה',
       intro: `שלום ${esc(fullName(owner))}, התקבלה בקשה לשאול פריט שלך. הנה הפרטים:`,
       rows: [
         { label: 'הפריט', value: esc(booking.item.title) },
@@ -173,7 +162,7 @@ async function notifyBookingStatusChange(bookingId, status) {
 
     if (status === 'APPROVED') {
       const html = layout({
-        title: 'הבקשה אושרה! ✅',
+        title: 'הבקשה אושרה!',
         intro: `שלום ${esc(fullName(renter))}, בקשת ההשאלה שלך אושרה — אפשר לתאם איסוף.`,
         rows: [
           { label: 'הפריט', value: esc(itemTitle) },
@@ -285,14 +274,14 @@ async function sendReturnReminder(booking) {
     const itemTitle = booking.item ? booking.item.title : 'הפריט';
 
     const html = layout({
-      title: 'תזכורת: מחר מחזירים 📦',
+      title: 'תזכורת: מחר מחזירים',
       intro: `שלום ${esc(fullName(renter))}, תזכורת ידידותית — תקופת ההשאלה מסתיימת מחר.`,
       rows: [
         { label: 'הפריט', value: esc(itemTitle) },
         { label: 'תאריך החזרה', value: esc(fmtDate(booking.endDate)) },
       ],
       cta: { href: loginLink('/profile?tab=rentals'), label: 'לצפייה בהשאלה' },
-      footerNote: 'החזרה בזמן שומרת על דירוג טוב ועל קהילה אמינה. תודה רבה! 🌱',
+      footerNote: 'החזרה בזמן שומרת על דירוג טוב ועל קהילה אמינה. תודה רבה!',
     });
     return sendMail({ to: renter.email, subject: `תזכורת החזרה — ${itemTitle}`, html });
   } catch (err) {
@@ -312,7 +301,7 @@ async function sendPasswordReset({ to, name, token }) {
   }
   const resetUrl = `${CLIENT_URL}/reset-password/${token}`;
   const html = layout({
-    title: 'איפוס סיסמה 🔐',
+    title: 'איפוס סיסמה',
     intro: `שלום ${esc(name || 'שכן/ה')}, קיבלנו בקשה לאיפוס הסיסמה לחשבון שלך. לחצו על הכפתור כדי לבחור סיסמה חדשה:`,
     cta: { href: resetUrl, label: 'איפוס הסיסמה' },
     footerNote:

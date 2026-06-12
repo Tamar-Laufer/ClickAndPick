@@ -3,13 +3,14 @@
 const asyncHandler = require('../utils/asyncHandler');
 const adminService = require('../services/adminService');
 
-exports.listUsers = asyncHandler(async (_req, res) => {
-  const users = await adminService.listUsers();
-  res.json({ users });
+exports.listUsers = asyncHandler(async (req, res) => {
+  const { page, limit, q } = req.query;
+  const result = await adminService.listUsers({ page, limit, q });
+  res.json(result); // { users, pagination }
 });
 
-exports.setUserActive = asyncHandler(async (req, res) => {
-  const user = await adminService.setUserActive(req.params.id, req.body.isActive);
+exports.toggleUserStatus = asyncHandler(async (req, res) => {
+  const user = await adminService.toggleUserActive(req.params.id);
   res.json({ user });
 });
 
@@ -21,6 +22,12 @@ exports.setUserRole = asyncHandler(async (req, res) => {
 exports.stats = asyncHandler(async (_req, res) => {
   const stats = await adminService.stats();
   res.json({ stats });
+});
+
+exports.listItems = asyncHandler(async (req, res) => {
+  const { page, limit, q } = req.query;
+  const result = await adminService.listItems({ page, limit, q });
+  res.json(result); // { items, pagination }
 });
 
 exports.toggleItemActive = asyncHandler(async (req, res) => {

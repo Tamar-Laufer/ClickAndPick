@@ -19,30 +19,61 @@ const PLATFORM_FEE_EXPR = {
 const MANAGER_COMMISSION_RATE = 0.05;
 const round2 = (n) => Math.round(n * 100) / 100;
 
+/* Escape user input so it is matched literally inside a $regex (no injection). */
+const escapeRegex = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 /**
- * Users list for the admin table, enriched with each user's activity counts:
- *   bookingCount — bookings they made as a renter
- *   itemCount    — items they own
- * Two grouped aggregations (not per-user queries) keep this O(1) round-trips.
+ * Paginated + searchable users list for the admin table.
+ *   page  — 1-based page number (default 1)
+ *   limit — rows per page (default 20, capped at 100)
+ *   q     — case-insensitive search over firstName / lastName / email
+ * The page query and the total count run in parallel (Promise.all). Activity
+ * counts (bookings made / items owned) are then computed for ONLY the page's
+ * users via a scoped $match — so cost scales with the page size, not the whole
+ * collection.
  */
-async function listUsers() {
-  const [users, bookingCounts, itemCounts] = await Promise.all([
-    User.find().sort({ createdAt: -1 }),
-    Booking.aggregate([{ $group: { _id: '$renter', n: { $sum: 1 } } }]),
-    Item.aggregate([{ $group: { _id: '$owner', n: { $sum: 1 } } }]),
+async function listUsers({ page = 1, limit = 20, q = '' } = {}) {
+  const lim = Math.min(Math.max(Number(limit) || 20, 1), 100);
+  const pg = Math.max(Number(page) || 1, 1);
+
+  const filter = {};
+  const term = String(q || '').trim();
+  if (term) {
+    const rx = new RegExp(escapeRegex(term), 'i');
+    filter.$or = [{ firstName: rx }, { lastName: rx }, { email: rx }];
+  }
+
+  const [users, total] = await Promise.all([
+    User.find(filter).sort({ createdAt: -1 }).skip((pg - 1) * lim).limit(lim),
+    User.countDocuments(filter),
+  ]);
+
+  const ids = users.map((u) => u._id);
+  const [bookingCounts, itemCounts] = await Promise.all([
+    Booking.aggregate([{ $match: { renter: { $in: ids } } }, { $group: { _id: '$renter', n: { $sum: 1 } } }]),
+    Item.aggregate([{ $match: { owner: { $in: ids } } }, { $group: { _id: '$owner', n: { $sum: 1 } } }]),
   ]);
   const bMap = new Map(bookingCounts.map((r) => [String(r._id), r.n]));
   const iMap = new Map(itemCounts.map((r) => [String(r._id), r.n]));
-  return users.map((u) => ({
-    ...u.toJSON(),
-    bookingCount: bMap.get(String(u._id)) || 0,
-    itemCount: iMap.get(String(u._id)) || 0,
-  }));
+
+  const totalPages = Math.max(Math.ceil(total / lim), 1);
+  return {
+    users: users.map((u) => ({
+      ...u.toJSON(),
+      bookingCount: bMap.get(String(u._id)) || 0,
+      itemCount: iMap.get(String(u._id)) || 0,
+    })),
+    pagination: { currentPage: pg, totalPages, totalItems: total, hasMore: pg < totalPages },
+  };
 }
 
-async function setUserActive(id, isActive) {
-  const user = await User.findByIdAndUpdate(id, { isActive: !!isActive }, { new: true });
+/* Account moderation — flip a user's isActive flag (pure toggle). */
+async function toggleUserActive(id) {
+  const user = await User.findById(id);
   if (!user) throw new ApiError(404, 'User not found');
+  user.isActive = !user.isActive;
+  // validate only the touched field — old docs may carry stale data elsewhere
+  await user.save({ validateModifiedOnly: true });
   return user;
 }
 
@@ -174,4 +205,33 @@ async function toggleItemActive(id) {
   return item;
 }
 
-module.exports = { listUsers, setUserActive, setUserRole, stats, toggleItemActive };
+/**
+ * Paginated + searchable items list for the admin moderation table. Unlike the
+ * public catalog this INCLUDES suspended (isActive:false) items — that's the
+ * point of the panel — but still hides soft-deleted ones. Search (`q`) matches
+ * the item title or category; owner is populated for display.
+ */
+async function listItems({ page = 1, limit = 20, q = '' } = {}) {
+  const lim = Math.min(Math.max(Number(limit) || 20, 1), 100);
+  const pg = Math.max(Number(page) || 1, 1);
+
+  const filter = { isDeleted: { $ne: true } };
+  const term = String(q || '').trim();
+  if (term) {
+    const rx = new RegExp(escapeRegex(term), 'i');
+    filter.$or = [{ title: rx }, { category: rx }];
+  }
+
+  const [items, total] = await Promise.all([
+    Item.find(filter).populate('owner', 'firstName lastName').sort({ createdAt: -1 }).skip((pg - 1) * lim).limit(lim),
+    Item.countDocuments(filter),
+  ]);
+
+  const totalPages = Math.max(Math.ceil(total / lim), 1);
+  return {
+    items,
+    pagination: { currentPage: pg, totalPages, totalItems: total, hasMore: pg < totalPages },
+  };
+}
+
+module.exports = { listUsers, toggleUserActive, setUserRole, stats, toggleItemActive, listItems };

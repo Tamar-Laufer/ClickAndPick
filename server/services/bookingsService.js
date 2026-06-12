@@ -7,6 +7,22 @@ const emailService = require('./emailService');
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const ACTIVE_STATUSES = ['PENDING', 'APPROVED'];
 
+// Dashboard lists are loaded a page at a time (the profile renders ~6 cards per
+// chunk and asks for more on demand) — never the whole history at once.
+const DEFAULT_PAGE_SIZE = 6;
+const MAX_PAGE_SIZE = 50;
+
+/** Clamp page/limit query input and shape the meta the client paginators read. */
+function paginate({ page, limit } = {}) {
+  const lim = Math.min(Math.max(Number(limit) || DEFAULT_PAGE_SIZE, 1), MAX_PAGE_SIZE);
+  const pg = Math.max(Number(page) || 1, 1);
+  return { lim, pg };
+}
+function paginationMeta(pg, lim, total) {
+  const totalPages = Math.max(Math.ceil(total / lim), 1);
+  return { currentPage: pg, totalPages, totalItems: total, hasMore: pg < totalPages };
+}
+
 /** עיגול סכום כסף ל-2 ספרות אחרי הנקודה (מונע סחף float כמו 4.500000001). */
 const money = (n) => Math.round(n * 100) / 100;
 
@@ -58,24 +74,40 @@ async function create(renterId, { item: itemId, startDate, endDate }) {
   return booking;
 }
 
-/** ההזמנות שהמשתמש ביצע (כשוכר) — כולל ממי הוא שוכר. */
-async function listMine(renterId) {
-  return Booking.find({ renter: renterId })
-    .populate({
-      path: 'item',
-      select: 'title imageUrl dailyRate category owner',
-      populate: { path: 'owner', select: 'firstName lastName avatarUrl' },
-    })
-    .sort({ createdAt: -1 });
+/** ההזמנות שהמשתמש ביצע (כשוכר) — עמוד אחד בכל פעם, החדשות קודם. */
+async function listMine(renterId, opts) {
+  const { lim, pg } = paginate(opts);
+  const filter = { renter: renterId };
+  const [bookings, total] = await Promise.all([
+    Booking.find(filter)
+      .populate({
+        path: 'item',
+        select: 'title imageUrl dailyRate category owner',
+        populate: { path: 'owner', select: 'firstName lastName avatarUrl' },
+      })
+      .sort({ createdAt: -1 })
+      .skip((pg - 1) * lim)
+      .limit(lim),
+    Booking.countDocuments(filter),
+  ]);
+  return { bookings, pagination: paginationMeta(pg, lim, total) };
 }
 
-/** הזמנות על פריטים שבבעלות המשתמש (בקשות נכנסות). */
-async function listIncoming(ownerId) {
+/** הזמנות על פריטים שבבעלות המשתמש (בקשות נכנסות) — עמוד אחד בכל פעם. */
+async function listIncoming(ownerId, opts) {
+  const { lim, pg } = paginate(opts);
   const owned = await Item.find({ owner: ownerId }).select('_id').lean();
-  return Booking.find({ item: { $in: owned.map((i) => i._id) } })
-    .populate('item', 'title imageUrl')
-    .populate('renter', 'firstName lastName email avatarUrl')
-    .sort({ createdAt: -1 });
+  const filter = { item: { $in: owned.map((i) => i._id) } };
+  const [bookings, total] = await Promise.all([
+    Booking.find(filter)
+      .populate('item', 'title imageUrl')
+      .populate('renter', 'firstName lastName email avatarUrl')
+      .sort({ createdAt: -1 })
+      .skip((pg - 1) * lim)
+      .limit(lim),
+    Booking.countDocuments(filter),
+  ]);
+  return { bookings, pagination: paginationMeta(pg, lim, total) };
 }
 
 async function getById(id, user) {

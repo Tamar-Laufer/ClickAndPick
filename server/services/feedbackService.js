@@ -41,15 +41,40 @@ async function attachAvatars(list) {
   return list;
 }
 
+// The admin inbox loads a page at a time (8 rows per chunk) instead of pulling
+// every submission ever sent on one request.
+const INBOX_PAGE_SIZE = 8;
+const INBOX_MAX_PAGE_SIZE = 50;
+
 /**
- * Admin: the full inbox, newest first.
- * Serialised via the schema's toJSON transform (`id` virtual, no `_id`) so the
- * admin UI's toggle — which posts `f.id` — works; a bare `.lean()` would drop
- * the virtual and send `undefined` → "Invalid _id".
+ * Admin: the inbox, newest first, one page at a time.
+ *   page  — 1-based page (default 1)
+ *   limit — rows per page (default 8, capped at 50)
+ *   type  — 'recommendation' | 'question' to match the UI filter; anything else
+ *           (incl. 'all') returns both kinds.
+ * `approvedCount` is the GLOBAL number of recommendations shown on the homepage
+ * (not page-local), so the summary line stays correct while paging. Serialised
+ * via toJSON so the toggle's `f.id` works (a bare `.lean()` would drop it).
  */
-async function listAll() {
-  const docs = await Feedback.find().sort({ createdAt: -1 });
-  return attachAvatars(docs.map((d) => d.toJSON()));
+async function listAll({ page = 1, limit = INBOX_PAGE_SIZE, type } = {}) {
+  const lim = Math.min(Math.max(Number(limit) || INBOX_PAGE_SIZE, 1), INBOX_MAX_PAGE_SIZE);
+  const pg = Math.max(Number(page) || 1, 1);
+
+  const filter = {};
+  if (Feedback.TYPES.includes(type)) filter.type = type;
+
+  const [docs, total, approvedCount] = await Promise.all([
+    Feedback.find(filter).sort({ createdAt: -1 }).skip((pg - 1) * lim).limit(lim),
+    Feedback.countDocuments(filter),
+    Feedback.countDocuments({ type: 'recommendation', isApprovedForHomepage: true }),
+  ]);
+
+  const totalPages = Math.max(Math.ceil(total / lim), 1);
+  return {
+    feedback: await attachAvatars(docs.map((d) => d.toJSON())),
+    approvedCount,
+    pagination: { currentPage: pg, totalPages, totalItems: total, hasMore: pg < totalPages },
+  };
 }
 
 /**

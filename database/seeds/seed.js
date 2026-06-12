@@ -4,11 +4,9 @@ require('dotenv').config();
 const { connectMongo, disconnectMongo } = require('../db');
 const { User, Item, Booking } = require('../models');
 
-// --- מאגרי נתונים ליצירה רנדומלית ---
 const firstNames = ['שרה', 'יוסי', 'מיכל', 'דוד', 'רחל', 'אברהם', 'נועה', 'יעל', 'אורי', 'תמר', 'דניאל', 'איתי', 'עומר', 'שירה', 'מאיה', 'גיא', 'רועי', 'עידו', 'עדי', 'טליה', 'אבי', 'חיים', 'רוני', 'גל'];
 const lastNames = ['לוי', 'כהן', 'גולן', 'פרידמן', 'קפלן', 'שפירא', 'אזולאי', 'ביטון', 'גבאי', 'אדרי', 'עמר', 'מלכה', 'שמש', 'ברקוביץ', 'אוחנה'];
 
-// כל פריט ממופה לתמונה אמיתית בתיקייה client/public/images/products
 const itemsDataPool = {
     TOOLS: [
         { title: 'מקדחה נטענת', priceRange: [8, 18], desc: 'מקדחה/מברגה נטענת חזקה, כולל סט מקדחים לבטון ועץ.', img: 'drill-cordless-hands-547x365.jpg' },
@@ -47,7 +45,6 @@ const itemsDataPool = {
     ],
 };
 
-// --- פונקציות עזר ---
 const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const generatePhone = () => `05${getRandomInt(0, 9)}${getRandomInt(1000000, 9999999)}`;
@@ -65,7 +62,6 @@ async function seedDatabase() {
     console.log('Clearing old data...');
     await Promise.all([Booking.deleteMany({}), Item.deleteMany({}), User.deleteMany({})]);
 
-    // ── 1. משתמשים (כולל אדמין קבוע לבדיקות) ──
     console.log(`Generating ${NUM_USERS} users...`);
     const userDocs = [];
 
@@ -87,7 +83,6 @@ async function seedDatabase() {
     const users = await User.insertMany(userDocs);
     console.log(`✓ ${users.length} users created (all passwords: '${SEED_PASSWORD}', admin: sarah@example.com)`);
 
-    // ── 2. פריטים (כל אחד עם תמונת מוצר אמיתית מהתיקייה) ──
     console.log(`Generating ${NUM_ITEMS} items...`);
     const categories = Object.keys(itemsDataPool);
     const itemDocs = Array.from({ length: NUM_ITEMS }, () => {
@@ -106,7 +101,6 @@ async function seedDatabase() {
     const items = await Item.insertMany(itemDocs);
     console.log(`✓ ${items.length} items created`);
 
-    // ── 3. הזמנות ──
     console.log(`Generating ${NUM_BOOKINGS} bookings...`);
     const now = new Date();
     const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
@@ -127,13 +121,10 @@ async function seedDatabase() {
         else if (startDate > now) status = Math.random() > 0.5 ? 'APPROVED' : 'PENDING';
         else status = 'APPROVED';
 
-        // משקף את פיצול העמלה בפרודקשן (totalPrice → 10% פלטפורמה / 90% בעלים)
         const totalPrice = item.dailyRate * durationDays;
         const platformFee = Math.round(totalPrice * Booking.PLATFORM_FEE_RATE * 100) / 100;
         const ownerEarnings = Math.round((totalPrice - platformFee) * 100) / 100;
 
-        // פיזור createdAt על פני 6 החודשים האחרונים כדי שגרפי ההכנסה-לפי-חודש
-        // יציגו היסטוריה אמיתית (חותמות זמן בעת ההוספה, לא הכול "היום").
         return { item: item._id, renter: renter._id, startDate, endDate, totalPrice, platformFee, ownerEarnings, status, createdAt: randomDate(sixMonthsAgo, now) };
     });
     const bookings = await Booking.insertMany(bookingDocs);

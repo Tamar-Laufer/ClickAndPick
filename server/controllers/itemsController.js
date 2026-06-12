@@ -28,8 +28,8 @@ exports.bookedDates = asyncHandler(async (req, res) => {
 });
 
 exports.mine = asyncHandler(async (req, res) => {
-  const items = await itemsService.listByOwner(req.user.id);
-  res.json({ items });
+  const { items, pagination } = await itemsService.listByOwner(req.user.id, req.query);
+  res.json({ items, pagination });
 });
 
 exports.create = asyncHandler(async (req, res) => {

@@ -1,21 +1,22 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthProvider';
-import { CategoriesProvider } from './context/CategoriesProvider';
-import ProtectedRoute   from './components/layout/ProtectedRoute';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { AuthProvider } from './shared/context/AuthProvider';
+import { CategoriesProvider } from './shared/context/CategoriesProvider';
+import ProtectedRoute   from './shared/layout/ProtectedRoute';
 
-import HomePage       from './pages/HomePage';
-import AboutPage      from './pages/AboutPage';
-import SearchResults  from './pages/SearchResults';
-import ItemPage       from './pages/ItemPage';
-import CreateItem     from './pages/CreateItem';
-import LoginPage      from './pages/LoginPage';
-import RegisterPage   from './pages/RegisterPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import ResetPasswordPage  from './pages/ResetPasswordPage';
-import AdminDashboard from './pages/AdminDashboard';
-import ProfilePage    from './pages/ProfilePage';
-import CheckoutPage   from './pages/CheckoutPage';
-import SuccessPage    from './pages/SuccessPage';
+import HomePage       from './features/marketing/pages/HomePage';
+import AboutPage      from './features/marketing/pages/AboutPage';
+import TermsPage      from './features/marketing/pages/TermsPage';
+import SearchResults  from './features/search/pages/SearchResults';
+import ItemPage       from './features/items/pages/ItemPage';
+import CreateItem     from './features/items/pages/CreateItem';
+import LoginPage      from './features/auth/pages/LoginPage';
+import RegisterPage   from './features/auth/pages/RegisterPage';
+import ForgotPasswordPage from './features/auth/pages/ForgotPasswordPage';
+import ResetPasswordPage  from './features/auth/pages/ResetPasswordPage';
+import AdminDashboard from './features/admin/pages/AdminDashboard';
+import ProfilePage    from './features/profile/pages/ProfilePage';
+import CheckoutPage   from './features/booking/pages/CheckoutPage';
+import SuccessPage    from './features/booking/pages/SuccessPage';
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
         <Routes>
           <Route path="/"                 element={<HomePage />} />
           <Route path="/about"            element={<AboutPage />} />
+          <Route path="/terms"            element={<TermsPage />} />
           <Route path="/search"           element={<SearchResults />} />
           <Route path="/search/:q"        element={<SearchResults />} />
           <Route path="/search/:q/:city"  element={<SearchResults />} />
@@ -87,7 +89,7 @@ function NotFound() {
   return (
     <div className="page-fallback" dir="rtl">
       <h2>404 – הדף לא נמצא</h2>
-      <a href="/">חזרה לדף הבית</a>
+      <Link to="/">חזרה לדף הבית</Link>
     </div>
   );
 }

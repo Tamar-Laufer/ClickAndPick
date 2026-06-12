@@ -10,20 +10,19 @@ const { ApiError } = require('../utils/errors');
  * The unique index on `value` guarantees no duplicates — a clash surfaces as a
  * Mongo 11000 error, mapped to a 409 by the global error handler.
  */
-async function create({ label, value, color, icon }) {
-  const lbl = (label || '').trim();
-  if (!lbl) throw new ApiError(400, 'שם הקטגוריה חסר');
+async function create({ value, color, icon }) {
+  const name = (value || '').trim();
+  if (!name) throw new ApiError(400, 'שם הקטגוריה חסר');
   return Category.create({
-    value: (value || lbl).trim(),
-    label: lbl,
+    value: name,
     color: (color || 'coral').trim(),
     icon: (icon || '').trim(),
   });
 }
 
-/** Public: every category, alphabetical by label — feeds forms and filters. */
+/** Public: every category, alphabetical by name — feeds forms and filters. */
 async function listAll() {
-  return Category.find().sort({ label: 1 }).lean();
+  return Category.find().sort({ value: 1 }).lean();
 }
 
 /**

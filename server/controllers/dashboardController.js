@@ -3,23 +3,15 @@
 const asyncHandler = require('../utils/asyncHandler');
 const bookingsService = require('../services/bookingsService');
 
-/*
- * SECURITY GOLDEN RULE
- * --------------------
- * The acting user id is ALWAYS taken from `req.user.id`, which `verifyToken`
- * sets from the *decoded JWT* — never from the request body, query or params.
- * A client cannot impersonate another user by sending a different userId,
- * which prevents IDOR / data-leak attacks.
- */
 
-// GET /api/dashboard/my-rentals — bookings where renter === JWT user id
+// GET /api/dashboard/my-rentals — bookings where renter === JWT user id (paged)
 exports.myRentals = asyncHandler(async (req, res) => {
-  const bookings = await bookingsService.listMine(req.user.id);
-  res.json({ bookings });
+  const { bookings, pagination } = await bookingsService.listMine(req.user.id, req.query);
+  res.json({ bookings, pagination });
 });
 
-// GET /api/dashboard/incoming-requests — bookings on items owned by the JWT user
+// GET /api/dashboard/incoming-requests — bookings on items owned by the JWT user (paged)
 exports.incomingRequests = asyncHandler(async (req, res) => {
-  const bookings = await bookingsService.listIncoming(req.user.id);
-  res.json({ bookings });
+  const { bookings, pagination } = await bookingsService.listIncoming(req.user.id, req.query);
+  res.json({ bookings, pagination });
 });
