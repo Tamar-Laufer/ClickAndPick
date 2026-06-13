@@ -11,11 +11,13 @@ const hideBrokenImg = (e) => { e.currentTarget.style.display = 'none'; };
 
 const CITIES = ['תל אביב', 'ירושלים', 'חיפה', 'באר שבע', 'מודיעין', 'רעננה', 'הרצליה', 'גבעתיים'];
 
-const STATS = [
-  { n: '5,200', u: '+',     suffix: false, label: 'פריטים שותפו' },
-  { n: '1,800', u: null,    suffix: false, label: 'שכנים פעילים' },
-  { n: '240K',  u: '₪',     suffix: false, label: 'נחסכו לקהילה' },
-  { n: '12',    u: ' טון',  suffix: true,  label: 'פסולת שנמנעה' },
+// Live community counts — the numbers come from GET /api/stats, these are just
+// the order + Hebrew labels for each key.
+const STAT_META = [
+  { key: 'users',      label: 'שכנים בקהילה' },
+  { key: 'items',      label: 'פריטים זמינים' },
+  { key: 'categories', label: 'קטגוריות' },
+  { key: 'bookings',   label: 'הזמנות' },
 ];
 
 const STEPS = [
@@ -37,12 +39,9 @@ const STEPS = [
   },
 ];
 
-const ArrowIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 5l-7 7 7 7" /></svg>
-);
 
 const HomePage = () => {
-  const { rootRef, user, labelOf, items, reviews } = useHomePage();
+  const { rootRef, user, labelOf, items, reviews, stats } = useHomePage();
 
   return (
     <div className="tg" dir="rtl" ref={rootRef}>
@@ -91,7 +90,6 @@ const HomePage = () => {
           <h2 data-reveal data-delay="1">את רוב הדברים שאנחנו קונים אנחנו צריכים לכמה ימים בלבד. ביחד מחברת בין שכנים כדי לשתף</h2>
           <div className="manifesto-foot">
             <p data-reveal>{'זוכרים את התחושה של פעם, כשהיינו פשוט דופקים על הדלת של השכנים כדי לבקש מברגה, אוהל או תבנית אפייה מיוחדת? אנחנו מאמינים שהכוח האמיתי של השכונה שלנו נמצא ממש כאן, בידיים של כולנו. האתר הזה נולד מתוך אמונה פשוטה – להחזיר את הערבות ההדדית למרכז ולהפוך את השיתוף לדרך חיים.\n\nבמקום שכל אחד מאיתנו יקנה, יתחזק ויאחסן ציוד יקר שצובר אבק ויוצא מהארון אולי פעם בשנה, אנחנו מזמינים אתכם לפתוח את הדלתות. הפלטפורמה שלנו נועדה לחבר בינינו בגובה העיניים: ראיתם משהו שאתם צריכים? בלחיצת כפתור אחת, בקשת ההשאלה שלכם מגיעה ישירות לשכן או לשכנה שישמחו לעזור, בלי מסכים מיותרים ובלי מתווכים בדרך.\n\nזה הרבה מעבר לחיסכון בכסף או צמצום קניות. זו ההזדמנות של כולנו להכיר קצת יותר טוב את האנשים שחיים סביבנו, להושיט יד כשצריך, וליצור סביבה שבה לאף אחד לא חסר דבר – כי אנחנו פשוט חולקים את השפע הקיים. ביחד, אנחנו הופכים את הקהילה שלנו לחזקה, אכפתית ועצמאית הרבה יותר.'}</p>
-            <Link className="arrow-link" to="/register" data-reveal data-delay="1">קראו את הסיפור שלנו<ArrowIcon /></Link>
           </div>
         </div>
       </section>
@@ -101,7 +99,7 @@ const HomePage = () => {
         <div className="wrap">
           <div className="cats-head">
             <h2 data-reveal>הפריטים שלנו</h2>
-            <Link className="arrow-link" to="/search" data-reveal data-delay="1">לכל הפריטים<ArrowIcon /></Link>
+            <Link className="arrow-link" to="/search" data-reveal data-delay="1">לכל הפריטים</Link>
           </div>
         </div>
         {items.length > 0 && (
@@ -143,10 +141,10 @@ const HomePage = () => {
         </div>
         <div className="stats">
           <div className="wrap">
-            {STATS.map((s, i) => (
-              <div className="stat" key={i}>
+            {STAT_META.map((s) => (
+              <div className="stat" key={s.key}>
                 <div className="stat-n">
-                  {s.suffix ? <>{s.n}<span className="u">{s.u}</span></> : <>{s.u && <span className="u">{s.u}</span>}{s.n}</>}
+                  {stats ? Number(stats[s.key] || 0).toLocaleString('he-IL') : '—'}
                 </div>
                 <div className="stat-l">{s.label}</div>
               </div>
@@ -234,7 +232,7 @@ const HomePage = () => {
             <div className="footer-cols">
               <div className="footer-col">
                 <h4>הפלטפורמה</h4>
-                <a href="#process">איך זה עובד</a><a href="#cats">קטגוריות</a><Link to="/TermsPage">אמון ובטיחות</Link>
+                <a href="#process">איך זה עובד</a><a href="#cats">קטגוריות</a><Link to="/terms">אמון ובטיחות</Link>
               </div>
               <div className="footer-col">
                 <h4>קהילה</h4>

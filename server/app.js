@@ -35,6 +35,7 @@ app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/uploads', require('./routes/uploads'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/categories', require('./routes/categories'));
+app.use('/api/stats', require('./routes/stats'));
 app.use('/api/feedback', require('./routes/feedback'));
 app.use('/api/messages', require('./routes/messages'));
 
