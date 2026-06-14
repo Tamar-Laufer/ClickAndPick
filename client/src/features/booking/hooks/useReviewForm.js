@@ -2,14 +2,12 @@ import { useState } from 'react';
 import { fullName } from '../../../shared/utils/format';
 import useApi from '../../../shared/hooks/useApi';
 
-// Logic behind one side of the double-blind review modal: the star rating, the
-// comment, the submit (POST /bookings/:id/reviews), and the resulting reveal.
 const useReviewForm = ({ booking, role, onSubmitted }) => {
   const { apiCall, execute, loading, error, setError } = useApi();
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [comment, setComment] = useState('');
-  const [result, setResult] = useState(null); // { review, revealed }
+  const [result, setResult] = useState(null);
 
   const item = booking.item || {};
   const isRenter = role === 'renter';
@@ -25,7 +23,7 @@ const useReviewForm = ({ booking, role, onSubmitted }) => {
       method: 'POST',
       body: JSON.stringify({ rating, comment }),
     }));
-    if (!data) return; // submit failed → message already in `error`
+    if (!data) return;
     setResult(data);
     onSubmitted?.(booking.id);
   };

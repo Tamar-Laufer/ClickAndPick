@@ -19,7 +19,7 @@ export function priceText(item) {
 
 export function distanceLabel(meters) {
   if (meters == null || Number.isNaN(meters)) return null;
-  const rounded = Math.round((meters / 1000) * 2) / 2; // nearest 0.5 km
+  const rounded = Math.round((meters / 1000) * 2) / 2;
   if (rounded < 0.5) return 'פחות מ-0.5 ק״מ ממך';
   const num = Number.isInteger(rounded) ? rounded : rounded.toFixed(1);
   return `כ-${num} ק״מ ממך`;

@@ -10,7 +10,7 @@ export default function useAvatarUpload(user, token, updateUser) {
 
   function pickAvatar(e) {
     const f = e.target.files?.[0];
-    e.target.value = ''; // allow re-picking the same file later
+    e.target.value = '';
     if (!f) return;
     if (pendingPreview) URL.revokeObjectURL(pendingPreview);
     setAvatarErr('');

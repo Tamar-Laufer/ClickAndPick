@@ -8,8 +8,6 @@ exports.list = asyncHandler(async (req, res) => {
   res.json(result);
 });
 
-// ציבורי: הופך כתובת חיפוש שהוקלדה ("תל אביב") למרכז { lat, lng }, שהקטלוג מזין
-// בחזרה ל-GET /api/items?lat&lng עבור חיפוש הרדיוס.
 exports.geocode = asyncHandler(async (req, res) => {
   const result = await itemsService.geocode(req.query.q);
   res.json(result);
@@ -20,8 +18,6 @@ exports.getOne = asyncHandler(async (req, res) => {
   res.json({ item });
 });
 
-// ציבורי: ההזמנות המאושרות (APPROVED) של פריט, כטווחי [{ startDate, endDate }].
-// לוח ההזמנות משתמש בהם כדי לאפור / להשבית ימים לא זמינים.
 exports.bookedDates = asyncHandler(async (req, res) => {
   const bookedDates = await itemsService.bookedDates(req.params.id);
   res.json({ bookedDates });

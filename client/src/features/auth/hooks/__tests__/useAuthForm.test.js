@@ -9,7 +9,7 @@ describe('useAuthForm', () => {
 
     act(() => result.current.handleChange({ target: { name: 'email', value: 'a@b.com' } }));
     expect(result.current.form.email).toBe('a@b.com');
-    expect(result.current.form.password).toBe(''); // other fields untouched
+    expect(result.current.form.password).toBe('');
   });
 
   it('blocks submission and surfaces the message when validate fails', async () => {
@@ -22,7 +22,7 @@ describe('useAuthForm', () => {
     });
 
     expect(preventDefault).toHaveBeenCalled();
-    expect(handler).not.toHaveBeenCalled(); // validation short-circuits the request
+    expect(handler).not.toHaveBeenCalled();
     expect(result.current.error).toBe('שדה חסר');
   });
 

@@ -68,7 +68,7 @@ export default function useAudioRecorder({ token, onSend }) {
 
     function stopRecording() {
         if (isRecorderActive()) {
-            recorderRef.current.stop(); // fires onstop → upload
+            recorderRef.current.stop();
         }
     }
 

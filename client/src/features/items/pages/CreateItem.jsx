@@ -3,7 +3,6 @@ import { useCategories } from '../../../shared/context/CategoriesContext';
 import TgNavbar from '../../../shared/layout/TgNavbar';
 import './CreateItem.css';
 
-/* ── "ביחד" create-item page — form + image upload ── */
 
 const CreateItem = () => {
   const { categories } = useCategories();
@@ -14,7 +13,6 @@ const CreateItem = () => {
 
       <TgNavbar variant="page" active="items" />
 
-      {/* form */}
       <main className="ci">
         <div className="ci-card">
           <span className="kicker"><span className="idx">+</span> פריט חדש</span>
@@ -25,7 +23,6 @@ const CreateItem = () => {
 
           <form onSubmit={handleSubmit}>
 
-            {/* image upload */}
             <div className="field">
               <label>תמונת הפריט</label>
               <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} hidden />

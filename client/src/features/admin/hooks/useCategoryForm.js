@@ -13,7 +13,7 @@ const useCategoryForm = () => {
     const trimmed = label.trim();
     if (!trimmed || busy) return;
     const result = await create({ value: trimmed, color });
-    if (!result) return; // create failed → message already in `err`
+    if (!result) return;
     addCategory(result.category);
     setLabel('');
     setColor('coral');

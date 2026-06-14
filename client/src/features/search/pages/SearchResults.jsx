@@ -22,7 +22,6 @@ export default function SearchResults() {
 
       <TgNavbar variant="page" active="items" />
 
-      {/* ════════ CATALOG ════════ */}
       <main className="catalog">
         <div className="wrap">
 
@@ -37,7 +36,6 @@ export default function SearchResults() {
 
             <FilterSidebar search={search} geo={geo} categories={categories} />
 
-            {/* ── results ── */}
             <div className="cat-main">
               <div className="cat-bar">
                 <div className="cat-count"><strong>{totalItems}</strong> פריטים{(availFrom && availTo) ? ' · פנויים בתאריכים שבחרת' : ''}</div>
@@ -74,7 +72,6 @@ export default function SearchResults() {
                     {items.map((item, i) => <ItemCard key={item.id} item={item} index={i} />)}
                   </div>
 
-                  {/* Load More — only while the backend reports more pages */}
                   {hasMore && (
                     <div className="cat-more">
                       <button className="btn btn-accent" onClick={loadMore} disabled={isLoading}>

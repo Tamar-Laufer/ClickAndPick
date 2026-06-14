@@ -2,10 +2,6 @@ import { Link } from 'react-router-dom';
 import { useCategories } from '../../../shared/context/CategoriesContext';
 import '../../booking/components/BookingCard.css';
 
-/* A row for one of the user's own uploaded items, with its loan status.
-   `onEdit`   (optional) shows an "עריכה" button that opens the edit modal.
-   `onDelete` (optional) shows a trash-can button that asks the parent to confirm
-   + soft-delete the item. */
 export default function OwnerItemCard({ item, status, onEdit, onDelete }) {
   const { labelOf } = useCategories();
   const img = item.imageUrl || null;

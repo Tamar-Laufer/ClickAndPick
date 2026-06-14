@@ -46,6 +46,7 @@ export default function useWebSocketChat(token, chatWithUserId) {
                 switch (frame.type) {
                     case 'message':
                         if (String(frame.from) === String(chatWithRef.current)) {
+                            setError(null);
                             setMessages(prev => [...prev, { text: frame.text, type: frame.msgType || 'text', timestamp: frame.timestamp, isMine: false }]);
                         }
                         break;
@@ -117,6 +118,7 @@ export default function useWebSocketChat(token, chatWithUserId) {
             return false;
         }
 
+        setError(null);
         socket.send(JSON.stringify({ to, text, type }));
         setMessages(prev => [...prev, { text, type, timestamp: new Date().toISOString(), isMine: true }]);
         saveMessage({ recipient: to, text, type }, token)

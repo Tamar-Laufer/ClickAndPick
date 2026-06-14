@@ -8,14 +8,13 @@ import './AuthPages.css';
 
 export default function ForgotPasswordPage() {
   const { form, handleChange, error, loading, submit } = useAuthForm({ email: '' });
-  const [message, setMessage] = useState('');   // generic success text from the server
+  const [message, setMessage] = useState('');
 
   const handleSubmit = submit(async ({ email }) => {
     const data = await apiFetch('/auth/forgot-password', {
       method: 'POST',
       body: JSON.stringify({ email }),
     });
-    // Server replies with a generic message whether or not the email exists.
     setMessage(data.message || 'אם קיים חשבון עם האימייל הזה, נשלח אליו קישור לאיפוס.');
   });
 
@@ -23,7 +22,6 @@ export default function ForgotPasswordPage() {
     <div className="tg tg-white" dir="rtl">
       <div className="auth">
 
-        {/* form side */}
         <div className="auth-form-wrap">
           <form className="auth-form" onSubmit={handleSubmit}>
             <Link className="brand" to="/"><img className="brand-logo" src="/images/logo-trim.png" alt="Click & Pick" /></Link>
@@ -34,7 +32,6 @@ export default function ForgotPasswordPage() {
             {error && <p className="auth-error">{error}</p>}
             {message && <p className="auth-success">{message}</p>}
 
-            {/* once the request is sent, hide the form and just leave the confirmation */}
             {!message && (
               <>
                 <FormInput

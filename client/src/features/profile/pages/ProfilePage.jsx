@@ -32,8 +32,8 @@ export default function ProfilePage() {
     const t = new URLSearchParams(window.location.search).get('tab');
     return t === 'rentals' || t === 'items' || t === 'incoming' ? t : 'rentals';
   });
-  const [reviewing, setReviewing] = useState(null); // { booking, role }
-  const [editingItem, setEditingItem] = useState(null); // item being edited, or null
+  const [reviewing, setReviewing] = useState(null);
+  const [editingItem, setEditingItem] = useState(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const reviewId = searchParams.get('review');
@@ -52,14 +52,12 @@ export default function ProfilePage() {
         ? reviewAs
         : (inRentals ? 'renter' : inIncoming ? 'owner' : null);
 
-      // The booking may live on a not-yet-loaded chunk (lists are paginated) —
-      // fetch it directly so the email "leave a review" link always works.
       if (!booking) {
         try {
           const { booking: fetched } = await apiFetch(`/bookings/${reviewId}`, {}, token);
           booking = fetched;
           if (!role) role = String(fetched?.renter?.id) === String(user?.id) ? 'renter' : 'owner';
-        } catch { /* booking not found / not ours — just drop the param below */ }
+        } catch { }
       }
 
       if (!alive) return;

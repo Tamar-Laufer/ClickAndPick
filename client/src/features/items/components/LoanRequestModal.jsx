@@ -6,10 +6,6 @@ import AvailabilityCalendar from './AvailabilityCalendar';
 import Modal from '../../../shared/ui/Modal';
 import './LoanRequestModal.css';
 
-/* Date picker step of the booking flow. Collects the loan dates via a visual
-   calendar that disables already-booked days, then hands off to the checkout
-   page ("המשך לתשלום"). The booking is only created later, when the renter pays
-   on the checkout page. */
 export default function LoanRequestModal({ item, onClose }) {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -17,12 +13,8 @@ export default function LoanRequestModal({ item, onClose }) {
     endDate:   '',
   });
   const [error, setError] = useState('');
-  // confirmed booking ranges for this item — used to disable days on the calendar
   const [bookedRanges, setBookedRanges] = useState([]);
 
-  /* Load the unavailable date ranges when the modal opens. A failure is
-     non-fatal: the calendar just shows every day as free and the server still
-     re-checks availability when the booking is created. */
   useEffect(() => {
     if (!item?.id) return;
     let alive = true;
@@ -55,7 +47,6 @@ export default function LoanRequestModal({ item, onClose }) {
       return;
     }
     setError('');
-    // carry the item + chosen dates to checkout; payment creates the booking
     navigate('/checkout', {
       state: { item, startDate: form.startDate, endDate: form.endDate },
     });
@@ -64,7 +55,6 @@ export default function LoanRequestModal({ item, onClose }) {
   return (
     <Modal onClose={onClose} showClose>
         <>
-            {/* Header */}
             <div className="modal-header">
               <h2 className="modal-title">בחירת תאריכים</h2>
               <p className="modal-item-name">{item.title}</p>
@@ -79,7 +69,6 @@ export default function LoanRequestModal({ item, onClose }) {
               )}
             </div>
 
-            {/* Links like LoT */}
             <div className="modal-info-links">
               <button className="modal-info-link">
                 חסכו עם חברות מוזלת
@@ -99,7 +88,6 @@ export default function LoanRequestModal({ item, onClose }) {
 
             {error && <p className="form-error">{error}</p>}
 
-            {/* Form */}
             <form onSubmit={handleSubmit} className="modal-form">
               <div className="modal-field">
                 <label className="modal-label">בחרו תאריכים *</label>

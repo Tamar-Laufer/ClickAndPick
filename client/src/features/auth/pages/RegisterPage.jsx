@@ -8,8 +8,6 @@ import Button from '../../../shared/ui/Button';
 import './AuthPages.css';
 
 const EMPTY = { firstName: '', lastName: '', email: '', password: '', phone: '' };
-// Tab-scoped draft so reading /terms and clicking "חזרה להרשמה" returns to the
-// filled form. Lives only for this tab and is wiped the moment the account is made.
 const DRAFT_KEY = 'cp.register.draft';
 
 function readDraft() {
@@ -25,14 +23,13 @@ export default function RegisterPage() {
 
   const { form, handleChange, error, loading, submit } = useAuthForm(readDraft());
 
-  // Keep the draft in sync as the user types, so a detour to /terms is lossless.
   useEffect(() => {
-    try { sessionStorage.setItem(DRAFT_KEY, JSON.stringify(form)); } catch { /* storage full/blocked — non-critical */ }
+    try { sessionStorage.setItem(DRAFT_KEY, JSON.stringify(form)); } catch { }
   }, [form]);
 
   const handleSubmit = submit(async (values) => {
     const data = await apiFetch('/auth/register', { method: 'POST', body: JSON.stringify(values) });
-    try { sessionStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+    try { sessionStorage.removeItem(DRAFT_KEY); } catch { }
     login(data.user, data.token);
     navigate('/');
   });
@@ -41,7 +38,6 @@ export default function RegisterPage() {
     <div className="tg tg-white" dir="rtl">
       <div className="auth">
 
-        {/* form side */}
         <div className="auth-form-wrap">
           <form className="auth-form" onSubmit={handleSubmit}>
             <Link className="brand" to="/"><img className="brand-logo" src="/images/logo-trim.png" alt="Click & Pick" /></Link>

@@ -2,8 +2,6 @@ import useReviewForm from '../hooks/useReviewForm';
 import Modal from '../../../shared/ui/Modal';
 import './ReviewModal.css';
 
-/* ReviewModal — one side of the double-blind two-way review.
-   role 'renter' → rate the item;  role 'owner' → rate the renter. */
 
 const ReviewModal = ({ booking, role, onClose, onSubmitted }) => {
   const { rating, setRating, hover, setHover, comment, setComment, result, isRenter, title, subject, loading, error, handleSubmit } =
@@ -27,7 +25,6 @@ const ReviewModal = ({ booking, role, onClose, onSubmitted }) => {
             <h3 className="rv-title">{title}</h3>
             <p className="rv-subject">{subject}</p>
 
-            {/* interactive 5-star rating */}
             <div className="rv-stars" role="radiogroup" aria-label="דירוג">
               {[1, 2, 3, 4, 5].map(i => (
                 <button

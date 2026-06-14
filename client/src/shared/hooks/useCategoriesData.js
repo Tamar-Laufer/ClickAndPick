@@ -8,7 +8,6 @@ const CACHE_KEY = 'cp.categories.v1';
 function normalize(list) {
   const byValue = new Map();
   for (const c of list) {
-    // `value` is the Hebrew name — both the stored id and the display text.
     const value = String(c.value ?? c.label ?? c.name ?? '').trim();
     if (!value) continue;
     byValue.set(value, { ...c, value, color: c.color || 'coral' });

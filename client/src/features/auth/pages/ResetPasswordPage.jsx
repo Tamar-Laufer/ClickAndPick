@@ -22,11 +22,9 @@ export default function ResetPasswordPage() {
       });
 
       logout();
-      // success → send them to login with a one-time flash message
       navigate('/login', { replace: true, state: { notice: 'הסיסמה אופסה בהצלחה — התחברו עם הסיסמה החדשה.' } });
     },
     {
-      // client-side validation (the server enforces these too)
       validate: (f) => {
         if (f.newPassword.length < 6) return 'הסיסמה חייבת להכיל לפחות 6 תווים.';
         if (f.newPassword !== f.confirmPassword) return 'הסיסמאות אינן תואמות.';
@@ -39,7 +37,6 @@ export default function ResetPasswordPage() {
     <div className="tg tg-white" dir="rtl">
       <div className="auth">
 
-        {/* form side */}
         <div className="auth-form-wrap">
           <form className="auth-form" onSubmit={handleSubmit}>
             <Link className="brand" to="/"><img className="brand-logo" src="/images/logo-trim.png" alt="Click & Pick" /></Link>

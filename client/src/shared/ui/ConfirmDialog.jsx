@@ -1,11 +1,7 @@
 import Modal from './Modal';
-import '../../features/items/components/LoanRequestModal.css'; // reuse the shared .modal-overlay / .modal-box shell
+import '../../features/items/components/LoanRequestModal.css';
 import './ConfirmDialog.css';
 
-/* ── ConfirmDialog ─────────────────────────────────────────────────────────
-   Small, reusable confirmation modal. Generic on purpose (title/message/labels)
-   so any destructive action can reuse it. Shows an inline error (e.g. a server
-   rejection) without closing, and disables both buttons while `busy`.          */
 export default function ConfirmDialog({
   title,
   message,

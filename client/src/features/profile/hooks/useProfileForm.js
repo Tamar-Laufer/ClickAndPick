@@ -3,13 +3,6 @@ import { apiFetch } from '../../../shared/services/api';
 
 const EXTRA_KEY = 'yachad_profile_extra';
 
-/* ── useProfileForm ────────────────────────────────────────────────────────
-   The "פרטים אישיים" form. The four real fields (firstName/lastName/phone +
-   email read-only) persist via PUT /auth/profile; the extra design-only fields
-   (area/address/bio) have no backend model yet, so they live in localStorage.
-   They are hydrated once, synchronously, in the initializer (was a post-mount
-   effect that caused an extra render). `toggleEdit` enters edit mode on the
-   first call and saves on the second. */
 export default function useProfileForm(user, token, updateUser) {
   const [form, setForm] = useState(() => {
     const base = {
@@ -19,7 +12,7 @@ export default function useProfileForm(user, token, updateUser) {
     try {
       const extra = JSON.parse(localStorage.getItem(EXTRA_KEY));
       if (extra) return { ...base, ...extra };
-    } catch { /* ignore malformed storage */ }
+    } catch { }
     return base;
   });
   const [editing, setEditing] = useState(false);
@@ -31,7 +24,6 @@ export default function useProfileForm(user, token, updateUser) {
 
   async function toggleEdit() {
     if (!editing) { setEditing(true); setMsg(''); setErr(''); return; }
-    // saving
     setSaving(true); setErr(''); setMsg('');
     try {
       const data = await apiFetch('/auth/profile', {

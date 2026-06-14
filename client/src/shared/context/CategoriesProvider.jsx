@@ -11,7 +11,6 @@ export function CategoriesProvider({ children }) {
       categories,
       loading,
       addCategory,
-      // value IS the Hebrew display name; labelOf stays for call-site compatibility
       labelOf: (v) => v || '',
       colorOf: (v) => byValue.get(v)?.color || 'coral',
     };

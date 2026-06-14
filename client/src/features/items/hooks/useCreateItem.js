@@ -19,7 +19,7 @@ const useCreateItem = () => {
     e.preventDefault();
     const payload = { ...form, dailyRate: Number(form.dailyRate), imageUrl };
     const data = await create(payload);
-    if (!data) return; // create failed → message already in `error`
+    if (!data) return;
     navigate(`/item/${data.item.id}`);
   };
 

@@ -45,7 +45,6 @@ export default function ItemPage() {
   const owner   = fullName(item.owner, 'משאיל פרטי');
   const price   = priceParts(item);
 
-  // "בצעו הזמנה" opens the date picker → checkout → payment flow
   function startBooking() {
     if (!user) { navigate('/login'); return; }
     setShowModal(true);
@@ -56,7 +55,6 @@ export default function ItemPage() {
 
       <TgNavbar variant="page" active="items" />
 
-      {/* ════════ DETAIL ════════ */}
       <main className="detail">
         <div className="wrap">
           <button className="back" onClick={() => navigate(-1)}><ArrowL /> חזרה לכל הפריטים</button>
@@ -75,7 +73,6 @@ export default function ItemPage() {
 
           <div className="detail-grid">
 
-            {/* ───── LEFT ───── */}
             <div className="detail-main">
               <div className="media-wrap">
                 {imgSrc
@@ -83,7 +80,6 @@ export default function ItemPage() {
                   : <div className="media-ph">{initial}</div>}
               </div>
 
-              {/* impact trio */}
               <div className="impact3">
                 <div className="imp blush">
                   <span className="imp-label">חוסך מקום</span>
@@ -105,7 +101,6 @@ export default function ItemPage() {
                 </div>
               </div>
 
-              {/* accordions */}
               <div className="acc">
                 <Accordion title="תיאור הפריט" defaultOpen>
                   <p className="pad">{item.description || 'אין תיאור זמין כרגע לפריט זה.'}</p>
@@ -118,7 +113,6 @@ export default function ItemPage() {
               </div>
             </div>
 
-            {/* ───── RIGHT (sticky) ───── */}
             <aside className="aside">
               <div className="reserve">
                 <div className="reserve-price">{price.main} {price.unit && <span>{price.unit}</span>}</div>
@@ -168,7 +162,6 @@ export default function ItemPage() {
         </div>
       </main>
 
-      {/* ════════ REVIEWS ════════ */}
       <ItemReviews item={item} reviews={reviews} reviewsLoading={reviewsLoading} />
 
       <MiniFooter />

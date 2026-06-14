@@ -84,8 +84,6 @@ export default function useItemSearch(geo) {
     geo.clearLocation();
   };
 
-  /* background scroll is locked purely in CSS while the filter sheet is open —
-     see `body:has(.filters.filters--open)` in SearchResults.css */
 
   const hasFilters = query || selectedCats.size || availFrom || availTo || geo.geo;
   const firstLoad = isLoading && !isAppending && items.length === 0;

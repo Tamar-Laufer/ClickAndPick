@@ -2,22 +2,18 @@ import { useState } from 'react';
 import { AuthContext } from './AuthContext';
 import { fullName } from '../utils/format';
 
-// add a convenience display `name` from firstName/lastName (new API shape)
 function withDisplayName(u) {
   if (!u) return u;
   const name = u.name || fullName(u);
   return { ...u, name };
 }
 
-// Read any persisted session synchronously, before the first render. Doing this
-// here (instead of in a mount effect that called setState) avoids both the
-// logged-out → logged-in flash and the extra post-mount render.
 function readStoredSession() {
   try {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
     if (token && user) return { token, user: JSON.parse(user) };
-  } catch { /* malformed storage → treat as logged out */ }
+  } catch { }
   return { token: null, user: null };
 }
 

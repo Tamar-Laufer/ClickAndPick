@@ -1,12 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../../shared/services/api';
 
-/* ── useItemDetail ─────────────────────────────────────────────────────────
-   Loads one item and its public reviews for the detail page. Two independent
-   fetches keyed on :id, each resetting to its loading state on a new id and
-   guarding a late resolve after unmount/navigation with `alive`. The setState
-   on each new id is the intended loading toggle of a data fetch, not a
-   synchronous render loop. */
 export default function useItemDetail(id) {
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -16,7 +10,6 @@ export default function useItemDetail(id) {
 
   useEffect(() => {
     let alive = true;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true); setError('');
     const load = async () => {
       try {
@@ -32,10 +25,8 @@ export default function useItemDetail(id) {
     return () => { alive = false; };
   }, [id]);
 
-  /* public reviews for this item (revealed double-blind reviews) */
   useEffect(() => {
     let alive = true;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setReviewsLoading(true);
     const load = async () => {
       try {

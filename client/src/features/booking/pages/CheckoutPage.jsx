@@ -8,12 +8,6 @@ import TgNavbar from '../../../shared/layout/TgNavbar';
 import MiniFooter from '../../../shared/layout/MiniFooter';
 import './CheckoutPage.css';
 
-/* ── Checkout (ported from תשלום.html) ──────────────────────────────────────
-   Reached from the booking date-picker via "המשך לתשלום". Carries the chosen
-   item + dates in router state. The booking itself is created on "שלמו" (the
-   mock payment hold) — POST /bookings — and then we move to the success page.
-   The personal/card fields are a faithful port of the prototype; payment isn't
-   wired to a real processor, so they're collected but not transmitted. */
 
 const DAY_MS = 86400000;
 const fmtRange = (s, e) => {
@@ -40,7 +34,6 @@ export default function CheckoutPage() {
   const [error, setError] = useState('');
 
 
-  /* no booking context (refresh / direct hit) → back to the catalog */
   if (!item || !startDate || !endDate) {
     return (
       <div className="tg tg-white" dir="rtl">
@@ -65,7 +58,6 @@ export default function CheckoutPage() {
   async function pay() {
     setPaying(true); setError('');
     try {
-      // create the booking (server computes price + platform fee/owner earnings)
       const { booking } = await apiFetch('/bookings', {
         method: 'POST',
         body: JSON.stringify({ item: item.id, startDate, endDate }),
@@ -98,7 +90,6 @@ export default function CheckoutPage() {
 
           <div className="checkout-grid">
 
-            {/* ───── form ───── */}
             <form className="pay-form" onSubmit={(e) => e.preventDefault()}>
               <div className="fieldset">
                 <h3><span className="num">1</span>הפרטים שלכם</h3>
@@ -144,7 +135,6 @@ export default function CheckoutPage() {
               </div>
             </form>
 
-            {/* ───── summary ───── */}
             <aside className="summary">
               <div className="summary-head">
                 <div className="summary-thumb">

@@ -10,7 +10,7 @@ describe('useAsyncAction', () => {
     let ret;
     await act(async () => { ret = await result.current.run('arg'); });
 
-    expect(action).toHaveBeenCalledWith('arg'); // run forwards its args
+    expect(action).toHaveBeenCalledWith('arg');
     expect(ret).toBe('ok');
     expect(result.current.loading).toBe(false);
     expect(result.current.error).toBe('');
@@ -36,7 +36,7 @@ describe('useAsyncAction', () => {
     let ret = 'sentinel';
     await act(async () => { ret = await result.current.run(); });
 
-    expect(ret).toBeUndefined(); // a failed action never crashes the caller
+    expect(ret).toBeUndefined();
     expect(result.current.error).toBe('boom');
     expect(result.current.loading).toBe(false);
   });

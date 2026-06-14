@@ -8,7 +8,6 @@ export default function AboutPage() {
     <div className="tg tg-white" dir="rtl">
       <TgNavbar variant="page" active="about" />
 
-      {/* ════════ MANIFESTO (הרעיון) ════════ */}
       <section className="manifesto" id="manifesto">
         <div className="wrap">
           <span className="kicker"><span className="idx">01</span> הרעיון</span>
@@ -20,7 +19,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ════════ CONTACT (shared feedback form) ════════ */}
       <section className="manifesto">
         <div className="wrap">
           <span className="kicker"><span className="idx">02</span> צרו קשר</span>
@@ -29,16 +27,6 @@ export default function AboutPage() {
       </section>
 
       
-      {/* <section className="cta" id="cta">
-        <div className="wrap">
-          <span className="kicker"><span className="idx">03</span> מצטרפים</span>
-          <h2>הקהילה שלכם מחכה.</h2>
-          <div className="cta-actions">
-            <Link className="btn btn-accent" to="/register">הצטרפות בחינם</Link>
-            <Link className="btn btn-line on-dark" to="/login">כבר רשומים? התחברו</Link>
-          </div>
-        </div>
-      </section> */}
     </div>
   );
 }

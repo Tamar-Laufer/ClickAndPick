@@ -1,8 +1,3 @@
-/* ── Button ────────────────────────────────────────────────────────────────
-   Thin wrapper over the `.btn` utility family. Centralises the loading pattern
-   that was repeated on every form: disable the button and swap its label while
-   a request is in flight. `variant` maps to a `.btn-*` class; extra classes
-   (e.g. `on-light`) go through `className`. */
 export default function Button({
   variant = 'accent',
   type = 'button',

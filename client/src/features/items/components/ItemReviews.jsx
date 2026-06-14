@@ -2,10 +2,6 @@ import Avatar from '../../../shared/ui/Avatar';
 import Stars from '../../../shared/ui/Stars';
 import { fullName } from '../../../shared/utils/format';
 
-/* ── ItemReviews ───────────────────────────────────────────────────────────
-   The public reviews section on the item detail page: the average header and
-   the list of revealed (double-blind) reviews, with a loading and an empty
-   state. */
 export default function ItemReviews({ item, reviews, reviewsLoading }) {
   return (
     <section className="reviews-sec" id="reviews">

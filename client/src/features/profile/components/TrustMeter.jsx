@@ -1,4 +1,4 @@
-const RING_C = 2 * Math.PI * 36; // circumference of the trust ring (r=36)
+const RING_C = 2 * Math.PI * 36;
 export default function TrustMeter({ user, rating, reviewCount }) {
   const trustPct = Number.isFinite(Number(user.trustScore)) ? Number(user.trustScore) : 50;
   const isNewMember = reviewCount === 0 && Number(user.completedTransactions || 0) === 0;

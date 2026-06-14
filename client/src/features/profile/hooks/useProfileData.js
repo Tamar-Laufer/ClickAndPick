@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { apiFetch } from '../../../shared/services/api';
 
-// How many cards each tab pulls per request. The lists load this first chunk on
-// mount and fetch the next one only when the user asks ("טען עוד") — the server
-// never ships the whole history at once.
 const PAGE_SIZE = 6;
 
 const ENDPOINTS = {
@@ -11,7 +8,6 @@ const ENDPOINTS = {
   rentals: '/dashboard/my-rentals',
   incoming: '/dashboard/incoming-requests',
 };
-// Each endpoint nests its rows under a different key.
 const ROWS_KEY = { items: 'items', rentals: 'bookings', incoming: 'bookings' };
 
 const pagePath = (tab, page) => `${ENDPOINTS[tab]}?page=${page}&limit=${PAGE_SIZE}`;
@@ -21,23 +17,19 @@ export default function useProfileData(token) {
   const [rentals, setRentals] = useState([]);
   const [incoming, setIncoming] = useState([]);
 
-  // Server totals (for tab badges + ActivityStats), current page, and whether a
-  // next chunk exists — kept per tab so each list pages independently.
   const [counts, setCounts] = useState({ items: 0, rentals: 0, incoming: 0 });
   const [pages, setPages] = useState({ items: 1, rentals: 1, incoming: 1 });
   const [hasMore, setHasMore] = useState({ items: false, rentals: false, incoming: false });
 
-  const [loading, setLoading] = useState(true);  // initial first-chunk load
-  const [moreBusy, setMoreBusy] = useState(null); // tab currently fetching "load more"
+  const [loading, setLoading] = useState(true);
+  const [moreBusy, setMoreBusy] = useState(null);
   const [listErr, setListErr] = useState('');
   const [busyId, setBusyId] = useState(null);
 
-  const [deletingItem, setDeletingItem] = useState(null); // item pending delete confirmation, or null
+  const [deletingItem, setDeletingItem] = useState(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
   const [deleteErr, setDeleteErr] = useState('');
 
-  /* (Re)load the first chunk of all three lists — used on mount and after any
-     action that can change statuses. Resets each tab back to page 1. */
   const load = useCallback(async () => {
     if (!token) return;
     setLoading(true); setListErr('');
@@ -70,7 +62,6 @@ export default function useProfileData(token) {
 
   useEffect(() => { (async () => { await load(); })(); }, [load]);
 
-  /* Fetch the next chunk for one tab and append it to what's already shown. */
   const loadMore = useCallback(async (tab) => {
     if (!token || moreBusy || !hasMore[tab]) return;
     const next = pages[tab] + 1;
@@ -119,9 +110,6 @@ export default function useProfileData(token) {
     }
   }, [deletingItem, token]);
 
-  // The lending-status badge is now derived server-side (per page) and ships on
-  // each item, so it stays correct even though the profile no longer holds the
-  // full incoming-requests list. Fall back to a sane default for safety.
   const itemStatus = useCallback(
     (item) => item.status || { label: item.isActive === false ? 'מוסתר' : 'זמין', cls: item.isActive === false ? 'cancelled' : 'available' },
     [],

@@ -12,11 +12,6 @@ import CategoryManager from '../components/CategoryManager';
 import AdminInbox from '../components/AdminInbox';
 import './AdminDashboard.css';
 
-/* ── "ביחד" admin dashboard (לוח ניהול) ──────────────────────────────────────
-   Ported from the Claude Design prototype (ניהול.html). The data + derivations
-   live in useAdminDashboard; each panel (KPIs, revenue chart, status donut,
-   users table) is its own component. The headline financial KPI is the site
-   manager's personal cut — 5% of every transaction's gross. */
 export default function AdminDashboard() {
   const { user, token } = useAuth();
   const {
@@ -28,7 +23,7 @@ export default function AdminDashboard() {
   if (!stats) return <Shell><Loader className="admin-state" /></Shell>;
 
   const completed = (stats.bookingsByStatus || []).find((r) => r.status === 'COMPLETED')?.count || 0;
-  const ratePct = Math.round((stats.managerRate || 0.05) * 100);
+  const ratePct = Math.round((stats.managerRate || 0.1) * 100);
 
   return (
     <Shell>

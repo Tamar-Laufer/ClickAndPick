@@ -10,9 +10,6 @@ import './HomePage.css';
 const hideBrokenImg = (e) => { e.currentTarget.style.display = 'none'; };
 
 const CITIES = ['תל אביב', 'ירושלים', 'חיפה', 'באר שבע', 'מודיעין', 'רעננה', 'הרצליה', 'גבעתיים'];
-
-// Live community counts — the numbers come from GET /api/stats, these are just
-// the order + Hebrew labels for each key.
 const STAT_META = [
   { key: 'users',      label: 'שכנים בקהילה' },
   { key: 'items',      label: 'פריטים זמינים' },
@@ -46,10 +43,8 @@ const HomePage = () => {
   return (
     <div className="tg" dir="rtl" ref={rootRef}>
 
-      {/* ════════ NAVBAR ════════ */}
       <TgNavbar variant="home" active="home" />
 
-      {/* ════════ HERO ════════ */}
       <header className="hero" id="top">
         <div className="hero-media" />
         <div className="wrap">
@@ -68,7 +63,6 @@ const HomePage = () => {
         <div className="scroll-cue" aria-hidden="true">גלילה</div>
       </header>
 
-      {/* ════════ MARQUEE STRIP (desktop only) ════════ */}
       <section className="strip tg-section--lg">
         <div className="wrap">
           <span className="strip-label">פעילים בשכונות ברחבי הארץ</span>
@@ -83,7 +77,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ════════ MANIFESTO (desktop only — also lives on /about) ════════ */}
       <section className="manifesto tg-section--lg" id="manifesto">
         <div className="wrap">
           <span className="kicker" data-reveal><span className="idx">02</span> הרעיון</span>
@@ -94,7 +87,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ════════ CATEGORIES ════════ */}
       <section className="cats" id="cats">
         <div className="wrap">
           <div className="cats-head">
@@ -130,7 +122,6 @@ const HomePage = () => {
         )}
       </section>
 
-      {/* ════════ SHOWCASE + STATS (desktop only) ════════ */}
       <section className="showcase tg-section--lg">
         <div className="showcase-img">
           <img className="showcase-photo" src="/images/hands.png" alt="ידיים משתפות כלים בקהילה" loading="lazy" onError={hideBrokenImg} />
@@ -153,7 +144,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ════════ PROCESS (dark) ════════ */}
       <section className="process" id="process">
         <div className="wrap">
           <div className="process-head">
@@ -176,7 +166,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ════════ REVIEWS — desktop only, and only once recommendations are approved ════════ */}
       {reviews.length > 0 && (
         <section className="reviews tg-section--lg">
           <div className="wrap">
@@ -205,7 +194,6 @@ const HomePage = () => {
         </section>
       )}
 
-      {/* ════════ CTA BAND — a "join the community" band, only for guests ════════ */}
       {!user && (
         <section className="cta" id="cta">
           <div className="wrap">
@@ -219,7 +207,6 @@ const HomePage = () => {
         </section>
       )}
 
-      {/* ════════ FOOTER ════════ */}
       <footer className="footer">
         <div className="wrap">
           <div className="footer-top">

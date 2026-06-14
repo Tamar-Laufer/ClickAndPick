@@ -23,7 +23,6 @@ export default function BookingManager({
   const tabRole = tab === 'rentals' ? 'renter' : 'owner';
   const empty = EMPTY[tab];
 
-  // Badges show the server's TOTAL for each list (not just the loaded chunk).
   const tabs = [
     { key: 'rentals', label: 'ההשאלות שלי', count: counts.rentals },
     { key: 'items', label: 'הפריטים שלי', count: counts.items },

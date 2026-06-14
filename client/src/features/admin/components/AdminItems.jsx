@@ -1,9 +1,6 @@
 import useAdminItems from '../hooks/useAdminItems';
 import { fullName, priceText } from '../../../shared/utils/format';
 
-/* Admin item-moderation panel: server-side paginated + searchable table with a
-   per-row active toggle (soft-suspend / reactivate). All data/actions come from
-   useAdminItems; this only renders. Reuses the shared table styling. */
 export default function AdminItems() {
   const { items, page, setPage, search, onSearch, totalPages, isLoading, error, toggleStatus } = useAdminItems();
 

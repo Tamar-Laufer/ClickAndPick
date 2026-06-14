@@ -59,7 +59,6 @@
 .tg .auth-form .lead{ font-size:14px; color:var(--ink-2); margin:0 0 14px; }
 .tg .auth-form .btn{ width:100%; margin-top:14px; }
 .tg .auth-row{ display:flex; align-items:center; justify-content:space-between; margin-top:12px; font-size:13.5px; flex-wrap:wrap; gap:8px; }
-.tg .auth-row label{ display:flex; align-items:center; gap:8px; color:var(--ink-2); cursor:pointer; }
 .tg .auth-row a{ color:var(--accent); font-weight:500; }
 .tg .auth-alt{ text-align:center; font-size:14.5px; color:var(--ink-2); margin-top:14px; }
 .tg .auth-alt a{ color:var(--accent); font-weight:600; }

@@ -1,6 +1,3 @@
-/* Shared chevron (▾) icon. Rotation is driven by the host's CSS via `className`
-   (e.g. `flt-chev open` in the catalog filters, or `.acc-item.open` for the
-   accordion), so this only draws the shape. */
 export default function ChevronIcon({ className }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

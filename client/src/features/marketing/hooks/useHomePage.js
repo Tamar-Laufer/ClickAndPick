@@ -11,7 +11,7 @@ const useHomePage = () => {
   const { user } = useAuth();
   const [items, setItems] = useState([]);
   const [reviews, setReviews] = useState([]);
-  const [stats, setStats] = useState(null); // live community counts for the stats band
+  const [stats, setStats] = useState(null);
 
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const useHomePage = () => {
       try {
         const d = await apiFetch('/items?limit=12');
         setItems(d.items || []);
-      } catch { /* non-critical: the catalogue marquee just stays empty */ }
+      } catch { }
     };
     const loadReviews = async () => {
       try {
@@ -29,13 +29,13 @@ const useHomePage = () => {
           name: f.name,
           avatarUrl: f.avatarUrl || null,
         })));
-      } catch { /* non-critical: the reviews section is hidden when empty */ }
+      } catch { }
     };
     const loadStats = async () => {
       try {
         const d = await apiFetch('/stats');
         setStats(d.stats || null);
-      } catch { /* non-critical: stats band shows — until counts load */ }
+      } catch { }
     };
     loadItems();
     loadReviews();

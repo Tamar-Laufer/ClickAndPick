@@ -1,10 +1,6 @@
 import useAdminUsers from '../hooks/useAdminUsers';
 import { fullName } from '../../../shared/utils/format';
 
-/* Admin users panel: server-side paginated + searchable table with a per-row
-   status toggle. All data/actions come from useAdminUsers; this only renders.
-   `currentUserId` hides the toggle on the admin's own row (can't lock yourself
-   out). Reuses the shared table styling (.users / .u-status / .u-action). */
 export default function AdminUsers({ currentUserId }) {
   const { users, page, setPage, search, onSearch, totalPages, isLoading, error, toggleStatus } = useAdminUsers();
 

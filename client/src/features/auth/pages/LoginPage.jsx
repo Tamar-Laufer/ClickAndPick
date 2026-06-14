@@ -71,7 +71,6 @@ const LoginPage = () => {
             <FormInput label="סיסמה" name="password" type="password" value={form.password} onChange={handleChange} required placeholder="••••••••" />
 
             <div className="auth-row">
-              <label><input type="checkbox" /> זכרו אותי</label>
               <Link to="/forgot-password">שכחתם סיסמה?</Link>
             </div>
             <Button type="submit" loading={loading} busyLabel="מתחבר…">התחברות</Button>

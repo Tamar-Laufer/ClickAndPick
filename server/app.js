@@ -13,7 +13,7 @@ const configuredOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
   .filter(Boolean);
 
 function isAllowedOrigin(origin) {
-  if (!origin) return true; // לקוחות שאינם דפדפן (curl, supertest, שרת-לשרת)
+  if (!origin) return true;
   if (configuredOrigins.includes(origin)) return true;
   return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 }

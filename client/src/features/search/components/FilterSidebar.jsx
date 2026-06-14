@@ -2,8 +2,6 @@ import ChevronIcon from '../../../shared/ui/ChevronIcon';
 
 const RADIUS_OPTIONS = [2, 5, 10, 20];
 
-/* One collapsible filter section (header + chevron + body). `open`/`onToggle`
-   stay controlled by useItemSearch so the open state is owned in one place. */
 function FilterSection({ title, open, onToggle, children }) {
   return (
     <div className="flt-sec">
