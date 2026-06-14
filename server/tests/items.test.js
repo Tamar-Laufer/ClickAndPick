@@ -20,7 +20,6 @@ describe('GET /api/items (public catalog)', () => {
     expect(res.body.pagination).toMatchObject({ totalItems: 1, currentPage: 1 });
     expect(res.body.items).toHaveLength(1);
     expect(res.body.items[0].title).toBe('Visible drill');
-    // privacy: raw pickup coordinates must never be exposed
     expect(res.body.items[0].location).toBeUndefined();
   });
 
@@ -151,7 +150,6 @@ describe('DELETE /api/items/:id (soft delete + guards)', () => {
       .set('Authorization', `Bearer ${tokenFor(owner)}`);
     expect(res.status).toBe(200);
 
-    // it disappears from the public catalog
     const list = await request(app).get('/api/items');
     expect(list.body.items).toHaveLength(0);
   });

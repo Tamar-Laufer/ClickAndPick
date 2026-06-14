@@ -1,5 +1,3 @@
-// מחזיר middleware שמאשר גישה רק לתפקידים המצוינים
-// שימוש: router.post('/...', verifyToken, checkRole('admin'), handler)
 function checkRole(...allowedRoles) {
   return (req, res, next) => {
     if (!req.user) {

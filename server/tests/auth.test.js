@@ -1,7 +1,5 @@
 'use strict';
 
-// The auth flow fires reset emails; stub the email service so nothing leaves the
-// process. A factory mock means the real module (nodemailer transport) never loads.
 jest.mock('../services/emailService', () => ({
   sendPasswordReset: jest.fn().mockResolvedValue(undefined),
   notifyNewBookingRequest: jest.fn(),
@@ -30,7 +28,7 @@ describe('POST /api/auth/register', () => {
     expect(res.body.user).toMatchObject({
       firstName: 'Dana',
       email: 'dana@example.com',
-      role: 'USER', // self-registration can never grant ADMIN
+      role: 'USER',
     });
     expect(res.body.user.passwordHash).toBeUndefined();
     expect(res.body.user.id).toEqual(expect.any(String));
@@ -145,7 +143,6 @@ describe('PUT /api/auth/password', () => {
       .send({ currentPassword: 'secret123', newPassword: 'brandnew456' });
     expect(change.status).toBe(200);
 
-    // old password no longer works, new one does
     const oldLogin = await request(app)
       .post('/api/auth/login').send({ email: user.email, password: 'secret123' });
     expect(oldLogin.status).toBe(401);
