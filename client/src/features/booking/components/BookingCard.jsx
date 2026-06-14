@@ -33,13 +33,20 @@ export default function BookingCard({ booking, role, onAction, onReview, onOpenC
   const counterLabel = role === 'renter'
     ? (item.owner ? `מהשכן/ה ${fullName(item.owner)}` : null)
     : (booking.renter ? `מבקש/ת: ${fullName(booking.renter)}` : null);
+  const started = new Date(booking.startDate) <= new Date();
   const actions = [];
   if (role === 'owner') {
     if (booking.status === 'PENDING') {
       actions.push({ label: 'אישור', status: 'APPROVED', kind: 'accent' });
       actions.push({ label: 'דחייה', status: 'CANCELLED', kind: 'line' });
     } else if (booking.status === 'APPROVED') {
-      actions.push({ label: 'סמן כהוחזר', status: 'COMPLETED', kind: 'accent' });
+      actions.push({
+        label: 'סמן כהוחזר',
+        status: 'COMPLETED',
+        kind: 'accent',
+        disabled: !started,
+        title: started ? undefined : 'אפשר לסמן כהוחזר רק לאחר שתקופת ההשאלה התחילה',
+      });
       actions.push({ label: 'ביטול', status: 'CANCELLED', kind: 'line' });
     }
   } else if (booking.status === 'PENDING' || booking.status === 'APPROVED') {
@@ -105,7 +112,8 @@ export default function BookingCard({ booking, role, onAction, onReview, onOpenC
                 <button
                   key={a.status}
                   className={`bk-btn ${a.kind}`}
-                  disabled={busy}
+                  disabled={busy || a.disabled}
+                  title={a.title}
                   onClick={() => onAction(booking.id, a.status)}
                 >
                   {busy ? '…' : a.label}
@@ -121,7 +129,14 @@ export default function BookingCard({ booking, role, onAction, onReview, onOpenC
                 </button>
               )}
               {booking.status === 'COMPLETED' && onReview && (
-                <button className="bk-btn accent" onClick={() => onReview(booking)}>השאירו ביקורת</button>
+                <button
+                  className="bk-btn accent"
+                  disabled={booking.myReviewSubmitted}
+                  title={booking.myReviewSubmitted ? 'כבר השארת ביקורת על השאלה זו' : undefined}
+                  onClick={() => onReview(booking)}
+                >
+                  {booking.myReviewSubmitted ? 'הביקורת נשלחה' : 'השאירו ביקורת'}
+                </button>
               )}
             </div>
           )}

@@ -55,6 +55,7 @@ const CreateItem = () => {
               <div className="field">
                 <label>קטגוריה *</label>
                 <select name="category" value={form.category} onChange={handleChange} required>
+                  <option value="" disabled>בחרו קטגוריה</option>
                   {categories.map(c => <option key={c.value} value={c.value}>{c.value}</option>)}
                 </select>
               </div>

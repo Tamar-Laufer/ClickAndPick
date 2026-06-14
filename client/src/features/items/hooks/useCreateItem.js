@@ -11,7 +11,7 @@ const useCreateItem = () => {
   const navigate = useNavigate();
   const fileRef = useRef(null);
 
-  const [form, setForm] = useState({ title: '', description: '', category: 'TOOLS', dailyRate: '', address: '' });
+  const [form, setForm] = useState({ title: '', description: '', category: '', dailyRate: '', address: '' });
 
   const handleChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 

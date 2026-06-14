@@ -1,6 +1,6 @@
 'use strict';
 
-const { Booking, Item, User } = require('../../database/models');
+const { Booking, Item, User, Review } = require('../../database/models');
 const { ApiError } = require('../utils/errors');
 const { clampPaging, paginationMeta } = require('../utils/pagination');
 const emailService = require('./emailService');
@@ -14,7 +14,6 @@ const money = (n) => Math.round(n * 100) / 100;
 
 const pageOpts = (opts) => clampPaging({ ...opts, defLimit: DEFAULT_PAGE_SIZE, maxLimit: MAX_PAGE_SIZE });
 
-// Shared list query: a paginated Booking.find(filter) with a caller-supplied populate.
 async function listPage(filter, decorate, opts) {
   const { pg, lim } = pageOpts(opts);
   const [bookings, total] = await Promise.all([
@@ -22,6 +21,21 @@ async function listPage(filter, decorate, opts) {
     Booking.countDocuments(filter),
   ]);
   return { bookings, pagination: paginationMeta(pg, lim, total) };
+}
+
+// Flags each booking with whether `userId` already left a review on it, so the
+// client can disable the "leave a review" button. Returns plain (toJSON) objects.
+async function attachMyReview(result, userId) {
+  if (!result.bookings.length) return result;
+  const ids = result.bookings.map((b) => b._id);
+  const reviewedIds = await Review.find({ bookingId: { $in: ids }, reviewerId: userId }).distinct('bookingId');
+  const reviewed = new Set(reviewedIds.map(String));
+  result.bookings = result.bookings.map((b) => {
+    const obj = b.toJSON();
+    obj.myReviewSubmitted = reviewed.has(String(b._id));
+    return obj;
+  });
+  return result;
 }
 
 async function create(renterId, { item: itemId, startDate, endDate }) {
@@ -33,7 +47,7 @@ async function create(renterId, { item: itemId, startDate, endDate }) {
   if (end <= start) throw new ApiError(400, 'End date must be after start date');
 
   const item = await Item.findById(itemId);
-  if (!item || !item.isActive) throw new ApiError(404, 'Item is not available');
+  if (!item || !item.isActive || item.isDeleted) throw new ApiError(404, 'Item is not available');
   if (String(item.owner) === String(renterId)) throw new ApiError(400, 'You cannot book your own item');
 
   const clash = await Booking.exists({
@@ -64,8 +78,8 @@ async function create(renterId, { item: itemId, startDate, endDate }) {
   return booking;
 }
 
-function listMine(renterId, opts) {
-  return listPage(
+async function listMine(renterId, opts) {
+  const result = await listPage(
     { renter: renterId },
     (q) => q.populate({
       path: 'item',
@@ -74,15 +88,17 @@ function listMine(renterId, opts) {
     }),
     opts,
   );
+  return attachMyReview(result, renterId);
 }
 
 async function listIncoming(ownerId, opts) {
   const owned = await Item.find({ owner: ownerId }).select('_id').lean();
-  return listPage(
+  const result = await listPage(
     { item: { $in: owned.map((i) => i._id) } },
     (q) => q.populate('item', 'title imageUrl').populate('renter', 'firstName lastName email avatarUrl'),
     opts,
   );
+  return attachMyReview(result, ownerId);
 }
 
 async function getById(id, user) {
@@ -105,6 +121,10 @@ async function updateStatus(id, user, status) {
 
   const allowed = isOwner || isAdmin ? ['APPROVED', 'COMPLETED', 'CANCELLED'] : ['CANCELLED'];
   if (!allowed.includes(status)) throw new ApiError(403, `You cannot set status to ${status}`);
+
+  if (status === 'COMPLETED' && new Date(booking.startDate) > new Date()) {
+    throw new ApiError(400, 'לא ניתן לסמן כהוחזר לפני שתקופת ההשאלה התחילה');
+  }
 
   const prevStatus = booking.status;
   const firstCompletion = status === 'COMPLETED' && prevStatus !== 'COMPLETED';

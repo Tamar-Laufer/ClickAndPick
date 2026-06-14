@@ -120,7 +120,7 @@ async function stats() {
   const [users, items, activeItems, bookings, revenue, byStatus, byMonth, manager] = await Promise.all([
     User.countDocuments(),
     Item.countDocuments(),
-    Item.countDocuments({ isActive: true }),
+    Item.countDocuments({ isActive: true, isDeleted: { $ne: true } }),
     Booking.countDocuments(),
     totalRevenue(),
     bookingsByStatus(),

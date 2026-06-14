@@ -171,9 +171,17 @@ describe('PATCH /api/bookings/:id/status (role-based transitions)', () => {
     expect(res.status).toBe(403);
   });
 
+  async function startedBooking(renter, item) {
+    return Booking.create({
+      item: item.id, renter: renter.id,
+      startDate: new Date(Date.now() - 86400000), endDate: new Date(Date.now() + 86400000),
+      totalPrice: 200, platformFee: 20, ownerEarnings: 180, status: 'APPROVED',
+    });
+  }
+
   it('on COMPLETED, bumps the renter’s completed count and recomputes trust score', async () => {
     const { owner, renter, item } = await arrangeRental();
-    const booking = await pendingBooking(renter, item);
+    const booking = await startedBooking(renter, item);
     const admin = await createAdmin();
 
     const res = await request(app)
@@ -186,6 +194,21 @@ describe('PATCH /api/bookings/:id/status (role-based transitions)', () => {
     expect(fresh.completedTransactions).toBe(1);
     expect(fresh.trustScore).toBe(12);
     expect(owner.id).toBeDefined();
+  });
+
+  it('rejects COMPLETED before the loan period has started (400)', async () => {
+    const { renter, item } = await arrangeRental();
+    const booking = await pendingBooking(renter, item); // startDate is in the future
+    const admin = await createAdmin();
+
+    const res = await request(app)
+      .patch(`/api/bookings/${booking.id}/status`)
+      .set('Authorization', `Bearer ${tokenFor(admin)}`)
+      .send({ status: 'COMPLETED' });
+    expect(res.status).toBe(400);
+
+    const fresh = await Booking.findById(booking.id);
+    expect(fresh.status).toBe('PENDING');
   });
 });
 
