@@ -9,13 +9,13 @@ exports.create = asyncHandler(async (req, res) => {
 });
 
 exports.mine = asyncHandler(async (req, res) => {
-  const bookings = await bookingsService.listMine(req.user.id);
-  res.json({ bookings });
+  const { bookings, pagination } = await bookingsService.listMine(req.user.id, req.query);
+  res.json({ bookings, pagination });
 });
 
 exports.incoming = asyncHandler(async (req, res) => {
-  const bookings = await bookingsService.listIncoming(req.user.id);
-  res.json({ bookings });
+  const { bookings, pagination } = await bookingsService.listIncoming(req.user.id, req.query);
+  res.json({ bookings, pagination });
 });
 
 exports.getOne = asyncHandler(async (req, res) => {

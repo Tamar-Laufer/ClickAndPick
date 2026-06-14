@@ -6,13 +6,6 @@ const { Schema, model } = mongoose;
 
 const MESSAGE_TYPES = ['text', 'audio'];
 
-/**
- * Message — הודעת צ'אט בודדת בין שני משתמשים.
- *
- * שירות הזמן-אמת (C++, פורט 8080) מעביר את ההודעה בזמן אמת ונשאר stateless;
- * המסמך הזה הוא מקור האמת היחיד להיסטוריה, כך שרענון דף או נמען שאינו מחובר
- * אינם גורמים לאובדן הודעות.
- */
 const messageSchema = new Schema({
   sender:    { type: Schema.Types.ObjectId, ref: 'User', required: true },
   recipient: { type: Schema.Types.ObjectId, ref: 'User', required: true },
@@ -21,9 +14,6 @@ const messageSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-// שליפת היסטוריית שיחה היא $or על שני הכיוונים, ממוינת לפי createdAt.
-// כל סעיף ב-$or נושא sender+recipient מדויקים, כך שאינדקס מורכב יחיד משרת את שניהם
-// ומספק כבר מיון לפי createdAt — בלי שלב sort בזיכרון.
 messageSchema.index({ sender: 1, recipient: 1, createdAt: 1 });
 
 messageSchema.set('toJSON', {

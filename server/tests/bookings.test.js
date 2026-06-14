@@ -1,6 +1,5 @@
 'use strict';
 
-// Booking creation/transitions fire owner/renter emails — stub them all.
 jest.mock('../services/emailService', () => ({
   notifyNewBookingRequest: jest.fn(),
   notifyBookingCompleted: jest.fn(),
@@ -15,9 +14,8 @@ const {
   createUser, createAdmin, tokenFor, createItem,
 } = require('./helpers');
 
-const DATES = { startDate: '2030-01-01', endDate: '2030-01-03' }; // 2 days
+const DATES = { startDate: '2030-01-01', endDate: '2030-01-03' };
 
-/** Arrange an owner + their item + a separate renter. */
 async function arrangeRental(itemOverrides = {}) {
   const owner = await createUser();
   const renter = await createUser();
@@ -44,12 +42,11 @@ describe('POST /api/bookings (creation + money split)', () => {
     expect(res.status).toBe(201);
     expect(res.body.booking).toMatchObject({
       status: 'PENDING',
-      totalPrice: 200,    // 2 days * 100
-      platformFee: 20,    // 10% of 200
-      ownerEarnings: 180, // remainder
+      totalPrice: 200,
+      platformFee: 20,
+      ownerEarnings: 180,
       renter: renter.id,
     });
-    // fee + earnings must reconstruct the total exactly
     const { platformFee, ownerEarnings, totalPrice } = res.body.booking;
     expect(platformFee + ownerEarnings).toBe(totalPrice);
   });
@@ -119,7 +116,6 @@ describe('POST /api/bookings (creation + money split)', () => {
 });
 
 describe('PATCH /api/bookings/:id/status (role-based transitions)', () => {
-  /** Create a PENDING booking by `renter` on `item`. */
   async function pendingBooking(renter, item) {
     return Booking.create({
       item: item.id, renter: renter.id,
@@ -175,9 +171,17 @@ describe('PATCH /api/bookings/:id/status (role-based transitions)', () => {
     expect(res.status).toBe(403);
   });
 
+  async function startedBooking(renter, item) {
+    return Booking.create({
+      item: item.id, renter: renter.id,
+      startDate: new Date(Date.now() - 86400000), endDate: new Date(Date.now() + 86400000),
+      totalPrice: 200, platformFee: 20, ownerEarnings: 180, status: 'APPROVED',
+    });
+  }
+
   it('on COMPLETED, bumps the renter’s completed count and recomputes trust score', async () => {
     const { owner, renter, item } = await arrangeRental();
-    const booking = await pendingBooking(renter, item);
+    const booking = await startedBooking(renter, item);
     const admin = await createAdmin();
 
     const res = await request(app)
@@ -188,9 +192,23 @@ describe('PATCH /api/bookings/:id/status (role-based transitions)', () => {
 
     const fresh = await User.findById(renter.id);
     expect(fresh.completedTransactions).toBe(1);
-    // quality 0 + volume (2*1) + reliability 10 = 12
     expect(fresh.trustScore).toBe(12);
     expect(owner.id).toBeDefined();
+  });
+
+  it('rejects COMPLETED before the loan period has started (400)', async () => {
+    const { renter, item } = await arrangeRental();
+    const booking = await pendingBooking(renter, item); // startDate is in the future
+    const admin = await createAdmin();
+
+    const res = await request(app)
+      .patch(`/api/bookings/${booking.id}/status`)
+      .set('Authorization', `Bearer ${tokenFor(admin)}`)
+      .send({ status: 'COMPLETED' });
+    expect(res.status).toBe(400);
+
+    const fresh = await Booking.findById(booking.id);
+    expect(fresh.status).toBe('PENDING');
   });
 });
 
@@ -215,7 +233,6 @@ describe('GET /api/bookings/mine and /incoming', () => {
     expect(incoming.status).toBe(200);
     expect(incoming.body.bookings).toHaveLength(1);
 
-    // the renter has no incoming requests of their own
     const renterIncoming = await request(app)
       .get('/api/bookings/incoming')
       .set('Authorization', `Bearer ${tokenFor(renter)}`);

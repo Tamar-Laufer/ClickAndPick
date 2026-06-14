@@ -3,18 +3,6 @@
 const axios = require('axios');
 const logger = require('./logger');
 
-/**
- * Free-text address → [longitude, latitude] via OpenStreetMap's Nominatim.
- *
- * Geocoding is strictly best-effort: on no match, a non-2xx response, a timeout,
- * or any network error this resolves to `null` and never throws, so a flaky
- * third-party service can't break item creation or search. The caller decides
- * what to do with a null (fall back to another source, or report "not found").
- *
- * Note: Nominatim's usage policy requires a descriptive User-Agent and rate-limits
- * to ~1 request/second — fine for interactive item creation/search, but don't call
- * this in a tight loop (the migration script deliberately uses stored coordinates).
- */
 
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
 const USER_AGENT = process.env.GEOCODER_USER_AGENT || 'Sharent/1.0 (peer-to-peer rental app)';
@@ -37,7 +25,7 @@ async function geocodeAddress(address) {
     const lat = Number(data[0].lat);
     if (Number.isNaN(lng) || Number.isNaN(lat)) return null;
 
-    return [lng, lat]; // GeoJSON order; caller fuzzes before persisting
+    return [lng, lat];
   } catch (err) {
     logger.warn(`Geocoding failed for "${q}": ${err.message}`);
     return null;
