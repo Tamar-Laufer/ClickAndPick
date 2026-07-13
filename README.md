@@ -111,11 +111,4 @@ I am a junior software developer with a dual passion for low-level **Systems Pro
 
 ---
 
-## 👩‍💻 Developer
 
-**Tamar Laufer**
-*B.Sc. Student in Software Engineering / Computer Science at JCT & holder of a MAHAT Practical Engineering Diploma.*
-
-I am a junior software developer with a dual passion for low-level **Systems Programming (C++)** and high-level **Full-Stack Web Development**. This project serves as a showcase of my web development capabilities, focusing on scalable architecture, clean design, and efficient database management.
-
-*Built with a passion for clean code and community development.* 💻✨
