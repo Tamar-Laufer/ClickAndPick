@@ -103,7 +103,7 @@ Make sure you have [Node.js](https://nodejs.org/) and [Git](https://git-scm.com/
 ## 👩‍💻 Developer
 
 
-*B.Sc. Student in Software Engineering / Computer Science at JCT & holder of a MAHAT Practical Engineering Diploma.*
+*B.Sc. Student in Software Engineering / Computer Science at The Open University & holder of a MAHAT Practical Engineering Diploma.*
 
 I am a junior software developer with a dual passion for low-level **Systems Programming (C++)** and high-level **Full-Stack Web Development**. This project serves as a showcase of my web development capabilities, focusing on scalable architecture, clean design, and efficient database management.
 
